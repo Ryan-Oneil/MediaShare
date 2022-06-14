@@ -9,26 +9,36 @@ import {
   useBreakpointValue,
   Text,
   Box,
+  VStack,
+  Flex,
 } from "@chakra-ui/react";
 import { REGISTER_URL } from "../utils/urls";
 import Link from "next/link";
+import Image from "next/image";
+import dashboardPicture from "../public/dashboardMock.png";
+import Footer from "base/components/Footer";
 
 const Home: NextPage = () => {
   return (
-    <div>
+    <>
       <Head>
         <title>Media Share - Home</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Box as={"section"} bg={"#F9FAFB"}>
+      <VStack as={"section"} bg={"#F9FAFB"} h={"100vh"}>
         <Navbar />
-        <Container py={{ base: "16", md: "24" }} maxW="container.md">
-          <Stack spacing={{ base: "8", md: "10" }} align="center">
+        <Container py={{ base: "16", md: "12" }} maxW="container.lg" flex={1}>
+          <VStack spacing={{ base: "8", md: "10" }} align="center" mb={28}>
             <Stack spacing={{ base: "4", md: "5" }} align="center">
-              <Heading size={useBreakpointValue({ base: "xl", lg: "2xl" })}>
+              <Heading size={useBreakpointValue({ base: "lg", lg: "2xl" })}>
                 Sharing media made simple
               </Heading>
-              <Text color="muted" maxW="2xl" textAlign="center" fontSize="xl">
+              <Text
+                color="muted"
+                maxW="2xl"
+                textAlign="center"
+                fontSize={useBreakpointValue({ base: "lg", lg: "2xl" })}
+              >
                 Media share brings the ease to sharing files and media around
                 the world. Hassle free! Supported by powerful APIs
               </Text>
@@ -49,10 +59,12 @@ const Home: NextPage = () => {
                 Try now
               </Button>
             </Link>
-          </Stack>
+          </VStack>
+          <Image src={dashboardPicture} draggable={false} />
         </Container>
-      </Box>
-    </div>
+        <Footer />
+      </VStack>
+    </>
   );
 };
 

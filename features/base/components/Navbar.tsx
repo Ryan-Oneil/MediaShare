@@ -48,10 +48,12 @@ export default function Navbar() {
         color={"gray.600"}
         py={4}
         px={{ base: 5, md: 20 }}
+        bg={"#F9FAFB"}
         borderBottom={1}
         borderStyle={"solid"}
         borderColor={"#F2F4F7"}
         as={"nav"}
+        w={"100%"}
       >
         <Logo />
         {isDesktop ? (
