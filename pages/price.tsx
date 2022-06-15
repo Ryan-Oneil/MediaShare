@@ -3,8 +3,9 @@ import BaseHomePage from "../features/base/components/BaseHomePage";
 import { PricingCard } from "../features/base/components/PriceCard";
 import { Box, Heading, SimpleGrid, VStack, Text } from "@chakra-ui/react";
 import { FaSuitcase, FaTag, FaTags } from "react-icons/fa";
+import { NextPage } from "next";
 
-const Price = () => {
+const Price: NextPage = () => {
   return (
     <BaseHomePage title={"Pricing"}>
       <Box as="section" bg={"gray.50"} py="14" px={{ base: "4", md: "8" }}>
