@@ -1,8 +1,16 @@
 import React from "react";
 import { NextPage } from "next";
-import { Box, Heading, HStack, Text, useMediaQuery } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  HStack,
+  Link,
+  Text,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import LoginForm from "Auth/components/LoginForm";
-import Link from "next/link";
+import { HOMEPAGE_URL, REGISTER_URL } from "../utils/urls";
+import NextLink from "next/link";
 
 const Login: NextPage = () => {
   const [isMobileDevice] = useMediaQuery("(max-width: 900px)");
@@ -14,11 +22,11 @@ const Login: NextPage = () => {
         <Box as={"section"} mb={50}>
           <Text fontSize={"xl"}>If you don’t have an account register</Text>
 
-          <Link href={""}>
+          <NextLink href={REGISTER_URL}>
             <a style={{ color: "#0C21C1", fontWeight: 600 }}>
               You can Register here!
             </a>
-          </Link>
+          </NextLink>
         </Box>
 
         <LoginForm />
@@ -36,9 +44,17 @@ const Login: NextPage = () => {
       h={"100vh"}
       overflow={"auto"}
     >
-      <Heading size={"lg"} fontWeight="bold" p={30}>
-        Media Share
-      </Heading>
+      <NextLink href={HOMEPAGE_URL}>
+        <Heading
+          size={"lg"}
+          fontWeight="bold"
+          p={30}
+          w={"fit-content"}
+          cursor={"pointer"}
+        >
+          Media Share
+        </Heading>
+      </NextLink>
 
       {!isMobileDevice && (
         <HStack align={"start"}>
