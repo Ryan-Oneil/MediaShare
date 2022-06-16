@@ -13,6 +13,7 @@ import {
   Link,
   Flex,
   Icon,
+  Button,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { FaBars, FaRegComments, FaServer, FaSignOutAlt } from "react-icons/fa";
@@ -27,6 +28,8 @@ export const Sidebar = () => {
   const [showDrawer, setShowDrawer] = useState(false);
   const urls: Array<NavItem> = [
     { url: DASHBOARD_URL, icon: <FaServer />, label: "Dashboard" },
+    { url: DASHBOARD_URL, icon: <FaServer />, label: "Dashboard" },
+    { url: DASHBOARD_URL, icon: <FaServer />, label: "Dashboard" },
     // { url: PROFILE_FIND_MATCHES, icon: <SearchIcon />, title: "Find Matches" },
     // { url: CHAT_URL, icon: <FaRegComment />, title: "Chats" },
   ];
@@ -38,27 +41,15 @@ export const Sidebar = () => {
           variant="ghost"
           aria-label={label}
           fontSize="20px"
-          color={"white"}
-          // leftI={
-          //   <Box
-          //     color={"white"}
           //     // color={currentRoute === url ? "#2249B3" : "white"}
-          //     fontSize={"4xl"}
-          //   >
-          //     {icon}
-          //   </Box>
-          // }
         >
           <Flex
             align="center"
             p="4"
-            mx="4"
-            borderRadius="lg"
-            role="group"
+            px={10}
             cursor="pointer"
             _hover={{
               bg: "cyan.400",
-              color: "white",
             }}
           >
             {icon}
@@ -71,7 +62,12 @@ export const Sidebar = () => {
 
   const NavMenu = () => {
     return (
-      <VStack spacing={10} mt={20} h={"100%"}>
+      <VStack minHeight={"100vh"} bg={"#1A202C"} color={"white"}>
+        <NextLink href={DASHBOARD_URL}>
+          <Text p={5} align={"center"}>
+            Media Share
+          </Text>
+        </NextLink>
         {urls.map((navItem) => (
           <NavLink
             url={navItem.url}
@@ -80,17 +76,18 @@ export const Sidebar = () => {
             label={navItem.label}
           />
         ))}
-        <Box mt={"auto!important"} mb={"150px!important"}>
-          <Tooltip label={"Log out"}>
-            <IconButton
-              variant="ghost"
-              aria-label={"Sign out"}
-              fontSize="20px"
-              // onClick={handleClick}
-              icon={<FaSignOutAlt size={32} />}
-            />
-          </Tooltip>
-        </Box>
+
+        <Button
+          variant="ghost"
+          aria-label={"Sign out"}
+          fontSize="20px"
+          // onClick={handleClick}
+          leftIcon={<FaSignOutAlt />}
+          mt={"auto!important"}
+          mb={"5px!important"}
+        >
+          Log out
+        </Button>
       </VStack>
     );
   };
@@ -98,14 +95,9 @@ export const Sidebar = () => {
   return (
     <>
       <Box
-        minHeight={"100vh"}
         boxShadow={"0px 0px 24px rgba(0, 0, 0, 0.08)"}
         display={{ base: "none", md: "block" }}
-        bg={"#1A202C"}
       >
-        <NextLink href={DASHBOARD_URL}>
-          <FaRegComments size={52} color={"white"} />
-        </NextLink>
         <NavMenu />
       </Box>
       <Box display={{ base: "block", md: "none" }} width={"100%"} p={5}>
