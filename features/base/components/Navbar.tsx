@@ -19,11 +19,7 @@ import {
 } from "../../../utils/urls";
 import NextLink from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
-
-interface NavItem {
-  label: string;
-  url: string;
-}
+import { NavItem } from "base/types/NavItem";
 
 const NAV_ITEMS: Array<NavItem> = [
   {
