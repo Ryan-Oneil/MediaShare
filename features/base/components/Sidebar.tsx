@@ -1,58 +1,42 @@
 import {
   Box,
-  IconButton,
   VStack,
-  Drawer,
-  DrawerBody,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  Tooltip,
   Text,
-  HStack,
   Link,
   Flex,
   Icon,
   Button,
+  BoxProps,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { FaBars, FaRegComments, FaServer, FaSignOutAlt } from "react-icons/fa";
+import React from "react";
+import { FaServer, FaSignOutAlt } from "react-icons/fa";
 import NextLink from "next/link";
-import { DASHBOARD_URL } from "../../../utils/urls";
+import { DASHBOARD_URL, HOMEPAGE_URL } from "../../../utils/urls";
 import { NavItem } from "../types/NavItem";
 import { useRouter } from "next/router";
 
-export const Sidebar = () => {
+export const Sidebar = (props: BoxProps) => {
   const router = useRouter();
   const currentRoute = router.pathname;
-  const [showDrawer, setShowDrawer] = useState(false);
   const urls: Array<NavItem> = [
-    { url: DASHBOARD_URL, icon: <FaServer />, label: "Dashboard" },
-    { url: DASHBOARD_URL, icon: <FaServer />, label: "Dashboard" },
-    { url: DASHBOARD_URL, icon: <FaServer />, label: "Dashboard" },
-    // { url: PROFILE_FIND_MATCHES, icon: <SearchIcon />, title: "Find Matches" },
-    // { url: CHAT_URL, icon: <FaRegComment />, title: "Chats" },
+    { url: DASHBOARD_URL, icon: FaServer, label: "Dashboard" },
   ];
 
   const NavLink = ({ url, icon, label }: NavItem) => {
     return (
-      <NextLink href={url}>
-        <Link
-          variant="ghost"
-          aria-label={label}
-          fontSize="20px"
-          //     // color={currentRoute === url ? "#2249B3" : "white"}
-        >
+      <NextLink href={url} passHref>
+        <Link variant="ghost" aria-label={label} fontSize="20px">
           <Flex
             align="center"
             p="4"
-            px={10}
+            pr={10}
             cursor="pointer"
+            bg={currentRoute === url ? "brand.200" : ""}
             _hover={{
-              bg: "cyan.400",
+              bg: "brand.200",
             }}
           >
-            {icon}
+            <Icon as={icon} mr="4" />
             {label}
           </Flex>
         </Link>
@@ -62,11 +46,18 @@ export const Sidebar = () => {
 
   const NavMenu = () => {
     return (
-      <VStack minHeight={"100vh"} bg={"#1A202C"} color={"white"}>
-        <NextLink href={DASHBOARD_URL}>
-          <Text p={5} align={"center"}>
-            Media Share
-          </Text>
+      <VStack minHeight={"100vh"} bg={"brand.100"} color={"white"}>
+        <NextLink href={HOMEPAGE_URL} passHref>
+          <Link _hover={{ textDecoration: "none" }}>
+            <Text
+              p={5}
+              align={"center"}
+              fontSize={"xl"}
+              fontWeight={"extrabold"}
+            >
+              Media Share
+            </Text>
+          </Link>
         </NextLink>
         {urls.map((navItem) => (
           <NavLink
@@ -81,10 +72,12 @@ export const Sidebar = () => {
           variant="ghost"
           aria-label={"Sign out"}
           fontSize="20px"
-          // onClick={handleClick}
           leftIcon={<FaSignOutAlt />}
           mt={"auto!important"}
           mb={"5px!important"}
+          _hover={{
+            bg: "brand.200",
+          }}
         >
           Log out
         </Button>
@@ -93,37 +86,8 @@ export const Sidebar = () => {
   };
 
   return (
-    <>
-      <Box
-        boxShadow={"0px 0px 24px rgba(0, 0, 0, 0.08)"}
-        display={{ base: "none", md: "block" }}
-      >
-        <NavMenu />
-      </Box>
-      <Box display={{ base: "block", md: "none" }} width={"100%"} p={5}>
-        <IconButton
-          icon={<FaBars />}
-          variant="outline"
-          onClick={() => setShowDrawer(true)}
-          aria-label={"Menu label"}
-        />
-      </Box>
-      {showDrawer && (
-        <Drawer
-          isOpen={showDrawer}
-          placement="left"
-          onClose={() => setShowDrawer(false)}
-        >
-          <DrawerOverlay>
-            <DrawerContent>
-              <DrawerCloseButton />
-              <DrawerBody>
-                <NavMenu />
-              </DrawerBody>
-            </DrawerContent>
-          </DrawerOverlay>
-        </Drawer>
-      )}
-    </>
+    <Box boxShadow={"0px 0px 24px rgba(0, 0, 0, 0.08)"} {...props}>
+      <NavMenu />
+    </Box>
   );
 };
