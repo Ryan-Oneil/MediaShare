@@ -37,9 +37,9 @@ const Home: NextPage = () => {
             size="lg"
             fontWeight={600}
             color={"white"}
-            bg={"#1A202C"}
+            bg={"brand.100"}
             _hover={{
-              bg: "#2a3448",
+              bg: "brand.200",
             }}
             w={"40%"}
             m={"auto"}

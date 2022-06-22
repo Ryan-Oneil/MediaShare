@@ -30,12 +30,11 @@ interface PricingCardProps extends BoxProps {
 export const PricingCard = (props: PricingCardProps) => {
   const { data, icon, buttonProps, ...rest } = props;
   const { features, price, name } = data;
-  const accentColor = "#1A202C";
 
   return (
     <Card rounded={{ sm: "xl" }} {...rest}>
       <VStack spacing={6}>
-        <Icon aria-hidden as={icon} fontSize="4xl" color={accentColor} />
+        <Icon aria-hidden as={icon} fontSize="4xl" color={"brand.100"} />
         <Heading size="md" fontWeight="extrabold">
           {name}
         </Heading>
@@ -44,7 +43,7 @@ export const PricingCard = (props: PricingCardProps) => {
         align="flex-end"
         justify="center"
         fontWeight="extrabold"
-        color={accentColor}
+        color={"brand.100"}
         my="8"
       >
         <Heading size="3xl" fontWeight="inherit" lineHeight="0.9em">
@@ -61,7 +60,7 @@ export const PricingCard = (props: PricingCardProps) => {
               fontSize="xl"
               as={HiCheckCircle}
               marginEnd={2}
-              color={accentColor}
+              color={"brand.100"}
             />
             {feature}
           </ListItem>
@@ -70,9 +69,9 @@ export const PricingCard = (props: PricingCardProps) => {
       <Button
         fontWeight={600}
         color={"white"}
-        bg={"#1A202C"}
+        bg={"brand.100"}
         _hover={{
-          bg: "#2a3448",
+          bg: "brand.200",
         }}
         size="lg"
         w="full"
