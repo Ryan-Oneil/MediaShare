@@ -112,7 +112,7 @@ const DesktopNav = () => {
         display={{ base: "none", md: "flex" }}
       >
         {NAV_ITEMS.map((navItem) => (
-          <NavLink {...navItem} />
+          <NavLink {...navItem} key={navItem.url} />
         ))}
       </Stack>
       <HStack spacing="6">

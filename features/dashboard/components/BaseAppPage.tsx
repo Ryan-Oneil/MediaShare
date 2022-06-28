@@ -14,6 +14,7 @@ import {
 import { Sidebar } from "../../base/components/Sidebar";
 import { FaBars } from "react-icons/fa";
 import UserDropDown from "./UserDropDown";
+import NotificationButton from "./NotificationButton";
 
 type props = {
   children: React.ReactNode;
@@ -43,9 +44,12 @@ const BaseAppPage = ({ children }: props) => {
           />
           <Heading size={"lg"}>Dashboard</Heading>
           <Spacer />
+          <NotificationButton />
           <UserDropDown />
         </Flex>
-        {children}
+        <Box as={"article"} p={{ base: 5, md: 10, xl: 20 }}>
+          {children}
+        </Box>
       </Box>
       {showDrawer && (
         <Drawer
