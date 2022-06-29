@@ -11,14 +11,35 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { SharedFile } from "../types/SharedFile";
+import { displayBytesInReadableForm } from "../../../utils/helpers";
 
-const RecentUploads = () => {
+const RecentFileUploads = () => {
   const sampleData: Array<SharedFile> = [
-    { name: "file.pdf", uploaded: new Date(), size: 1000000, type: "DOCUMENT" },
+    {
+      id: "1",
+      name: "file.pdf",
+      uploaded: new Date(),
+      size: 1000000,
+      type: "DOCUMENT",
+    },
+    {
+      id: "2",
+      name: "file.docx",
+      uploaded: new Date(),
+      size: 1000000,
+      type: "DOCUMENT",
+    },
+    {
+      id: "3",
+      name: "file.txt",
+      uploaded: new Date(),
+      size: 1000000,
+      type: "DOCUMENT",
+    },
   ];
 
   return (
-    <Card maxW={"100%"} p={6}>
+    <Card maxW={"100%"} p={6} rounded={10}>
       <Heading size={"md"} pb={4}>
         Recent file shares
       </Heading>
@@ -37,7 +58,7 @@ const RecentUploads = () => {
           </Thead>
           <Tbody>
             {sampleData.map((file) => (
-              <TableRow {...file} />
+              <TableRow {...file} key={file.id} />
             ))}
           </Tbody>
         </Table>
@@ -51,9 +72,9 @@ const TableRow = ({ name, uploaded, size }: SharedFile) => {
     <Tr>
       <Td>{name}</Td>
       <Td>{uploaded.toLocaleDateString()}</Td>
-      <Td>{size}</Td>
+      <Td>{displayBytesInReadableForm(size)}</Td>
     </Tr>
   );
 };
 
-export default RecentUploads;
+export default RecentFileUploads;

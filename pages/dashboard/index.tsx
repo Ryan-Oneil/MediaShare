@@ -1,11 +1,11 @@
 import React from "react";
 
 import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
-import { Flex, Image, Stack } from "@chakra-ui/react";
+import { Flex, Heading, Image, Stack } from "@chakra-ui/react";
 import StatCard from "../../features/dashboard/components/StatCard";
 import { Card } from "../../features/base/components/Card";
 import StorageDetailCard from "../../features/dashboard/components/StorageDetailCard";
-import RecentUploads from "dashboard/components/RecentUploads";
+import RecentFileUploads from "dashboard/components/RecentFileUploads";
 
 const Dashboard = () => {
   return (
@@ -38,22 +38,44 @@ const Dashboard = () => {
               description={"40% vs last month"}
             />
           </Flex>
+          <Heading size={"md"}>Recent Media</Heading>
           <Stack gap={6} direction={["column", "row"]}>
-            <Card w={"auto"}>
+            <Card w={"auto"} rounded={10}>
               <Image
                 src={"https://via.placeholder.com/800.png"}
                 objectFit="cover"
                 maxH={{ base: "100%", md: "250px" }}
               />
             </Card>
-            <Card w={"auto"}>
+            <Card w={"auto"} rounded={10}>
               <Image
                 src={"https://via.placeholder.com/800.png"}
                 objectFit="cover"
                 maxH={{ base: "100%", md: "250px" }}
               />
             </Card>
-            <Card w={"auto"}>
+            <Card w={"auto"} rounded={10}>
+              <Image
+                src={"https://via.placeholder.com/800.png"}
+                objectFit="cover"
+                maxH={{ base: "100%", md: "250px" }}
+              />
+            </Card>
+            <Card w={"auto"} rounded={10}>
+              <Image
+                src={"https://via.placeholder.com/800.png"}
+                objectFit="cover"
+                maxH={{ base: "100%", md: "250px" }}
+              />
+            </Card>
+            <Card w={"auto"} rounded={10}>
+              <Image
+                src={"https://via.placeholder.com/800.png"}
+                objectFit="cover"
+                maxH={{ base: "100%", md: "250px" }}
+              />
+            </Card>
+            <Card w={"auto"} rounded={10}>
               <Image
                 src={"https://via.placeholder.com/800.png"}
                 objectFit="cover"
@@ -61,7 +83,7 @@ const Dashboard = () => {
               />
             </Card>
           </Stack>
-          <RecentUploads />
+          <RecentFileUploads />
         </Flex>
         <StorageDetailCard />
       </Flex>
