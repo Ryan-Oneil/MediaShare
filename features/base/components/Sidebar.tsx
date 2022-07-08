@@ -9,9 +9,9 @@ import {
   BoxProps,
 } from "@chakra-ui/react";
 import React from "react";
-import { FaServer, FaSignOutAlt } from "react-icons/fa";
+import { FaImages, FaServer, FaSignOutAlt } from "react-icons/fa";
 import NextLink from "next/link";
-import { DASHBOARD_URL, HOMEPAGE_URL } from "../../../utils/urls";
+import { DASHBOARD_URL, GALLERY_URL, HOMEPAGE_URL } from "../../../utils/urls";
 import { NavItem } from "../types/NavItem";
 import { useRouter } from "next/router";
 
@@ -20,12 +20,13 @@ export const Sidebar = (props: BoxProps) => {
   const currentRoute = router.pathname;
   const urls: Array<NavItem> = [
     { url: DASHBOARD_URL, icon: FaServer, label: "Dashboard" },
+    { url: GALLERY_URL, icon: FaImages, label: "Gallery" },
   ];
 
   const NavLink = ({ url, icon, label }: NavItem) => {
     return (
       <NextLink href={url} passHref>
-        <Link variant="ghost" aria-label={label} fontSize="20px">
+        <Link variant="ghost" aria-label={label} fontSize="20px" w={"100%"}>
           <Flex
             align="center"
             p="4"

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {
   Box,
+  BoxProps,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -16,12 +17,14 @@ import { FaBars } from "react-icons/fa";
 import UserDropDown from "./UserDropDown";
 import NotificationButton from "./NotificationButton";
 
-type props = {
+interface BaseAppPageProps extends BoxProps {
+  title: string;
   children: React.ReactNode;
-};
+}
 
-const BaseAppPage = ({ children }: props) => {
+const BaseAppPage = (props: BaseAppPageProps) => {
   const [showDrawer, setShowDrawer] = useState(false);
+  const { title, children, ...rest } = props;
 
   return (
     <Flex flexWrap={{ base: "wrap", md: "nowrap" }} minH={"100vh"}>
@@ -31,7 +34,7 @@ const BaseAppPage = ({ children }: props) => {
           alignItems={"center"}
           as="nav"
           bg={"white"}
-          boxShadow={"sm"}
+          boxShadow={"inset 0px -1px 0px #F1F1F1"}
           p={6}
         >
           <IconButton
@@ -42,12 +45,12 @@ const BaseAppPage = ({ children }: props) => {
             aria-label={"Menu label"}
             mr={5}
           />
-          <Heading size={"lg"}>Dashboard</Heading>
+          <Heading size={"lg"}>{title}</Heading>
           <Spacer />
           <NotificationButton />
           <UserDropDown />
         </Flex>
-        <Box as={"article"} p={{ base: 5, md: 10, xl: 20 }}>
+        <Box as={"article"} {...rest}>
           {children}
         </Box>
       </Box>

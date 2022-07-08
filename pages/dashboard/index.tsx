@@ -9,8 +9,8 @@ import RecentFileUploads from "dashboard/components/RecentFileUploads";
 
 const Dashboard = () => {
   return (
-    <BaseAppPage>
-      <Flex as={"section"} gap={5} mt={5} flexWrap={"wrap"}>
+    <BaseAppPage title={"Dashboard"} p={{ base: 5, md: 10, xl: 20 }}>
+      <Flex as={"section"} gap={5} flexWrap={"wrap"}>
         <Flex
           direction={"column"}
           flex={1}
