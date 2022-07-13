@@ -27,9 +27,9 @@ const BaseAppPage = (props: BaseAppPageProps) => {
   const { title, children, ...rest } = props;
 
   return (
-    <Flex flexWrap={{ base: "wrap", md: "nowrap" }} minH={"100vh"}>
+    <Flex flexWrap={{ base: "wrap", md: "nowrap" }} minH={"100vh"} >
       <Sidebar display={{ base: "none", md: "block" }} />
-      <Box w={"100%"} bg={"#FAFAFA"}>
+      <Flex w={"100%"} bg={"#FAFAFA"} h={"100vh"} flexDirection={"column"}>
         <Flex
           alignItems={"center"}
           as="nav"
@@ -50,10 +50,10 @@ const BaseAppPage = (props: BaseAppPageProps) => {
           <NotificationButton />
           <UserDropDown />
         </Flex>
-        <Box as={"article"} {...rest}>
+        <Box as={"article"} {...rest} overflow={"auto"} h={"100%"}>
           {children}
         </Box>
-      </Box>
+      </Flex>
       {showDrawer && (
         <Drawer
           isOpen={showDrawer}
