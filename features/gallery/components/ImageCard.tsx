@@ -1,7 +1,8 @@
 import React from "react";
-import { Box, IconButton, Image } from "@chakra-ui/react";
+import { Box, IconButton } from "@chakra-ui/react";
 import { FaLink, FaTrash } from "react-icons/fa";
 import { Card } from "../../base/components/Card";
+import ImageModal from "./ImageModal";
 
 type props = {
   src: string;
@@ -9,13 +10,13 @@ type props = {
 
 const ImageCard = ({ src }: props) => {
   return (
-    <Card position={"relative"} width={"fit-content"} role={"group"}>
-      <Image
-        src={src}
-        objectFit="cover"
-        maxH={{ base: "100%", md: "250px" }}
-        loading={"lazy"}
-      />
+    <Card
+      position={"relative"}
+      width={"fit-content"}
+      role={"group"}
+      _hover={{ shadow: "xl" }}
+    >
+      <ImageModal src={src} maxH={{ base: "100%", md: "250px" }} />
       <Box
         as={"section"}
         display={"none"}
@@ -29,7 +30,6 @@ const ImageCard = ({ src }: props) => {
       >
         <IconButton
           variant="ghost"
-          colorScheme="brand.100"
           aria-label="Copy share link"
           icon={<FaLink />}
         />
