@@ -19,11 +19,7 @@ import {
 } from "../../../utils/urls";
 import NextLink from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
-
-interface NavItem {
-  label: string;
-  url: string;
-}
+import { NavItem } from "base/types/NavItem";
 
 const NAV_ITEMS: Array<NavItem> = [
   {
@@ -116,7 +112,7 @@ const DesktopNav = () => {
         display={{ base: "none", md: "flex" }}
       >
         {NAV_ITEMS.map((navItem) => (
-          <NavLink {...navItem} />
+          <NavLink {...navItem} key={navItem.url} />
         ))}
       </Stack>
       <HStack spacing="6">
@@ -129,9 +125,9 @@ const DesktopNav = () => {
           <Button
             fontWeight={600}
             color={"white"}
-            bg={"#1A202C"}
+            bg={"brand.100"}
             _hover={{
-              bg: "#2a3448",
+              bg: "brand.200",
             }}
           >
             Sign Up

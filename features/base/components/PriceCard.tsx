@@ -23,19 +23,43 @@ export interface PricingCardData {
 
 interface PricingCardProps extends BoxProps {
   data: PricingCardData;
-  icon: React.ElementType;
+  icon?: React.ElementType;
   buttonProps?: ButtonProps;
 }
 
 export const PricingCard = (props: PricingCardProps) => {
   const { data, icon, buttonProps, ...rest } = props;
-  const { features, price, name } = data;
-  const accentColor = "#1A202C";
 
   return (
-    <Card rounded={{ sm: "xl" }} {...rest}>
+    <Card px="6" pb="6" pt="16" rounded={{ sm: "xl" }} {...rest}>
+      <PricingTier data={data} icon={icon} buttonProps={buttonProps} />
+      <Button
+        fontWeight={600}
+        color={"white"}
+        bg={"brand.100"}
+        _hover={{
+          bg: "brand.200",
+        }}
+        size="lg"
+        w="full"
+        py={{ md: "8" }}
+        {...buttonProps}
+      >
+        Purchase
+      </Button>
+    </Card>
+  );
+};
+
+export const PricingTier = ({ icon, data }: PricingCardProps) => {
+  const { features, price, name } = data;
+
+  return (
+    <>
       <VStack spacing={6}>
-        <Icon aria-hidden as={icon} fontSize="4xl" color={accentColor} />
+        {icon && (
+          <Icon aria-hidden as={icon} fontSize="4xl" color={"brand.100"} />
+        )}
         <Heading size="md" fontWeight="extrabold">
           {name}
         </Heading>
@@ -44,13 +68,18 @@ export const PricingCard = (props: PricingCardProps) => {
         align="flex-end"
         justify="center"
         fontWeight="extrabold"
-        color={accentColor}
+        color={"brand.100"}
         my="8"
       >
-        <Heading size="3xl" fontWeight="inherit" lineHeight="0.9em">
+        <Heading size="2xl" fontWeight="inherit" lineHeight="0.9em" pr={1}>
           {price}
         </Heading>
-        <Text fontWeight="inherit" fontSize="2xl">
+        <Text
+          fontWeight="inherit"
+          fontSize="2xl"
+          color={"#121127"}
+          opacity={"50%"}
+        >
           / Monthly
         </Text>
       </Flex>
@@ -61,26 +90,12 @@ export const PricingCard = (props: PricingCardProps) => {
               fontSize="xl"
               as={HiCheckCircle}
               marginEnd={2}
-              color={accentColor}
+              color={"brand.100"}
             />
             {feature}
           </ListItem>
         ))}
       </List>
-      <Button
-        fontWeight={600}
-        color={"white"}
-        bg={"#1A202C"}
-        _hover={{
-          bg: "#2a3448",
-        }}
-        size="lg"
-        w="full"
-        py={{ md: "8" }}
-        {...buttonProps}
-      >
-        Purchase
-      </Button>
-    </Card>
+    </>
   );
 };

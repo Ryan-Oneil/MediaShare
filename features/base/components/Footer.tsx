@@ -6,7 +6,7 @@ const Footer = () => {
   return (
     <Flex
       p={5}
-      bg={"#1A202C"}
+      bg={"brand.100"}
       color={"white"}
       as={"footer"}
       alignSelf={"flex-end"}
