@@ -1,7 +1,9 @@
 import React from "react";
 import { Box, Heading, HStack, Text, useMediaQuery } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { HOMEPAGE_URL } from "../../../utils/urls";
+import { DASHBOARD_URL, HOMEPAGE_URL } from "../../../utils/urls";
+import { useAuth } from "../hooks/useAuth";
+import { useRouter } from "next/router";
 
 type props = {
   title: string;
@@ -10,6 +12,13 @@ type props = {
 
 const BaseAuthPage = ({ title, children }: props) => {
   const [isMobileDevice] = useMediaQuery("(max-width: 900px)");
+
+  const auth = useAuth();
+  const router = useRouter();
+
+  if (auth.user) {
+    router.push(DASHBOARD_URL);
+  }
 
   return (
     <Box

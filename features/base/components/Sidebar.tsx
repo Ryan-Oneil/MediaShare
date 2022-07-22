@@ -14,6 +14,7 @@ import NextLink from "next/link";
 import { DASHBOARD_URL, GALLERY_URL, HOMEPAGE_URL } from "../../../utils/urls";
 import { NavItem } from "../types/NavItem";
 import { useRouter } from "next/router";
+import { getAuth } from "firebase/auth";
 
 export const Sidebar = (props: BoxProps) => {
   const router = useRouter();
@@ -78,6 +79,11 @@ export const Sidebar = (props: BoxProps) => {
           mb={"5px!important"}
           _hover={{
             bg: "brand.200",
+          }}
+          onClick={() => {
+            getAuth()
+              .signOut()
+              .then(() => router.push(HOMEPAGE_URL));
           }}
         >
           Log out

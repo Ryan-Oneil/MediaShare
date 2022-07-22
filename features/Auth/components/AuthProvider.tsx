@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { initializeApp } from "@firebase/app";
-import { Auth, getAuth, UserInfo } from "@firebase/auth";
+import { getAuth, UserInfo } from "@firebase/auth";
 
 export const AuthContext = React.createContext<{
-  initializing: boolean;
   user: UserInfo | null;
-  auth?: Auth;
-}>({ initializing: true, user: null });
+}>({ user: null });
 
 export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<UserInfo | null>(null);
-  const [initializing, setInitializing] = useState(true);
-  const [auth, setAuth] = useState<Auth>();
   const firebaseConfig = {
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -26,21 +22,33 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
   useEffect(() => {
     const firebaseAuth = getAuth(firebaseApp);
 
-    firebaseAuth.onAuthStateChanged((authUser) => {
+    firebaseAuth.onIdTokenChanged(async (authUser) => {
       if (authUser) {
+        const token = await authUser.getIdToken();
+        document.cookie = `jwt=${token}; max-age=1800; Path=/`;
+
         setUser(authUser);
       } else {
+        document.cookie = "jwt=; max-age=-1800; Path=/";
         setUser(null);
       }
-      setInitializing(false);
     });
-    setAuth(firebaseAuth);
+  }, []);
+
+  useEffect(() => {
+    const firebaseAuth = getAuth(firebaseApp);
+
+    const handle = setInterval(async () => {
+      const user = firebaseAuth.currentUser;
+      if (user) await user.getIdToken(true);
+    }, 10 * 60 * 1000);
+
+    // clean up setInterval
+    return () => clearInterval(handle);
   }, []);
 
   const value = {
     user,
-    initializing,
-    auth,
   };
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
