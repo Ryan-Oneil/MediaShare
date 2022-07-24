@@ -6,9 +6,9 @@ import StatCard from "../../features/dashboard/components/StatCard";
 import { Card } from "../../features/base/components/Card";
 import StorageDetailCard from "../../features/dashboard/components/StorageDetailCard";
 import RecentFileUploads from "dashboard/components/RecentFileUploads";
-import { firebaseAdmin } from "../../features/Auth/FirebaseAdmin";
 import { GetServerSidePropsContext } from "next";
 import { LOGIN_URL } from "../../utils/urls";
+import { getFirebaseAdmin } from "../../features/Auth/FirebaseAdmin";
 
 const Dashboard = () => {
   return (
@@ -100,7 +100,9 @@ export const getServerSideProps = async (
 ) => {
   try {
     const cookies = context.req.cookies;
-    const token = await firebaseAdmin.auth().verifyIdToken(cookies.jwt);
+    const token = await getFirebaseAdmin()
+      .auth()
+      .verifyIdToken(cookies.jwt || "");
 
     const { uid } = token;
 

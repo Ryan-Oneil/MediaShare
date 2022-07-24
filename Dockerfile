@@ -11,8 +11,8 @@ COPY next.config.js ./
 COPY public ./public
 COPY package.json ./package.json
 
-COPY --chown=nextjs:nodejs standalone ./
-COPY --chown=nextjs:nodejs static ./.next/static
+COPY --chown=nextjs:nodejs .next/standalone ./
+COPY --chown=nextjs:nodejs .next/static ./.next/static
 
 USER nextjs
 
