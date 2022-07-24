@@ -100,7 +100,9 @@ export const getServerSideProps = async (
 ) => {
   try {
     const cookies = context.req.cookies;
-    const token = await getFirebaseAdmin().auth().verifyIdToken(cookies.jwt);
+    const token = await getFirebaseAdmin()
+      .auth()
+      .verifyIdToken(cookies.jwt || "");
 
     const { uid } = token;
 
