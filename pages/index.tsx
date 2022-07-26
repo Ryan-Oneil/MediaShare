@@ -48,7 +48,11 @@ const Home: NextPage = () => {
           </Button>
         </Link>
       </VStack>
-      <Image src={dashboardPicture} draggable={false} />
+      <Image
+        src={dashboardPicture}
+        draggable={false}
+        alt={"Picture of dashboard application"}
+      />
     </BaseHomePage>
   );
 };

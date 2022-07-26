@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NextPage } from "next";
 import { Box, Heading, Text } from "@chakra-ui/react";
 import LoginForm from "Auth/components/LoginForm";
-import { REGISTER_URL } from "../utils/urls";
+import { DASHBOARD_URL, REGISTER_URL } from "../utils/urls";
 import NextLink from "next/link";
 import BaseAuthPage from "../features/Auth/components/BaseAuthPage";
+import { useRouter } from "next/router";
 
 const Login: NextPage = () => {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Prefetch the dashboard page
+    router.prefetch(DASHBOARD_URL);
+  }, []);
+
   return (
     <BaseAuthPage title={"Sign in to access"}>
       <Box m={"auto"} mt={20} w={"70%"}>

@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Heading, HStack, Text, useMediaQuery } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { DASHBOARD_URL, HOMEPAGE_URL } from "../../../utils/urls";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/router";
+import Image from "next/image";
 
 type props = {
   title: string;
@@ -16,9 +17,12 @@ const BaseAuthPage = ({ title, children }: props) => {
   const auth = useAuth();
   const router = useRouter();
 
-  if (auth.user) {
-    router.push(DASHBOARD_URL);
-  }
+  useEffect(() => {
+    if (auth.user) {
+      console.log(auth.user);
+      router.replace(DASHBOARD_URL);
+    }
+  }, [auth]);
 
   return (
     <Box
@@ -47,7 +51,12 @@ const BaseAuthPage = ({ title, children }: props) => {
           <Box w={"50vw"}>{children}</Box>
           <Box w={"50vw"} as={"section"} color={"white"}>
             <Box w={"70%"} m={"auto"}>
-              <img src={"share.svg"} alt={"Upload logo"} />
+              <Image
+                src={"/share.svg"}
+                alt={"Upload logo"}
+                width={600}
+                height={500}
+              />
               <Heading mt={"60px"} fontSize={"5xl"}>
                 {title}
               </Heading>
