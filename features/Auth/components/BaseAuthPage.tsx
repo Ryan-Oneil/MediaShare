@@ -19,7 +19,6 @@ const BaseAuthPage = ({ title, children }: props) => {
 
   useEffect(() => {
     if (auth.user) {
-      console.log(auth.user);
       router.replace(DASHBOARD_URL);
     }
   }, [auth]);
@@ -57,7 +56,10 @@ const BaseAuthPage = ({ title, children }: props) => {
                 width={600}
                 height={500}
               />
-              <Heading mt={"60px"} fontSize={"5xl"}>
+              <Heading
+                mt={{ base: 0, "2xl": "60px" }}
+                fontSize={{ base: "3xl", "2xl": "5xl" }}
+              >
                 {title}
               </Heading>
               <Text mt={5} fontSize={"xl"}>

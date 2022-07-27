@@ -11,15 +11,14 @@ const Login: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    // Prefetch the dashboard page
     router.prefetch(DASHBOARD_URL);
   }, []);
 
   return (
     <BaseAuthPage title={"Sign in to access"}>
-      <Box m={"auto"} mt={20} w={"70%"}>
-        <Heading pb={10}>Sign in</Heading>
-        <Box as={"section"} mb={50}>
+      <Box m={"auto"} mt={{ base: 2, "2xl": 20 }} w={"70%"}>
+        <Heading pb={{ base: 5, "2xl": 10 }}>Sign in</Heading>
+        <Box as={"section"} mb={{ base: 8, "2xl": 50 }}>
           <Text fontSize={"xl"}>If you don’t have an account register</Text>
 
           <NextLink href={REGISTER_URL}>

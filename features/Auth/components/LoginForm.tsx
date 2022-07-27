@@ -61,7 +61,7 @@ const LoginForm = () => {
   };
 
   return (
-    <Stack spacing="6">
+    <Stack spacing={{ base: 2, "2xl": 6 }}>
       <Formik
         initialValues={{
           email: "",
@@ -113,7 +113,7 @@ const LoginForm = () => {
                   {status}
                 </Alert>
               )}
-              <Stack spacing={10} mt={2}>
+              <Stack spacing={{ base: 4, "2xl": 10 }} mt={2}>
                 <Link href={RESET_PASSWORD_URL}>
                   <a style={{ textAlign: "end", color: "#4D4D4D" }}>
                     Forgot Password?
@@ -135,11 +135,11 @@ const LoginForm = () => {
           );
         }}
       </Formik>
-      <Text textAlign={"center"} color={"#B5B5B5"} fontSize={"lg"} p={5}>
+      <Text textAlign={"center"} color={"#B5B5B5"} fontSize={"lg"} p={2}>
         or sign in with
       </Text>
-      <Flex mt="10" justifyContent={"center"}>
-        <ButtonGroup variant="ghost" spacing="6" size={"lg"}>
+      <Flex justifyContent={"center"}>
+        <ButtonGroup variant="ghost" spacing="2" size={"lg"}>
           <Tooltip label={"Sign in with Google"}>
             <IconButton
               aria-label={"Google Logo"}

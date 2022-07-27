@@ -11,7 +11,7 @@ const Reset: NextPage = () => {
     <BaseAuthPage title={"Reset password to access"}>
       <Box m={"auto"} mt={20} w={"70%"}>
         <Heading pb={10}>Reset Password</Heading>
-        <Box as={"section"} mb={50}>
+        <Box as={"section"} mb={{ base: 2, "2xl": 20 }}>
           <Text fontSize={"xl"}>Remember your password?</Text>
 
           <NextLink href={LOGIN_URL}>

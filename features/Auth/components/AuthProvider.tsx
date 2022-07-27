@@ -29,10 +29,10 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
 
     firebaseAuth.onIdTokenChanged(async (authUser) => {
       if (authUser) {
-        const token = await authUser.getIdToken();
-        document.cookie = `jwt=${token}; max-age=1800; Path=/`;
-
         setUser(authUser);
+        const token = await authUser.getIdToken();
+
+        document.cookie = `jwt=${token}; max-age=1800; Path=/`;
       } else {
         document.cookie = "jwt=; max-age=-1800; Path=/";
         setUser(null);
