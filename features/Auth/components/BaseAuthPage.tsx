@@ -8,10 +8,15 @@ import Image from "next/image";
 
 type props = {
   title: string;
+  backgroundColor?: string;
   children: React.ReactNode;
 };
 
-const BaseAuthPage = ({ title, children }: props) => {
+const BaseAuthPage = ({
+  title,
+  children,
+  backgroundColor = "white",
+}: props) => {
   const [isMobileDevice] = useMediaQuery("(max-width: 900px)");
 
   const auth = useAuth();
@@ -27,8 +32,8 @@ const BaseAuthPage = ({ title, children }: props) => {
     <Box
       background={
         isMobileDevice
-          ? ""
-          : "linear-gradient(to left, #1A202C 50%, white 50%);"
+          ? backgroundColor
+          : `linear-gradient(to left, #1A202C 50%, ${backgroundColor} 50%);`
       }
       h={"100vh"}
       overflow={"auto"}
