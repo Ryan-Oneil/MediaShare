@@ -9,6 +9,7 @@ const Share = () => {
     <BaseAuthPage
       title={"File sharing made simple with"}
       backgroundColor={"#FAFAFA"}
+      shouldRedirect={false}
     >
       <Card m={"auto"} rounded={10} p={5} mt={10}>
         <FileList />

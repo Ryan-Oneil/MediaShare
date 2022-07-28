@@ -10,12 +10,14 @@ type props = {
   title: string;
   backgroundColor?: string;
   children: React.ReactNode;
+  shouldRedirect?: boolean;
 };
 
 const BaseAuthPage = ({
   title,
   children,
   backgroundColor = "white",
+  shouldRedirect = true,
 }: props) => {
   const [isMobileDevice] = useMediaQuery("(max-width: 900px)");
 
@@ -23,7 +25,7 @@ const BaseAuthPage = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (auth.user) {
+    if (auth.user && shouldRedirect) {
       router.replace(DASHBOARD_URL);
     }
   }, [auth]);
