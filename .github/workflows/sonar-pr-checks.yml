@@ -1,5 +1,7 @@
-name: Push Quality checks
-on: [push]
+name: PR static analysis
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   build:
     name: Static analysis
@@ -12,7 +14,10 @@ jobs:
         with:
           args: >
             -Dsonar.projectKey=${{ secrets.PROJECT_KEY }}
-            -Dsonar.branch.name=${{ github.ref_name }}
+            -Dsonar.pullrequest.key=${{github.event.number}}
+            -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
+            -Dsonar.pullrequest.base=${{ github.event.pull_request.base.ref }}
+            -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
