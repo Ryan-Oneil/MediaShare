@@ -4,4 +4,6 @@ export const LOGIN_URL = "/login";
 export const REGISTER_URL = "/register";
 export const RESET_PASSWORD_URL = "/reset";
 export const DASHBOARD_URL = "/dashboard";
-export const GALLERY_URL = "/dashboard/gallery";
+export const GALLERY_URL = `${DASHBOARD_URL}/gallery`;
+export const USER_FILES_URL = `${DASHBOARD_URL}/files`;
+export const FILE_SHARE_URL = "/share";

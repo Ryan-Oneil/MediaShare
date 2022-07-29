@@ -12,7 +12,7 @@ import { getFirebaseAdmin } from "../../features/Auth/FirebaseAdmin";
 
 const Dashboard = () => {
   return (
-    <BaseAppPage title={"Dashboard"} p={{ base: 5, md: 10, xl: 20 }}>
+    <BaseAppPage title={"Dashboard"} p={{ base: 5, md: 10, "2xl": 20 }}>
       <Flex as={"section"} gap={5} flexWrap={"wrap"}>
         <Flex
           direction={"column"}

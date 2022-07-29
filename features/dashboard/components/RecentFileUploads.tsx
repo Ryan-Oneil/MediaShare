@@ -2,6 +2,7 @@ import React from "react";
 import { Card } from "../../base/components/Card";
 import {
   Heading,
+  IconButton,
   Table,
   TableContainer,
   Tbody,
@@ -12,6 +13,9 @@ import {
 } from "@chakra-ui/react";
 import { SharedFile } from "../types/SharedFile";
 import { displayBytesInReadableForm } from "../../../utils/helpers";
+import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import { FaEye, FaLink, FaTrash } from "react-icons/fa";
 
 const RecentFileUploads = () => {
   const sampleData: Array<SharedFile> = [
@@ -54,6 +58,7 @@ const RecentFileUploads = () => {
               <Th>File</Th>
               <Th>Uploaded</Th>
               <Th>Size</Th>
+              <Th>Action</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -73,6 +78,22 @@ const TableRow = ({ name, uploaded, size }: SharedFile) => {
       <Td>{name}</Td>
       <Td>{uploaded.toLocaleDateString()}</Td>
       <Td>{displayBytesInReadableForm(size)}</Td>
+      <Td>
+        <Menu>
+          <MenuButton>
+            <IconButton
+              aria-label={"Menu icon"}
+              icon={<BsThreeDotsVertical />}
+              variant={"ghost"}
+            />
+          </MenuButton>
+          <MenuList>
+            <MenuItem icon={<FaEye />}>View</MenuItem>
+            <MenuItem icon={<FaLink />}>Copy Link</MenuItem>
+            <MenuItem icon={<FaTrash color={"red"} />}>Delete</MenuItem>
+          </MenuList>
+        </Menu>
+      </Td>
     </Tr>
   );
 };

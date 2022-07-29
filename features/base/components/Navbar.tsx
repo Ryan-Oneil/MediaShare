@@ -142,7 +142,13 @@ const MobileNav = () => {
   return (
     <VStack p={4}>
       {NAV_ITEMS.map(({ label, url }: NavItem) => (
-        <Text fontWeight={600} color={"gray.600"} py={2} align={"center"}>
+        <Text
+          fontWeight={600}
+          color={"gray.600"}
+          py={2}
+          align={"center"}
+          key={url}
+        >
           <NavLink label={label} url={url} />
         </Text>
       ))}

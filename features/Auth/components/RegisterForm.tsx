@@ -56,7 +56,7 @@ const RegisterForm = () => {
 
         return (
           <form onSubmit={handleSubmit}>
-            <VStack spacing={"5%"} mt={"10%"}>
+            <VStack spacing={"5%"}>
               <Field
                 name="email"
                 as={LabeledInput}
