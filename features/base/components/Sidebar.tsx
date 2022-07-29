@@ -9,9 +9,14 @@ import {
   BoxProps,
 } from "@chakra-ui/react";
 import React from "react";
-import { FaImages, FaServer, FaSignOutAlt } from "react-icons/fa";
+import { FaFolder, FaImages, FaServer, FaSignOutAlt } from "react-icons/fa";
 import NextLink from "next/link";
-import { DASHBOARD_URL, GALLERY_URL, HOMEPAGE_URL } from "../../../utils/urls";
+import {
+  DASHBOARD_URL,
+  GALLERY_URL,
+  HOMEPAGE_URL,
+  USER_FILES_URL,
+} from "../../../utils/urls";
 import { NavItem } from "../types/NavItem";
 import { useRouter } from "next/router";
 import { getAuth } from "firebase/auth";
@@ -22,6 +27,7 @@ export const Sidebar = (props: BoxProps) => {
   const urls: Array<NavItem> = [
     { url: DASHBOARD_URL, icon: FaServer, label: "Dashboard" },
     { url: GALLERY_URL, icon: FaImages, label: "Gallery" },
+    { url: USER_FILES_URL, icon: FaFolder, label: "My Files" },
   ];
 
   const NavLink = ({ url, icon, label }: NavItem) => {

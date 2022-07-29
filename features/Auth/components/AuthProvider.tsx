@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { initializeApp } from "@firebase/app";
+import { FirebaseApp, initializeApp } from "@firebase/app";
 import { getAuth, UserInfo } from "@firebase/auth";
 
 export const AuthContext = React.createContext<{
   user: UserInfo | null;
 }>({ user: null });
+
+let firebaseApp: FirebaseApp;
 
 export function AuthProvider({ children }: { children: JSX.Element }) {
   const [user, setUser] = useState<UserInfo | null>(null);
@@ -17,17 +19,20 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
     measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
   };
-  const firebaseApp = initializeApp(firebaseConfig);
+
+  if (!firebaseApp) {
+    firebaseApp = initializeApp(firebaseConfig);
+  }
 
   useEffect(() => {
     const firebaseAuth = getAuth(firebaseApp);
 
     firebaseAuth.onIdTokenChanged(async (authUser) => {
       if (authUser) {
-        const token = await authUser.getIdToken();
-        document.cookie = `jwt=${token}; max-age=1800; Path=/`;
-
         setUser(authUser);
+        const token = await authUser.getIdToken();
+
+        document.cookie = `jwt=${token}; max-age=1800; Path=/`;
       } else {
         document.cookie = "jwt=; max-age=-1800; Path=/";
         setUser(null);
