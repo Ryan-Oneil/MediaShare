@@ -16,6 +16,9 @@
     "incremental": true,
     "baseUrl": "features"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "features"],
+  "include": [
+    "next-env.d.ts", "**/*.ts", "**/*.tsx",
+    "client/features"
+  ],
   "exclude": ["node_modules"]
 }

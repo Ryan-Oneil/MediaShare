@@ -19,12 +19,13 @@ const ImageModal = (props: ImageProps) => {
         cursor={"pointer"}
         {...props}
         onClick={onOpen}
+        alt={"User uploaded image"}
       />
       <Modal isOpen={isOpen} onClose={onClose} isCentered size={"xl"}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <Image src={props.src} />
+          <Image src={props.src} alt={"User uploaded image"} />
         </ModalContent>
       </Modal>
     </>

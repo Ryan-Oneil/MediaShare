@@ -14,7 +14,7 @@ const BaseHomePage = ({ title, children }: props) => {
     <>
       <Head>
         <title>{title} - Media Share</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/client/public/favicon.ico" />
       </Head>
       <VStack as={"section"} bg={"#F9FAFB"} h={"100vh"} overflow={"auto"}>
         <Navbar />

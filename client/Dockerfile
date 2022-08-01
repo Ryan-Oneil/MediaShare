@@ -12,7 +12,7 @@ COPY public ./public
 COPY package.json ./package.json
 
 COPY --chown=nextjs:nodejs .next/standalone ./
-COPY --chown=nextjs:nodejs .next/static ./.next/static
+COPY --chown=nextjs:nodejs ../.next/static ./.next/static
 
 USER nextjs
 
