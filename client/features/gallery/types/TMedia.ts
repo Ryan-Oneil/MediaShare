@@ -1,4 +1,4 @@
-export type Media = {
+export type TMedia = {
   id: string;
   filename: string;
   type: MediaType;

@@ -8,16 +8,30 @@ import {
 } from "@chakra-ui/react";
 import { PricingTier } from "../../base/components/PriceCard";
 import { Card } from "../../base/components/Card";
+import { displayBytesInReadableForm } from "../../../utils/helpers";
 
-const StorageDetailCard = () => {
+type props = {
+  usedStorage: number;
+  maxStorage: number;
+};
+
+const StorageDetailCard = ({ usedStorage, maxStorage }: props) => {
+  const percentageUsed = (usedStorage / maxStorage) * 100;
+
   return (
     <Card p={6} rounded={10} maxW={"fit-content"}>
       <Heading size={"md"} textAlign={"start"}>
         Storage Details
       </Heading>
-      <CircularProgress value={40} color="blue.400" size={200} p={10}>
+      <CircularProgress
+        value={Math.ceil(percentageUsed)}
+        color="blue.400"
+        size={200}
+        p={10}
+      >
         <CircularProgressLabel fontSize={"2xl"} fontWeight={"extrabold"}>
-          2 <Text>of 5GB</Text>
+          {displayBytesInReadableForm(usedStorage)}
+          <Text>of {displayBytesInReadableForm(maxStorage)}</Text>
         </CircularProgressLabel>
       </CircularProgress>
       <Divider mb={10} />

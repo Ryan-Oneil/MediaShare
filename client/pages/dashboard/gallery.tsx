@@ -14,7 +14,7 @@ import {
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
-import ImageCard from "../../features/gallery/components/ImageCard";
+import MediaCard from "../../features/gallery/components/MediaCard";
 import Uploader from "../../features/gallery/components/Uploader";
 
 const Gallery = () => {
@@ -63,7 +63,7 @@ const Gallery = () => {
       </Flex>
       <SimpleGrid p={5} spacing={10} minChildWidth={"200px"}>
         {mediaList.map((media) => (
-          <ImageCard src={media.src} key={media.id} />
+          <MediaCard url={media.src} key={media.id} />
         ))}
       </SimpleGrid>
       <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>

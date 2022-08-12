@@ -1,16 +1,19 @@
 import React from "react";
 
 import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
-import { Flex, Heading, Image, Stack } from "@chakra-ui/react";
+import { Flex, Heading, Stack } from "@chakra-ui/react";
 import StatCard from "../../features/dashboard/components/StatCard";
-import { Card } from "../../features/base/components/Card";
 import StorageDetailCard from "../../features/dashboard/components/StorageDetailCard";
 import RecentFileUploads from "dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
-import { LOGIN_URL } from "../../utils/urls";
-import { getFirebaseAdmin } from "../../features/Auth/FirebaseAdmin";
+import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
+import dbConnect from "../../lib/mongoose";
+import User from "../../lib/mongoose/model/User";
+import { DashboardUser } from "../../features/dashboard/types/DashboardUser";
+import { displayBytesInReadableForm } from "../../utils/helpers";
+import MediaCard from "../../features/gallery/components/MediaCard";
 
-const Dashboard = () => {
+const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
     <BaseAppPage title={"Dashboard"} p={{ base: 5, md: 10, "2xl": 20 }}>
       <Flex as={"section"} gap={5} flexWrap={"wrap"}>
@@ -27,68 +30,32 @@ const Dashboard = () => {
           >
             <StatCard
               title={"Image Storage"}
-              value={"200MB"}
+              value={displayBytesInReadableForm(storage.imageUsed)}
               description={"40% vs last month"}
             />
             <StatCard
               title={"Video Storage"}
-              value={"200MB"}
+              value={displayBytesInReadableForm(storage.videoUsed)}
               description={"40% vs last month"}
             />
             <StatCard
               title={"Document Storage"}
-              value={"200MB"}
+              value={displayBytesInReadableForm(storage.documentUsed)}
               description={"40% vs last month"}
             />
           </Flex>
           <Heading size={"md"}>Recent Media</Heading>
           <Stack gap={6} direction={["column", "row"]}>
-            <Card w={"auto"} rounded={10}>
-              <Image
-                src={"https://via.placeholder.com/800.png"}
-                objectFit="cover"
-                maxH={{ base: "100%", md: "250px" }}
-              />
-            </Card>
-            <Card w={"auto"} rounded={10}>
-              <Image
-                src={"https://via.placeholder.com/800.png"}
-                objectFit="cover"
-                maxH={{ base: "100%", md: "250px" }}
-              />
-            </Card>
-            <Card w={"auto"} rounded={10}>
-              <Image
-                src={"https://via.placeholder.com/800.png"}
-                objectFit="cover"
-                maxH={{ base: "100%", md: "250px" }}
-              />
-            </Card>
-            <Card w={"auto"} rounded={10}>
-              <Image
-                src={"https://via.placeholder.com/800.png"}
-                objectFit="cover"
-                maxH={{ base: "100%", md: "250px" }}
-              />
-            </Card>
-            <Card w={"auto"} rounded={10}>
-              <Image
-                src={"https://via.placeholder.com/800.png"}
-                objectFit="cover"
-                maxH={{ base: "100%", md: "250px" }}
-              />
-            </Card>
-            <Card w={"auto"} rounded={10}>
-              <Image
-                src={"https://via.placeholder.com/800.png"}
-                objectFit="cover"
-                maxH={{ base: "100%", md: "250px" }}
-              />
-            </Card>
+            {medias.map((media) => (
+              <MediaCard media={media} showControls={false} key={media.id} />
+            ))}
           </Stack>
-          <RecentFileUploads />
+          <RecentFileUploads links={sharedLinks} />
         </Flex>
-        <StorageDetailCard />
+        <StorageDetailCard
+          usedStorage={storage.usedTotal}
+          maxStorage={storage.max}
+        />
       </Flex>
     </BaseAppPage>
   );
@@ -98,21 +65,22 @@ export default Dashboard;
 export const getServerSideProps = async (
   context: GetServerSidePropsContext
 ) => {
-  try {
-    const cookies = context.req.cookies;
-    const token = await getFirebaseAdmin()
-      .auth()
-      .verifyIdToken(cookies.jwt || "");
+  const uid = await getUserFromRequest(context);
 
-    const { uid } = token;
+  await dbConnect();
 
-    return {
-      props: { uid },
-    };
-  } catch (err) {
-    context.res.writeHead(302, { Location: LOGIN_URL });
-    context.res.end();
+  const user = await User.findOne(
+    { externalId: uid },
+    "storage medias sharedLinks"
+  )
+    .lean()
+    .exec();
 
-    return { props: {} };
-  }
+  return {
+    props: {
+      storage: user.storage,
+      medias: user.medias,
+      sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
+    },
+  };
 };

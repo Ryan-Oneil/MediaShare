@@ -11,37 +11,17 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { SharedFile } from "../types/SharedFile";
+import { SharedLink } from "../types/SharedFile";
 import { displayBytesInReadableForm } from "../../../utils/helpers";
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaEye, FaLink, FaTrash } from "react-icons/fa";
 
-const RecentFileUploads = () => {
-  const sampleData: Array<SharedFile> = [
-    {
-      id: "1",
-      name: "file.pdf",
-      uploaded: new Date(),
-      size: 1000000,
-      type: "DOCUMENT",
-    },
-    {
-      id: "2",
-      name: "file.docx",
-      uploaded: new Date(),
-      size: 1000000,
-      type: "DOCUMENT",
-    },
-    {
-      id: "3",
-      name: "file.txt",
-      uploaded: new Date(),
-      size: 1000000,
-      type: "DOCUMENT",
-    },
-  ];
+type props = {
+  links: [SharedLink];
+};
 
+const RecentFileUploads = ({ links }: props) => {
   return (
     <Card maxW={"100%"} p={6} rounded={10}>
       <Heading size={"md"} pb={4}>
@@ -62,8 +42,8 @@ const RecentFileUploads = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {sampleData.map((file) => (
-              <TableRow {...file} key={file.id} />
+            {links.map((sharedLink) => (
+              <TableRow {...sharedLink} key={sharedLink.id} />
             ))}
           </Tbody>
         </Table>
@@ -72,11 +52,11 @@ const RecentFileUploads = () => {
   );
 };
 
-const TableRow = ({ name, uploaded, size }: SharedFile) => {
+const TableRow = ({ files, uploaded, size }: SharedLink) => {
   return (
     <Tr>
-      <Td>{name}</Td>
-      <Td>{uploaded.toLocaleDateString()}</Td>
+      <Td>{files[0].name}</Td>
+      <Td>{new Date(uploaded).toLocaleDateString()}</Td>
       <Td>{displayBytesInReadableForm(size)}</Td>
       <Td>
         <Menu>
