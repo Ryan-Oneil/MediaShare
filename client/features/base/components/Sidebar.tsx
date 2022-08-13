@@ -33,11 +33,11 @@ export const Sidebar = (props: BoxProps) => {
   const NavLink = ({ url, icon, label }: NavItem) => {
     return (
       <NextLink href={url} passHref>
-        <Link variant="ghost" aria-label={label} fontSize="20px" w={"100%"}>
+        <Link variant="ghost" aria-label={label} fontSize="lg" w={"100%"}>
           <Flex
             align="center"
             p="4"
-            pr={10}
+            pr={8}
             cursor="pointer"
             bg={currentRoute === url ? "brand.200" : ""}
             _hover={{
@@ -79,7 +79,7 @@ export const Sidebar = (props: BoxProps) => {
         <Button
           variant="ghost"
           aria-label={"Sign out"}
-          fontSize="20px"
+          fontSize="lg"
           leftIcon={<FaSignOutAlt />}
           mt={"auto!important"}
           mb={"5px!important"}
