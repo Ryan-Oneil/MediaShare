@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
 import {
+  Box,
   Button,
   Flex,
   Input,
@@ -10,25 +11,20 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
-  SimpleGrid,
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import MediaCard from "../../features/gallery/components/MediaCard";
 import Uploader from "../../features/gallery/components/Uploader";
+import { GetServerSidePropsContext } from "next";
+import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
+import User from "../../lib/mongoose/model/User";
+import { TMedia } from "../../features/gallery/types/TMedia";
+import dbConnect from "../../lib/mongoose";
 
-const Gallery = () => {
+const Gallery = ({ medias }: { medias: Array<TMedia> }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mediaList, setMediaList] = useState([
-    { id: 0, src: "https://via.placeholder.com/800.png" },
-    { id: 1, src: "https://via.placeholder.com/800.png" },
-    { id: 2, src: "https://via.placeholder.com/800.png" },
-    { id: 3, src: "https://via.placeholder.com/800.png" },
-    { id: 4, src: "https://via.placeholder.com/800.png" },
-    { id: 5, src: "https://via.placeholder.com/800.png" },
-    { id: 6, src: "https://via.placeholder.com/800.png" },
-    { id: 7, src: "https://via.placeholder.com/800.png" },
-  ]);
+  const [mediaList, setMediaList] = useState([]);
 
   const handleFileUpload = (acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
@@ -37,10 +33,9 @@ const Gallery = () => {
       reader.onerror = () => console.log("file reading has failed");
       reader.onload = (event) => {
         const result = event.target?.result as string;
-        console.log(event.target);
 
         setMediaList((prevState) => [
-          { id: Math.random(), src: result },
+          { id: Math.random(), url: result },
           ...prevState,
         ]);
         onClose();
@@ -61,11 +56,19 @@ const Gallery = () => {
           Sort
         </Button>
       </Flex>
-      <SimpleGrid p={5} spacing={10} minChildWidth={"200px"}>
-        {mediaList.map((media) => (
-          <MediaCard url={media.src} key={media.id} />
+      <Box
+        padding={4}
+        w="100%"
+        mx="auto"
+        sx={{ columnCount: [1, 2, 3, 4], columnGap: "8px" }}
+      >
+        {mediaList.map((media: TMedia) => (
+          <MediaCard media={media} key={media.id} showControls={true} />
         ))}
-      </SimpleGrid>
+        {medias.map((media) => (
+          <MediaCard media={media} key={media.id} showControls={true} />
+        ))}
+      </Box>
       <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
         <ModalOverlay />
         <ModalContent>
@@ -81,3 +84,19 @@ const Gallery = () => {
 };
 
 export default Gallery;
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const uid = await getUserFromRequest(context);
+
+  await dbConnect();
+
+  const user = await User.findOne({ externalId: uid }, "medias").lean().exec();
+
+  return {
+    props: {
+      medias: user.medias,
+    },
+  };
+};

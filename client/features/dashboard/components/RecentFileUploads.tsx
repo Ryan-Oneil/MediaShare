@@ -3,6 +3,7 @@ import { Card } from "../../base/components/Card";
 import {
   Heading,
   IconButton,
+  Portal,
   Table,
   TableContainer,
   Tbody,
@@ -67,11 +68,13 @@ const TableRow = ({ files, uploaded, size }: SharedLink) => {
               variant={"ghost"}
             />
           </MenuButton>
-          <MenuList>
-            <MenuItem icon={<FaEye />}>View</MenuItem>
-            <MenuItem icon={<FaLink />}>Copy Link</MenuItem>
-            <MenuItem icon={<FaTrash color={"red"} />}>Delete</MenuItem>
-          </MenuList>
+          <Portal>
+            <MenuList>
+              <MenuItem icon={<FaEye />}>View</MenuItem>
+              <MenuItem icon={<FaLink />}>Copy Link</MenuItem>
+              <MenuItem icon={<FaTrash color={"red"} />}>Delete</MenuItem>
+            </MenuList>
+          </Portal>
         </Menu>
       </Td>
     </Tr>

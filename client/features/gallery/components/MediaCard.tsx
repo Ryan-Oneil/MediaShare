@@ -14,10 +14,11 @@ const MediaCard = ({ media, showControls = true }: props) => {
   return (
     <Card
       position={"relative"}
-      width={"fit-content"}
+      w="100%"
       role={"group"}
       _hover={{ shadow: "xl" }}
       rounded={10}
+      display={"inline-block"}
     >
       <MediaModal {...media} />
       {showControls && (
