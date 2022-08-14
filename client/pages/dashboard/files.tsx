@@ -1,6 +1,13 @@
 import React from "react";
 import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
-import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  SimpleGrid,
+  Spacer,
+} from "@chakra-ui/react";
 import FileCard from "../../features/fileshare/components/FileCard";
 import RecentFileUploads from "../../features/dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
@@ -8,15 +15,27 @@ import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
 import User from "../../lib/mongoose/model/User";
 import { SharedLink } from "../../features/dashboard/types/SharedFile";
 import dbConnect from "../../lib/mongoose";
+import { FaShareAlt } from "react-icons/fa";
+import { Storage } from "../../features/dashboard/types/DashboardUser";
 
-const Files = ({ sharedLinks }: { sharedLinks: [SharedLink] }) => {
+const Files = ({
+  sharedLinks,
+  storage,
+}: {
+  sharedLinks: [SharedLink];
+  storage: Storage;
+}) => {
   return (
-    <BaseAppPage title={"Shared Files"}>
+    <BaseAppPage
+      title={"Shared Files"}
+      used={storage.usedTotal}
+      max={storage.max}
+    >
       <Box as={"section"} p={5}>
-        <Heading size={"md"}>Expiring Soon</Heading>
+        <Heading size={"sm"}>Expiring Soon</Heading>
         <SimpleGrid
-          spacing={6}
-          py={4}
+          spacingX={4}
+          pt={4}
           minChildWidth={"80px"}
           templateRows={"auto"}
           autoRows={"0px"}
@@ -32,6 +51,11 @@ const Files = ({ sharedLinks }: { sharedLinks: [SharedLink] }) => {
           <FileCard />
           <FileCard />
         </SimpleGrid>
+        <Flex pb={4} alignItems={"baseline"}>
+          <Heading size={"sm"}>Recent file shares</Heading>
+          <Spacer />
+          <Button leftIcon={<FaShareAlt />}>Share Files</Button>
+        </Flex>
         <RecentFileUploads links={sharedLinks} />
       </Box>
     </BaseAppPage>
@@ -47,13 +71,14 @@ export const getServerSideProps = async (
 
   await dbConnect();
 
-  const user = await User.findOne({ externalId: uid }, "sharedLinks")
+  const user = await User.findOne({ externalId: uid }, "storage sharedLinks")
     .lean()
     .exec();
 
   return {
     props: {
       sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
+      storage: user.storage,
     },
   };
 };

@@ -14,28 +14,38 @@ import {
 } from "@chakra-ui/react";
 import { Sidebar } from "../../base/components/Sidebar";
 import { FaBars } from "react-icons/fa";
-import UserDropDown from "./UserDropDown";
+import SettingDropDown from "./SettingDropDown";
 import NotificationButton from "./NotificationButton";
+import StorageStatus from "./StorageStatus";
 
 interface BaseAppPageProps extends BoxProps {
   title: string;
   children: React.ReactNode;
+  used: number;
+  max: number;
 }
 
-const BaseAppPage = (props: BaseAppPageProps) => {
+const BaseAppPage = ({
+  title,
+  children,
+  used,
+  max,
+  ...rest
+}: BaseAppPageProps) => {
   const [showDrawer, setShowDrawer] = useState(false);
-  const { title, children, ...rest } = props;
 
   return (
-    <Flex flexWrap={{ base: "wrap", md: "nowrap" }} minH={"100vh"} >
-      <Sidebar display={{ base: "none", md: "block" }} />
+    <Flex flexWrap={{ base: "wrap", md: "nowrap" }} minH={"100vh"}>
+      <Sidebar display={{ base: "none", md: "block" }}>
+        <StorageStatus used={used} max={max} />
+      </Sidebar>
       <Flex w={"100%"} bg={"#FAFAFA"} h={"100vh"} flexDirection={"column"}>
         <Flex
           alignItems={"center"}
           as="nav"
           bg={"white"}
           boxShadow={"inset 0px -1px 0px #F1F1F1"}
-          p={6}
+          p={3}
         >
           <IconButton
             display={{ base: "inline-flex", md: "none" }}
@@ -45,10 +55,10 @@ const BaseAppPage = (props: BaseAppPageProps) => {
             aria-label={"Menu label"}
             mr={5}
           />
-          <Heading size={"lg"}>{title}</Heading>
+          <Heading size={"md"}>{title}</Heading>
           <Spacer />
           <NotificationButton />
-          <UserDropDown />
+          <SettingDropDown />
         </Flex>
         <Box as={"article"} {...rest} overflow={"auto"} h={"100%"}>
           {children}

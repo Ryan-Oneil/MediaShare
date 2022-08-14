@@ -22,7 +22,13 @@ import User from "../../lib/mongoose/model/User";
 import { TMedia } from "../../features/gallery/types/TMedia";
 import dbConnect from "../../lib/mongoose";
 
-const Gallery = ({ medias }: { medias: Array<TMedia> }) => {
+const Gallery = ({
+  medias,
+  storage,
+}: {
+  medias: Array<TMedia>;
+  storage: Storage;
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [mediaList, setMediaList] = useState([]);
 
@@ -45,7 +51,7 @@ const Gallery = ({ medias }: { medias: Array<TMedia> }) => {
   };
 
   return (
-    <BaseAppPage title={"Gallery"}>
+    <BaseAppPage title={"Gallery"} used={storage.usedTotal} max={storage.max}>
       <Flex p={5} bg={"white"} gap={5} boxShadow={"inset 0px -1px 0px #F1F1F1"}>
         <Button variant="outline" rounded={"full"} onClick={onOpen}>
           Upload
@@ -92,11 +98,14 @@ export const getServerSideProps = async (
 
   await dbConnect();
 
-  const user = await User.findOne({ externalId: uid }, "medias").lean().exec();
+  const user = await User.findOne({ externalId: uid }, "storage medias")
+    .lean()
+    .exec();
 
   return {
     props: {
       medias: user.medias,
+      storage: user.storage,
     },
   };
 };

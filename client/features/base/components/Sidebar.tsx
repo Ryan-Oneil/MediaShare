@@ -5,11 +5,10 @@ import {
   Link,
   Flex,
   Icon,
-  Button,
   BoxProps,
 } from "@chakra-ui/react";
 import React from "react";
-import { FaFolder, FaImages, FaServer, FaSignOutAlt } from "react-icons/fa";
+import { FaFolder, FaImages, FaServer } from "react-icons/fa";
 import NextLink from "next/link";
 import {
   DASHBOARD_URL,
@@ -19,7 +18,6 @@ import {
 } from "../../../utils/urls";
 import { NavItem } from "../types/NavItem";
 import { useRouter } from "next/router";
-import { getAuth } from "firebase/auth";
 
 export const Sidebar = (props: BoxProps) => {
   const router = useRouter();
@@ -33,10 +31,16 @@ export const Sidebar = (props: BoxProps) => {
   const NavLink = ({ url, icon, label }: NavItem) => {
     return (
       <NextLink href={url} passHref>
-        <Link variant="ghost" aria-label={label} fontSize="lg" w={"100%"}>
+        <Link
+          variant="ghost"
+          aria-label={label}
+          fontSize={{ base: "md", "2xl": "lg" }}
+          w={"100%"}
+        >
           <Flex
             align="center"
-            p="4"
+            px="4"
+            py={2}
             pr={8}
             cursor="pointer"
             bg={currentRoute === url ? "brand.200" : ""}
@@ -60,7 +64,7 @@ export const Sidebar = (props: BoxProps) => {
             <Text
               p={5}
               align={"center"}
-              fontSize={"xl"}
+              fontSize={{ base: "md", "2xl": "lg" }}
               fontWeight={"extrabold"}
             >
               Media Share
@@ -75,25 +79,7 @@ export const Sidebar = (props: BoxProps) => {
             label={navItem.label}
           />
         ))}
-
-        <Button
-          variant="ghost"
-          aria-label={"Sign out"}
-          fontSize="lg"
-          leftIcon={<FaSignOutAlt />}
-          mt={"auto!important"}
-          mb={"5px!important"}
-          _hover={{
-            bg: "brand.200",
-          }}
-          onClick={() => {
-            getAuth()
-              .signOut()
-              .then(() => router.push(HOMEPAGE_URL));
-          }}
-        >
-          Log out
-        </Button>
+        {props.children}
       </VStack>
     );
   };

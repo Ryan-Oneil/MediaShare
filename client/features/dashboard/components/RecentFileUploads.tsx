@@ -1,7 +1,5 @@
 import React from "react";
-import { Card } from "../../base/components/Card";
 import {
-  Heading,
   IconButton,
   Portal,
   Table,
@@ -24,38 +22,29 @@ type props = {
 
 const RecentFileUploads = ({ links }: props) => {
   return (
-    <Card maxW={"100%"} p={6} rounded={10}>
-      <Heading size={"md"} pb={4}>
-        Recent file shares
-      </Heading>
-      <TableContainer>
-        <Table
-          variant="simple"
-          border={"1px solid #E2E8F0"}
-          borderRadius={"6px"}
-        >
-          <Thead bg={"gray.200"}>
-            <Tr>
-              <Th>File</Th>
-              <Th>Uploaded</Th>
-              <Th>Size</Th>
-              <Th>Action</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {links.map((sharedLink) => (
-              <TableRow {...sharedLink} key={sharedLink.id} />
-            ))}
-          </Tbody>
-        </Table>
-      </TableContainer>
-    </Card>
+    <TableContainer>
+      <Table variant="simple">
+        <Thead>
+          <Tr>
+            <Th>File</Th>
+            <Th>Uploaded</Th>
+            <Th>Size</Th>
+            <Th>Action</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
+          {links.map((sharedLink) => (
+            <TableRow {...sharedLink} key={sharedLink.id} />
+          ))}
+        </Tbody>
+      </Table>
+    </TableContainer>
   );
 };
 
 const TableRow = ({ files, uploaded, size }: SharedLink) => {
   return (
-    <Tr>
+    <Tr bg={"white"}>
       <Td>{files[0].name}</Td>
       <Td>{new Date(uploaded).toLocaleDateString()}</Td>
       <Td>{displayBytesInReadableForm(size)}</Td>

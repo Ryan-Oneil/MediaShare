@@ -3,7 +3,7 @@ import React from "react";
 import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
 import { Flex, Heading, Stack } from "@chakra-ui/react";
 import StatCard from "../../features/dashboard/components/StatCard";
-import StorageDetailCard from "../../features/dashboard/components/StorageDetailCard";
+import CurrentPlanCard from "../../features/dashboard/components/CurrentPlanCard";
 import RecentFileUploads from "dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
 import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
@@ -15,7 +15,12 @@ import MediaCard from "../../features/gallery/components/MediaCard";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
-    <BaseAppPage title={"Dashboard"} p={{ base: 5, md: 10, "2xl": 20 }}>
+    <BaseAppPage
+      title={"Dashboard"}
+      p={{ base: 5, md: 10, "2xl": 20 }}
+      used={storage.usedTotal}
+      max={storage.max}
+    >
       <Flex as={"section"} gap={5} flexWrap={"wrap"}>
         <Flex
           direction={"column"}
@@ -44,7 +49,7 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
               description={"40% vs last month"}
             />
           </Flex>
-          <Heading size={"md"}>Recent Media</Heading>
+          <Heading size={"md"}>Recent Uploads</Heading>
           <Stack gap={6} direction={["column", "row"]}>
             {medias.map((media) => (
               <MediaCard media={media} showControls={false} key={media.id} />
@@ -52,10 +57,7 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
           </Stack>
           <RecentFileUploads links={sharedLinks} />
         </Flex>
-        <StorageDetailCard
-          usedStorage={storage.usedTotal}
-          maxStorage={storage.max}
-        />
+        <CurrentPlanCard />
       </Flex>
     </BaseAppPage>
   );

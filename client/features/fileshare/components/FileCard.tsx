@@ -11,18 +11,19 @@ const FileCard = () => {
       <Link>
         <Card
           width={"fill-content"}
-          p={2}
+          p={1}
+          mb={4}
           rounded={10}
           _hover={{ shadow: "2xl", cursor: "pointer" }}
         >
           <Image
             src={"/folder.svg"}
             alt={"Folder image"}
-            height={90}
-            width={90}
+            height={60}
+            width={"100%"}
             draggable={false}
           />
-          <Text fontSize={"sm"} textAlign={"center"}>
+          <Text fontSize={"sm"} textAlign={"center"} mt={-1}>
             In 2 hours
           </Text>
         </Card>

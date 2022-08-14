@@ -8,7 +8,7 @@ export type DashboardUser = {
   sharedLinks: [SharedLink];
 };
 
-type Storage = {
+export type Storage = {
   max: number;
   usedTotal: number;
   imageUsed: number;
