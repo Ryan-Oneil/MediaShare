@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
 import {
-  Box,
   Button,
   Flex,
   Input,
@@ -21,6 +20,7 @@ import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
 import User from "../../lib/mongoose/model/User";
 import { TMedia } from "../../features/gallery/types/TMedia";
 import dbConnect from "../../lib/mongoose";
+import Masonry from "../../features/base/components/masonry/Masonry";
 
 const Gallery = ({
   medias,
@@ -62,19 +62,14 @@ const Gallery = ({
           Sort
         </Button>
       </Flex>
-      <Box
-        padding={4}
-        w="100%"
-        mx="auto"
-        sx={{ columnCount: [1, 2, 3, 4], columnGap: "8px" }}
-      >
+      <Masonry columnsCount={4}>
         {mediaList.map((media: TMedia) => (
           <MediaCard media={media} key={media.id} showControls={true} />
         ))}
         {medias.map((media) => (
           <MediaCard media={media} key={media.id} showControls={true} />
         ))}
-      </Box>
+      </Masonry>
       <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
         <ModalOverlay />
         <ModalContent>

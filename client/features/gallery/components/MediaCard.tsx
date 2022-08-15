@@ -18,7 +18,6 @@ const MediaCard = ({ media, showControls = true }: props) => {
       role={"group"}
       _hover={{ shadow: "xl" }}
       rounded={10}
-      display={"inline-block"}
     >
       <MediaModal {...media} />
       {showControls && (

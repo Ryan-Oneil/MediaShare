@@ -18,7 +18,7 @@ const MediaModal = (props: TMedia) => {
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton />
-          <Media src={props.url} limitHeight={false} />
+          <Media src={props.url} />
         </ModalContent>
       </Modal>
     </>
