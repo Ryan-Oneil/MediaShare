@@ -18,9 +18,9 @@ import Uploader from "../../features/gallery/components/Uploader";
 import { GetServerSidePropsContext } from "next";
 import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
 import User from "../../lib/mongoose/model/User";
-import { TMedia } from "../../features/gallery/types/TMedia";
+import { MediaType, TMedia } from "../../features/gallery/types/TMedia";
 import dbConnect from "../../lib/mongoose";
-import Masonry from "../../features/base/components/masonry/Masonry";
+import Masonry from "../../features/base/components/Masonry";
 
 const Gallery = ({
   medias,
@@ -30,7 +30,7 @@ const Gallery = ({
   storage: Storage;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mediaList, setMediaList] = useState([]);
+  const [mediaList, setMediaList] = useState<TMedia[]>([]);
 
   const handleFileUpload = (acceptedFiles: File[]) => {
     acceptedFiles.forEach((file) => {
@@ -41,7 +41,14 @@ const Gallery = ({
         const result = event.target?.result as string;
 
         setMediaList((prevState) => [
-          { id: Math.random(), url: result },
+          {
+            id: Math.random().toString(),
+            url: result,
+            size: 0,
+            filename: "",
+            added: new Date(),
+            type: MediaType.IMAGE,
+          },
           ...prevState,
         ]);
         onClose();
