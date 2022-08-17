@@ -46,6 +46,7 @@ export const getUserFromRequest = async (
 
     return token.uid;
   } catch (err) {
+    console.log(err);
     return "";
   }
 };
