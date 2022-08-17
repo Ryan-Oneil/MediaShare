@@ -1,6 +1,7 @@
 import * as firebaseAdmin from "firebase-admin";
-import { GetServerSidePropsContext } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { LOGIN_URL } from "../../utils/urls";
+import { ParsedUrlQuery } from "querystring";
 
 export const getFirebaseAdmin = () => {
   if (!firebaseAdmin.apps.length) {
@@ -15,19 +16,36 @@ export const getFirebaseAdmin = () => {
   return firebaseAdmin;
 };
 
+export const withAuthentication =
+  <P, Q extends ParsedUrlQuery = ParsedUrlQuery>(
+    getServerSidePropsFn: GetServerSideProps<P, Q>
+  ): GetServerSideProps<P, Q> =>
+  async (ctx) => {
+    const id = await getUserFromRequest(ctx);
+
+    if (!id) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: LOGIN_URL,
+        },
+      };
+    }
+    return getServerSidePropsFn(ctx);
+  };
+
 export const getUserFromRequest = async (
   context: GetServerSidePropsContext
-): Promise<string> => {
+) => {
+  const cookies = context.req.cookies;
+
   try {
-    const cookies = context.req.cookies;
     const token = await getFirebaseAdmin()
       .auth()
       .verifyIdToken(cookies.jwt || "");
 
     return token.uid;
   } catch (err) {
-    context.res.writeHead(302, { Location: LOGIN_URL });
-    context.res.end();
+    return "";
   }
-  throw new Error("Something went wrong during authentication");
 };

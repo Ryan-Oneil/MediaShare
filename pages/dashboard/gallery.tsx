@@ -16,7 +16,10 @@ import {
 import MediaCard from "../../features/gallery/components/MediaCard";
 import Uploader from "../../features/gallery/components/Uploader";
 import { GetServerSidePropsContext } from "next";
-import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
+import {
+  getUserFromRequest,
+  withAuthentication,
+} from "../../features/Auth/FirebaseAdmin";
 import { MediaType, TMedia } from "../../features/gallery/types/TMedia";
 import Masonry from "../../features/base/components/Masonry";
 import { getUserById } from "../../lib/services/userService";
@@ -92,17 +95,17 @@ const Gallery = ({
 
 export default Gallery;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const uid = await getUserFromRequest(context);
+export const getServerSideProps = withAuthentication(
+  async (context: GetServerSidePropsContext) => {
+    const uid = await getUserFromRequest(context);
 
-  const user = await getUserById(uid, "storage medias");
+    const user = await getUserById(uid, "storage medias");
 
-  return {
-    props: {
-      medias: user.medias,
-      storage: user.storage,
-    },
-  };
-};
+    return {
+      props: {
+        medias: user.medias,
+        storage: user.storage,
+      },
+    };
+  }
+);

@@ -11,7 +11,10 @@ import {
 import FileCard from "../../features/fileshare/components/FileCard";
 import RecentFileUploads from "../../features/dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
-import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
+import {
+  getUserFromRequest,
+  withAuthentication,
+} from "../../features/Auth/FirebaseAdmin";
 import User from "../../lib/mongoose/model/User";
 import { SharedLink } from "../../features/dashboard/types/SharedFile";
 import dbConnect from "../../lib/mongoose";
@@ -65,17 +68,17 @@ const Files = ({
 
 export default Files;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const uid = await getUserFromRequest(context);
+export const getServerSideProps = withAuthentication(
+  async (context: GetServerSidePropsContext) => {
+    const uid = await getUserFromRequest(context);
 
-  const user = await getUserById(uid, "storage sharedLinks");
+    const user = await getUserById(uid, "storage sharedLinks");
 
-  return {
-    props: {
-      sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
-      storage: user.storage,
-    },
-  };
-};
+    return {
+      props: {
+        sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
+        storage: user.storage,
+      },
+    };
+  }
+);
