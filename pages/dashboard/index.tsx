@@ -6,7 +6,10 @@ import StatCard from "../../features/dashboard/components/StatCard";
 import CurrentPlanCard from "../../features/dashboard/components/CurrentPlanCard";
 import RecentFileUploads from "dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
-import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
+import {
+  getUserFromRequest,
+  withAuthentication,
+} from "../../features/Auth/FirebaseAdmin";
 import { DashboardUser } from "../../features/dashboard/types/DashboardUser";
 import { displayBytesInReadableForm } from "../../utils/helpers";
 import MediaCard from "../../features/gallery/components/MediaCard";
@@ -63,18 +66,18 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
 };
 export default Dashboard;
 
-export const getServerSideProps = async (
-  context: GetServerSidePropsContext
-) => {
-  const uid = await getUserFromRequest(context);
+export const getServerSideProps = withAuthentication(
+  async (context: GetServerSidePropsContext) => {
+    const uid = await getUserFromRequest(context);
 
-  const user = await getUserById(uid, "storage medias sharedLinks");
+    const user = await getUserById(uid, "storage medias sharedLinks");
 
-  return {
-    props: {
-      storage: user.storage,
-      medias: user.medias,
-      sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
-    },
-  };
-};
+    return {
+      props: {
+        storage: user.storage,
+        medias: user.medias,
+        sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
+      },
+    };
+  }
+);
