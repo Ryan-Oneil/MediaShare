@@ -30,6 +30,3 @@ export const sharedLinkSchema = new mongoose.Schema({
   },
   files: [fileSchema],
 });
-
-export default mongoose.models.SharedLink ||
-  mongoose.model("SharedLink", sharedLinkSchema);
