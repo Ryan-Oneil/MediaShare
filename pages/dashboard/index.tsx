@@ -7,11 +7,10 @@ import CurrentPlanCard from "../../features/dashboard/components/CurrentPlanCard
 import RecentFileUploads from "dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
 import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
-import dbConnect from "../../lib/mongoose";
-import User from "../../lib/mongoose/model/User";
 import { DashboardUser } from "../../features/dashboard/types/DashboardUser";
 import { displayBytesInReadableForm } from "../../utils/helpers";
 import MediaCard from "../../features/gallery/components/MediaCard";
+import { getUserById } from "../../lib/services/userService";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
@@ -69,14 +68,7 @@ export const getServerSideProps = async (
 ) => {
   const uid = await getUserFromRequest(context);
 
-  await dbConnect();
-
-  const user = await User.findOne(
-    { externalId: uid },
-    "storage medias sharedLinks"
-  )
-    .lean()
-    .exec();
+  const user = await getUserById(uid, "storage medias sharedLinks");
 
   return {
     props: {

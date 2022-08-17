@@ -17,10 +17,9 @@ import MediaCard from "../../features/gallery/components/MediaCard";
 import Uploader from "../../features/gallery/components/Uploader";
 import { GetServerSidePropsContext } from "next";
 import { getUserFromRequest } from "../../features/Auth/FirebaseAdmin";
-import User from "../../lib/mongoose/model/User";
 import { MediaType, TMedia } from "../../features/gallery/types/TMedia";
-import dbConnect from "../../lib/mongoose";
 import Masonry from "../../features/base/components/Masonry";
+import { getUserById } from "../../lib/services/userService";
 
 const Gallery = ({
   medias,
@@ -98,11 +97,7 @@ export const getServerSideProps = async (
 ) => {
   const uid = await getUserFromRequest(context);
 
-  await dbConnect();
-
-  const user = await User.findOne({ externalId: uid }, "storage medias")
-    .lean()
-    .exec();
+  const user = await getUserById(uid, "storage medias");
 
   return {
     props: {
