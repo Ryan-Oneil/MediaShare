@@ -17,7 +17,7 @@ export const getFirebaseAdmin = () => {
 
 export const getUserFromRequest = async (
   context: GetServerSidePropsContext
-) => {
+): Promise<string> => {
   try {
     const cookies = context.req.cookies;
     const token = await getFirebaseAdmin()
@@ -29,4 +29,5 @@ export const getUserFromRequest = async (
     context.res.writeHead(302, { Location: LOGIN_URL });
     context.res.end();
   }
+  throw new Error("Something went wrong during authentication");
 };

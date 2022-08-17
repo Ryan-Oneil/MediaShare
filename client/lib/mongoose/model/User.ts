@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { sharedLinkSchema } from "./SharedLink";
 
 const QuotaSchema = new mongoose.Schema({
   max: {
@@ -46,6 +47,7 @@ const UserSchema = new mongoose.Schema({
   },
   storage: QuotaSchema,
   medias: [mediaSchema],
+  sharedLinks: [sharedLinkSchema],
 });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

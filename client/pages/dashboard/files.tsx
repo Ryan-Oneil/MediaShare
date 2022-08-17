@@ -17,6 +17,7 @@ import { SharedLink } from "../../features/dashboard/types/SharedFile";
 import dbConnect from "../../lib/mongoose";
 import { FaShareAlt } from "react-icons/fa";
 import { Storage } from "../../features/dashboard/types/DashboardUser";
+import { getUserById } from "../../lib/services/userService";
 
 const Files = ({
   sharedLinks,
@@ -69,11 +70,7 @@ export const getServerSideProps = async (
 ) => {
   const uid = await getUserFromRequest(context);
 
-  await dbConnect();
-
-  const user = await User.findOne({ externalId: uid }, "storage sharedLinks")
-    .lean()
-    .exec();
+  const user = await getUserById(uid, "storage sharedLinks");
 
   return {
     props: {
