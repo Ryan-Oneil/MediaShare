@@ -43,14 +43,15 @@ export const getUserFromRequest = async (
   if (!cookies.jwt) {
     return "";
   }
-  console.log(JSON.parse(cookies.jwt));
 
   try {
     const token = await getFirebaseAdmin().auth().verifyIdToken(cookies.jwt);
 
+    console.log("The token is " + token);
+
     return token.uid;
   } catch (err) {
-    console.log(err);
+    console.log("Error verifying token: " + err);
     return "";
   }
 };
