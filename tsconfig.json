@@ -18,7 +18,7 @@
   },
   "include": [
     "next-env.d.ts", "**/*.ts", "**/*.tsx",
-    "client/features"
+    "features"
   ],
   "exclude": ["node_modules"]
 }
