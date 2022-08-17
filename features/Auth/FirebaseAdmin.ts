@@ -39,6 +39,9 @@ export const getUserFromRequest = async (
 ) => {
   const cookies = context.req.cookies;
 
+  console.log(cookies);
+  console.log(cookies.jwt);
+
   try {
     const token = await getFirebaseAdmin()
       .auth()
