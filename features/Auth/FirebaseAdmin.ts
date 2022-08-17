@@ -40,12 +40,13 @@ export const getUserFromRequest = async (
   const cookies = context.req.cookies;
 
   console.log(cookies);
-  console.log(cookies.jwt);
+
+  if (!cookies.jwt) {
+    return "";
+  }
 
   try {
-    const token = await getFirebaseAdmin()
-      .auth()
-      .verifyIdToken(cookies.jwt || "");
+    const token = await getFirebaseAdmin().auth().verifyIdToken(cookies.jwt);
 
     return token.uid;
   } catch (err) {
