@@ -14,11 +14,11 @@ const BaseHomePage = ({ title, children }: props) => {
     <>
       <Head>
         <title>{title} - Media Share</title>
-        <link rel="icon" href="/client/public/favicon.ico" />
+        <link rel="icon" href="/public/favicon.ico" />
       </Head>
       <VStack as={"section"} bg={"#F9FAFB"} h={"100vh"} overflow={"auto"}>
         <Navbar />
-        <Container py={{ base: "16", md: "12" }} maxW="container.lg" flex={1}>
+        <Container py={{ base: "16", md: "5" }} maxW="container.lg" flex={1}>
           {children}
         </Container>
         <Footer />

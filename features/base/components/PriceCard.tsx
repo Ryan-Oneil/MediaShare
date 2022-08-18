@@ -31,7 +31,7 @@ export const PricingCard = (props: PricingCardProps) => {
   const { data, icon, buttonProps, ...rest } = props;
 
   return (
-    <Card px="6" pb="6" pt="16" rounded={{ sm: "xl" }} {...rest}>
+    <Card px="6" pb="6" pt="12" rounded={{ sm: "xl" }} {...rest}>
       <PricingTier data={data} icon={icon} buttonProps={buttonProps} />
       <Button
         fontWeight={600}
@@ -40,9 +40,8 @@ export const PricingCard = (props: PricingCardProps) => {
         _hover={{
           bg: "brand.200",
         }}
-        size="lg"
+        size={{ base: "md", "2xl": "lg" }}
         w="full"
-        py={{ md: "8" }}
         {...buttonProps}
       >
         Purchase
@@ -71,12 +70,12 @@ export const PricingTier = ({ icon, data }: PricingCardProps) => {
         color={"brand.100"}
         my="8"
       >
-        <Heading size="2xl" fontWeight="inherit" lineHeight="0.9em" pr={1}>
+        <Heading size="xl" fontWeight="inherit" lineHeight="0.9em" pr={1}>
           {price}
         </Heading>
         <Text
           fontWeight="inherit"
-          fontSize="2xl"
+          fontSize="xl"
           color={"#121127"}
           opacity={"50%"}
         >
@@ -87,7 +86,7 @@ export const PricingTier = ({ icon, data }: PricingCardProps) => {
         {features.map((feature, index) => (
           <ListItem fontWeight="medium" key={index}>
             <ListIcon
-              fontSize="xl"
+              fontSize={{ base: "lg", "2xl": "xl" }}
               as={HiCheckCircle}
               marginEnd={2}
               color={"brand.100"}

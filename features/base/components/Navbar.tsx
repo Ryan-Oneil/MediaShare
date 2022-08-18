@@ -4,14 +4,19 @@ import {
   IconButton,
   Button,
   Stack,
-  Collapse,
   useBreakpointValue,
   useDisclosure,
   Link,
   VStack,
   HStack,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  DrawerBody,
+  Drawer,
 } from "@chakra-ui/react";
 import {
+  DASHBOARD_URL,
   HOMEPAGE_URL,
   LOGIN_URL,
   PRICE_URL,
@@ -20,6 +25,8 @@ import {
 import NextLink from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NavItem } from "base/types/NavItem";
+import React from "react";
+import { useAuth } from "../../Auth/hooks/useAuth";
 
 const NAV_ITEMS: Array<NavItem> = [
   {
@@ -63,9 +70,18 @@ export default function Navbar() {
           />
         )}
       </HStack>
-      <Collapse in={isOpen && !isDesktop} animateOpacity>
-        <MobileNav />
-      </Collapse>
+      {!isDesktop && (
+        <Drawer isOpen={isOpen} placement="left" onClose={onToggle}>
+          <DrawerOverlay>
+            <DrawerContent>
+              <DrawerCloseButton color={"white"} />
+              <DrawerBody>
+                <MobileNav />
+              </DrawerBody>
+            </DrawerContent>
+          </DrawerOverlay>
+        </Drawer>
+      )}
     </>
   );
 }
@@ -102,6 +118,8 @@ const Logo = () => {
 };
 
 const DesktopNav = () => {
+  const auth = useAuth();
+
   return (
     <Flex justify="space-between" flex="1">
       <Stack
@@ -115,13 +133,29 @@ const DesktopNav = () => {
           <NavLink {...navItem} key={navItem.url} />
         ))}
       </Stack>
-      <HStack spacing="6">
-        <NextLink href={LOGIN_URL}>
-          <Button fontWeight={400} variant={"link"}>
-            Log In
-          </Button>
-        </NextLink>
-        <NextLink href={REGISTER_URL}>
+      {!auth.user && (
+        <HStack spacing="6">
+          <NextLink href={LOGIN_URL}>
+            <Button fontWeight={400} variant={"link"}>
+              Log In
+            </Button>
+          </NextLink>
+          <NextLink href={REGISTER_URL}>
+            <Button
+              fontWeight={600}
+              color={"white"}
+              bg={"brand.100"}
+              _hover={{
+                bg: "brand.200",
+              }}
+            >
+              Sign Up
+            </Button>
+          </NextLink>
+        </HStack>
+      )}
+      {auth.user && (
+        <NextLink href={DASHBOARD_URL}>
           <Button
             fontWeight={600}
             color={"white"}
@@ -130,10 +164,10 @@ const DesktopNav = () => {
               bg: "brand.200",
             }}
           >
-            Sign Up
+            Dashboard
           </Button>
         </NextLink>
-      </HStack>
+      )}
     </Flex>
   );
 };

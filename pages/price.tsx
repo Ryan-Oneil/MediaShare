@@ -8,12 +8,12 @@ import { NextPage } from "next";
 const Price: NextPage = () => {
   return (
     <BaseHomePage title={"Pricing"}>
-      <Box as="section" bg={"gray.50"} py="14" px={{ base: "4", md: "8" }}>
-        <VStack spacing={2} textAlign="center" mb={20}>
-          <Heading as="h1" fontSize="4xl">
+      <Box as="section" bg={"gray.50"} px={{ base: "4", md: "8" }}>
+        <VStack spacing={2} textAlign="center" mb={10}>
+          <Heading as="h1" fontSize={{ base: "xl", "2xl": "4xl" }}>
             Plans that fit your need
           </Heading>
-          <Text fontSize="lg" color={"gray.500"}>
+          <Text fontSize={{ base: "md", "2xl": "lg" }} color={"gray.500"}>
             Sign up for free or commit to a monthly subscription that can be
             cancelled at anytime
           </Text>
