@@ -1,5 +1,5 @@
 import React from "react";
-import BaseAppPage from "../@/features/dashboard/components/BaseAppPage";
+import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import {
   Box,
   Button,
@@ -8,8 +8,8 @@ import {
   SimpleGrid,
   Spacer,
 } from "@chakra-ui/react";
-import FileCard from "../@/features/fileshare/components/FileCard";
-import RecentFileUploads from "../@/features/dashboard/components/RecentFileUploads";
+import FileCard from "@/features/fileshare/components/FileCard";
+import RecentFileUploads from "@/features/dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
 import { SharedLink } from "@/features/dashboard/types/SharedFile";
 import { Storage } from "@/features/dashboard/types/DashboardUser";
