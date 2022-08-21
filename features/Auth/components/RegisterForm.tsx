@@ -3,7 +3,7 @@ import { Alert, AlertIcon, Button, VStack } from "@chakra-ui/react";
 import { Field, Formik, FormikErrors } from "formik";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { User } from "../types/User";
-import { LabeledInput } from "base/components/forms/Inputs";
+import { LabeledInput } from "@/features/base/components/forms/Inputs";
 import { FaEnvelope, FaLock } from "react-icons/fa";
 
 interface SignupValues extends User {

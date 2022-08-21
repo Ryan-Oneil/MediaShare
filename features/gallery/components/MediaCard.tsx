@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, IconButton } from "@chakra-ui/react";
 import { FaLink, FaTrash } from "react-icons/fa";
-import { Card } from "../../base/components/Card";
+import { Card } from "@/features/base/components/Card";
 import MediaModal from "./MediaModal";
 import { TMedia } from "../types/TMedia";
 

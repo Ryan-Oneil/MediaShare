@@ -12,7 +12,7 @@ import {
   IconButton,
   Spacer,
 } from "@chakra-ui/react";
-import { Sidebar } from "../../base/components/Sidebar";
+import { Sidebar } from "@/features/base/components/Sidebar";
 import { FaBars } from "react-icons/fa";
 import SettingDropDown from "./SettingDropDown";
 import NotificationButton from "./NotificationButton";

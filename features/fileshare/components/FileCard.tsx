@@ -1,5 +1,5 @@
 import React from "react";
-import { Card } from "../../base/components/Card";
+import { Card } from "@/features/base/components/Card";
 import Image from "next/image";
 import { Link, Text } from "@chakra-ui/react";
 import { FILE_SHARE_URL } from "../../../utils/urls";

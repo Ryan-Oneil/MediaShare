@@ -1,5 +1,5 @@
 import React from "react";
-import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
+import BaseAppPage from "../@/features/dashboard/components/BaseAppPage";
 import {
   Box,
   Button,
@@ -8,19 +8,17 @@ import {
   SimpleGrid,
   Spacer,
 } from "@chakra-ui/react";
-import FileCard from "../../features/fileshare/components/FileCard";
-import RecentFileUploads from "../../features/dashboard/components/RecentFileUploads";
+import FileCard from "../@/features/fileshare/components/FileCard";
+import RecentFileUploads from "../@/features/dashboard/components/RecentFileUploads";
 import { GetServerSidePropsContext } from "next";
+import { SharedLink } from "@/features/dashboard/types/SharedFile";
+import { Storage } from "@/features/dashboard/types/DashboardUser";
+import { getUserById } from "@/lib/services/userService";
+import { FiShare2 } from "react-icons/fi";
 import {
-  getUserFromRequest,
+  getUserIdFromJWT,
   withAuthentication,
-} from "../../features/Auth/FirebaseAdmin";
-import User from "../../lib/mongoose/model/User";
-import { SharedLink } from "../../features/dashboard/types/SharedFile";
-import dbConnect from "../../lib/mongoose";
-import { FaShareAlt } from "react-icons/fa";
-import { Storage } from "../../features/dashboard/types/DashboardUser";
-import { getUserById } from "../../lib/services/userService";
+} from "@/lib/firebase/wrapperUtils";
 
 const Files = ({
   sharedLinks,
@@ -58,7 +56,15 @@ const Files = ({
         <Flex pb={4} alignItems={"baseline"}>
           <Heading size={"sm"}>Recent file shares</Heading>
           <Spacer />
-          <Button leftIcon={<FaShareAlt />}>Share Files</Button>
+          <Button
+            leftIcon={<FiShare2 />}
+            bg={"brand.100"}
+            color={"white"}
+            _hover={{ bg: "brand.200" }}
+            _active={{ bg: "brand.100" }}
+          >
+            Share Files
+          </Button>
         </Flex>
         <RecentFileUploads links={sharedLinks} />
       </Box>
@@ -69,8 +75,8 @@ const Files = ({
 export default Files;
 
 export const getServerSideProps = withAuthentication(
-  async (context: GetServerSidePropsContext) => {
-    const uid = await getUserFromRequest(context);
+  async ({ req }: GetServerSidePropsContext) => {
+    const uid = await getUserIdFromJWT(req.cookies.jwt);
 
     const user = await getUserById(uid, "storage sharedLinks");
 

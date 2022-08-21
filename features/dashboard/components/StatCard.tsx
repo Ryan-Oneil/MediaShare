@@ -6,7 +6,7 @@ import {
   StatLabel,
   StatNumber,
 } from "@chakra-ui/stat";
-import { Card } from "../../base/components/Card";
+import { Card } from "@/features/base/components/Card";
 
 type props = {
   title: string;

@@ -14,11 +14,14 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "baseUrl": "features"
+    "baseUrl": ".",
+    "paths": {
+      "@/lib/*": ["lib/*"],
+      "@/features/*": ["features/*"],
+    }
   },
   "include": [
-    "next-env.d.ts", "**/*.ts", "**/*.tsx",
-    "features"
+    "next-env.d.ts", "**/*.ts", "**/*.tsx"
   ],
   "exclude": ["node_modules"]
 }

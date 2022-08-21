@@ -11,7 +11,7 @@ import {
   Text,
   ButtonGroup,
 } from "@chakra-ui/react";
-import { RESET_PASSWORD_URL } from "../../../utils/urls";
+import { DASHBOARD_URL, RESET_PASSWORD_URL } from "../../../utils/urls";
 import {
   getAuth,
   signInWithPopup,
@@ -22,8 +22,9 @@ import {
 import { Field, Formik, FormikErrors } from "formik";
 import { User } from "../types/User";
 import { FaEnvelope, FaGoogle, FaLock, FaMicrosoft } from "react-icons/fa";
-import { LabeledInput } from "base/components/forms/Inputs";
+import { LabeledInput } from "@/features/base/components/forms/Inputs";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const provider = new GoogleAuthProvider();
 const microsoftProvider = new OAuthProvider("microsoft.com");
@@ -33,6 +34,11 @@ microsoftProvider.setCustomParameters({
 
 const LoginForm = () => {
   const auth = getAuth();
+  const router = useRouter();
+
+  const redirectOnLogin = () => {
+    router.push(DASHBOARD_URL);
+  };
 
   const onSubmit = (
     formValues: User,
@@ -42,10 +48,12 @@ const LoginForm = () => {
       auth,
       formValues.email.trim(),
       formValues.password.trim()
-    ).catch((error) => {
-      const message = error.code || error.message;
-      setStatus(message.replace("auth/", "").replaceAll("-", " "));
-    });
+    )
+      .then(redirectOnLogin)
+      .catch((error) => {
+        const message = error.code || error.message;
+        setStatus(message.replace("auth/", "").replaceAll("-", " "));
+      });
   };
 
   const validate = (values: User) => {
@@ -144,14 +152,18 @@ const LoginForm = () => {
             <IconButton
               aria-label={"Google Logo"}
               icon={<FaGoogle fontSize={36} />}
-              onClick={() => signInWithPopup(auth, provider)}
+              onClick={() =>
+                signInWithPopup(auth, provider).then(redirectOnLogin)
+              }
             />
           </Tooltip>
           <Tooltip label={"Sign in with Microsoft"}>
             <IconButton
               icon={<FaMicrosoft fontSize={36} />}
               aria-label={"Microsoft Logo"}
-              onClick={() => signInWithPopup(auth, microsoftProvider)}
+              onClick={() =>
+                signInWithPopup(auth, microsoftProvider).then(redirectOnLogin)
+              }
             />
           </Tooltip>
         </ButtonGroup>

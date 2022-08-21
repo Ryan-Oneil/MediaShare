@@ -1,9 +1,9 @@
 import React from "react";
-import BaseAuthPage from "../features/Auth/components/BaseAuthPage";
+import BaseAuthPage from "@/features/Auth/components/BaseAuthPage";
 import { Box, Heading, Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { LOGIN_URL } from "../utils/urls";
-import ResetPasswordForm from "../features/Auth/components/ResetPasswordForm";
+import ResetPasswordForm from "@/features/Auth/components/ResetPasswordForm";
 import { NextPage } from "next";
 
 const Reset: NextPage = () => {

@@ -1,6 +1,6 @@
 import React from "react";
-import BaseHomePage from "../features/base/components/BaseHomePage";
-import { PricingCard } from "../features/base/components/PriceCard";
+import BaseHomePage from "@/features/base/components/BaseHomePage";
+import { PricingCard } from "@/features/base/components/PriceCard";
 import { Box, Heading, SimpleGrid, VStack, Text } from "@chakra-ui/react";
 import { FaSuitcase, FaTag, FaTags } from "react-icons/fa";
 import { NextPage } from "next";

@@ -1,7 +1,7 @@
 import React from "react";
 import { Heading } from "@chakra-ui/react";
-import { PricingTier } from "../../base/components/PriceCard";
-import { Card } from "../../base/components/Card";
+import { PricingTier } from "@/features/base/components/PriceCard";
+import { Card } from "@/features/base/components/Card";
 
 const CurrentPlanCard = () => {
   return (

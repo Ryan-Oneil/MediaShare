@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
+import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import {
   Button,
   Flex,
@@ -13,16 +13,16 @@ import {
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
-import MediaCard from "../../features/gallery/components/MediaCard";
-import Uploader from "../../features/gallery/components/Uploader";
+import MediaCard from "@/features/gallery/components/MediaCard";
+import Uploader from "@/features/gallery/components/Uploader";
 import { GetServerSidePropsContext } from "next";
+import { MediaType, TMedia } from "@/features/gallery/types/TMedia";
+import Masonry from "@/features/base/components/Masonry";
+import { getUserById } from "@/lib/services/userService";
 import {
-  getUserFromRequest,
+  getUserIdFromJWT,
   withAuthentication,
-} from "../../features/Auth/FirebaseAdmin";
-import { MediaType, TMedia } from "../../features/gallery/types/TMedia";
-import Masonry from "../../features/base/components/Masonry";
-import { getUserById } from "../../lib/services/userService";
+} from "@/lib/firebase/wrapperUtils";
 
 const Gallery = ({
   medias,
@@ -96,8 +96,8 @@ const Gallery = ({
 export default Gallery;
 
 export const getServerSideProps = withAuthentication(
-  async (context: GetServerSidePropsContext) => {
-    const uid = await getUserFromRequest(context);
+  async ({ req }: GetServerSidePropsContext) => {
+    const uid = await getUserIdFromJWT(req.cookies.jwt);
 
     const user = await getUserById(uid, "storage medias");
 

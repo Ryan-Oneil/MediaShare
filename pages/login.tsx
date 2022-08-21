@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { NextPage } from "next";
 import { Box, Heading, Text } from "@chakra-ui/react";
-import LoginForm from "Auth/components/LoginForm";
+import LoginForm from "@/features/Auth/components/LoginForm";
 import { DASHBOARD_URL, REGISTER_URL } from "../utils/urls";
 import NextLink from "next/link";
-import BaseAuthPage from "../features/Auth/components/BaseAuthPage";
+import BaseAuthPage from "@/features/Auth/components/BaseAuthPage";
 import { useRouter } from "next/router";
 
 const Login: NextPage = () => {

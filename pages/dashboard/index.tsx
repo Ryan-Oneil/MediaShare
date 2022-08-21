@@ -1,19 +1,19 @@
 import React from "react";
 
-import BaseAppPage from "../../features/dashboard/components/BaseAppPage";
+import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import { Flex, Heading, Stack } from "@chakra-ui/react";
-import StatCard from "../../features/dashboard/components/StatCard";
-import CurrentPlanCard from "../../features/dashboard/components/CurrentPlanCard";
-import RecentFileUploads from "dashboard/components/RecentFileUploads";
+import StatCard from "@/features/dashboard/components/StatCard";
+import CurrentPlanCard from "@/features/dashboard/components/CurrentPlanCard";
 import { GetServerSidePropsContext } from "next";
-import {
-  getUserFromRequest,
-  withAuthentication,
-} from "../../features/Auth/FirebaseAdmin";
-import { DashboardUser } from "../../features/dashboard/types/DashboardUser";
+import { DashboardUser } from "@/features/dashboard/types/DashboardUser";
 import { displayBytesInReadableForm } from "../../utils/helpers";
-import MediaCard from "../../features/gallery/components/MediaCard";
-import { getUserById } from "../../lib/services/userService";
+import MediaCard from "@/features/gallery/components/MediaCard";
+import { getUserById } from "@/lib/services/userService";
+import RecentFileUploads from "@/features/dashboard/components/RecentFileUploads";
+import {
+  getUserIdFromJWT,
+  withAuthentication,
+} from "@/lib/firebase/wrapperUtils";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
@@ -67,8 +67,8 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
 export default Dashboard;
 
 export const getServerSideProps = withAuthentication(
-  async (context: GetServerSidePropsContext) => {
-    const uid = await getUserFromRequest(context);
+  async ({ req }: GetServerSidePropsContext) => {
+    const uid = await getUserIdFromJWT(req.cookies.jwt);
 
     const user = await getUserById(uid, "storage medias sharedLinks");
 
