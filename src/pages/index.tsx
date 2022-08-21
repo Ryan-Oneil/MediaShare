@@ -10,7 +10,7 @@ import {
 import { REGISTER_URL } from "../utils/urls";
 import Link from "next/link";
 import Image from "next/image";
-import dashboardPicture from "../public/dashboardMock.png";
+import dashboardPicture from "../../public/dashboardMock.png";
 import BaseHomePage from "@/features/base/components/BaseHomePage";
 
 const Home: NextPage = () => {

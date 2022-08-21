@@ -24,9 +24,9 @@ import {
 } from "../../../utils/urls";
 import NextLink from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
-import { NavItem } from "@/features/base/types/NavItem";
+import { NavItem } from "../types/NavItem";
 import React from "react";
-import { useAuth } from "../../Auth/hooks/useAuth";
+import { useAuth } from "@/features/Auth/hooks/useAuth";
 
 const NAV_ITEMS: Array<NavItem> = [
   {
