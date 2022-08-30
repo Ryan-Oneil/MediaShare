@@ -35,18 +35,17 @@ const getBucketAndKey = (url) => {
 async function verifySignature(request) {
   const url = new URL(request.url);
   const credential = getSearchParam(url, "X-Amz-Credential");
-
   const accessKeyId = credential.split("/")[0];
 
-  // Verify that the request was signed with the expected key
   if (accessKeyId !== AWS_ACCESS_KEY_ID) {
     throw new Error("Error validating signature: invalid access key");
   }
+
   const date = getSearchParam(url, "date");
 
   const proxyS3Client = new S3Client({
     region: AWS_S3_REGION,
-    endpoint: `http://${url.host}`,
+    endpoint: `https://${url.host}`,
     credentials: {
       accessKeyId: AWS_ACCESS_KEY_ID,
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
