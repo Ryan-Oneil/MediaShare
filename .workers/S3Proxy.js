@@ -1,15 +1,6 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const proxyS3Client = new S3Client({
-  region: AWS_S3_REGION,
-  endpoint: "http://127.0.0.1:8787",
-  credentials: {
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
-  },
-});
-
 const s3Client = new S3Client({
   region: AWS_S3_REGION,
   endpoint: AWS_S3_ENDPOINT,
@@ -51,8 +42,16 @@ async function verifySignature(request) {
   if (accessKeyId !== AWS_ACCESS_KEY_ID) {
     throw new Error("Error validating signature: invalid access key");
   }
-
   const date = getSearchParam(url, "date");
+
+  const proxyS3Client = new S3Client({
+    region: AWS_S3_REGION,
+    endpoint: `http://${url.host}`,
+    credentials: {
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    },
+  });
 
   const signedURl = await getSignedUrl(
     proxyS3Client,
@@ -83,7 +82,7 @@ async function handleRequest(event) {
     return new Response(JSON.stringify(e.message), {
       status: 403,
       headers: {
-        "Content-Type": "application/xml",
+        "Content-Type": "application/json",
         "Cache-Control": "max-age=0, no-cache, no-store",
       },
     });
@@ -99,9 +98,12 @@ async function handleRequest(event) {
       expiresIn: 3600,
     }
   );
-  console.log(signedRequest);
-  // Send the signed request to B2 and wait for the upstream response
-  const response = await fetch(signedRequest);
+
+  const response = await fetch(signedRequest, {
+    method: "PUT",
+    body: request.body,
+    headers: request.headers,
+  });
 
   if (WEBHOOK_URL) {
     // Convert content length from a string to an integer
