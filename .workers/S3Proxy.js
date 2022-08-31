@@ -1,16 +1,7 @@
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const s3Client = new S3Client({
-  region: AWS_S3_REGION,
-  endpoint: AWS_S3_ENDPOINT,
-  credentials: {
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-addEventListener("fetch", function (event) {
+addEventListener("fetch", (event) => {
   event.respondWith(handleRequest(event));
 });
 
@@ -56,7 +47,7 @@ async function verifySignature(request) {
     proxyS3Client,
     new PutObjectCommand(getBucketAndKey(request.url)),
     {
-      expiresIn: 86400,
+      expiresIn: 3600,
       signingDate: new Date(date),
     }
   );
@@ -87,6 +78,15 @@ async function handleRequest(event) {
     });
   }
 
+  const s3Client = new S3Client({
+    region: AWS_S3_REGION,
+    endpoint: AWS_S3_ENDPOINT,
+    credentials: {
+      accessKeyId: AWS_ACCESS_KEY_ID,
+      secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    },
+  });
+
   const signedRequest = await getSignedUrl(
     s3Client,
     new PutObjectCommand({
@@ -104,23 +104,19 @@ async function handleRequest(event) {
     headers: request.headers,
   });
 
-  if (WEBHOOK_URL) {
-    // Convert content length from a string to an integer
-    let contentLength = request.headers.get("content-length");
-    contentLength = contentLength ? parseInt(contentLength) : null;
+  if (WEBHOOK_URL && response.status === 200) {
+    const contentLength = parseInt(request.headers.get("content-length") || 0);
 
     event.waitUntil(
       fetch(WEBHOOK_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: request.headers.get("Authorization"),
         },
         body: JSON.stringify({
-          contentLength: contentLength,
-          contentType: request.headers.get("content-type"),
-          method: request.method,
-          signatureTimestamp: request.headers.get("date"),
-          status: response.status,
+          mediaSize: contentLength,
+          mediaType: request.headers.get("content-type"),
           url: response.url,
         }),
       })

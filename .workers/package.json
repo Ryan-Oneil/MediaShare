@@ -6,7 +6,6 @@
   "main": "S3Proxy.js",
   "license": "MIT",
   "dependencies": {
-    "aws4fetch": "^1.0.13",
     "@aws-sdk/client-s3": "^3.154.0",
     "@aws-sdk/s3-request-presigner": "^3.154.0"
   }

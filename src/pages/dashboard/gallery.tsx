@@ -71,7 +71,7 @@ const Gallery = ({
           Sort
         </Button>
       </Flex>
-      <Masonry columnsCount={4}>
+      <Masonry columnsCount={5}>
         {mediaList.map((media: TMedia) => (
           <MediaCard media={media} key={media.id} showControls={true} />
         ))}

@@ -19,7 +19,7 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
     <BaseAppPage
       title={"Dashboard"}
-      p={{ base: 5, md: 10, "2xl": 20 }}
+      p={{ base: 5, md: 10, "2xl": 12 }}
       used={storage.usedTotal}
       max={storage.max}
     >
@@ -71,6 +71,7 @@ export const getServerSideProps = withAuthentication(
     const uid = await getUserIdFromJWT(req.cookies.jwt);
 
     const user = await getUserById(uid, "storage medias sharedLinks");
+    console.log(user);
 
     return {
       props: {

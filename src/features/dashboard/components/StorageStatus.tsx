@@ -10,13 +10,15 @@ type storageProps = {
 
 const StorageStatus = ({ used, max }: storageProps) => {
   const percentageUsed = (used / max) * 100;
+  const size = { base: "xs", "2xl": "md" };
+
   return (
     <VStack
       as={"section"}
       color={"white"}
       mt={"auto!important"}
       mb={"5px!important"}
-      fontSize={"xs"}
+      fontSize={size}
     >
       <Flex align="center">
         <Icon as={AiOutlineCloudServer} mr={2} fontSize={"lg"} />
@@ -25,8 +27,8 @@ const StorageStatus = ({ used, max }: storageProps) => {
       <Progress
         value={percentageUsed}
         colorScheme={"gray"}
-        w={"80%"}
-        size={"xs"}
+        w={"100%"}
+        size={{ base: "xs", "2xl": "sm" }}
         rounded={"full"}
       />
       <Text>
@@ -39,8 +41,8 @@ const StorageStatus = ({ used, max }: storageProps) => {
         _hover={{
           bg: "brand.200",
         }}
-        fontSize={"xs"}
-        size={"xs"}
+        fontSize={size}
+        size={size}
       >
         Upgrade
       </Button>

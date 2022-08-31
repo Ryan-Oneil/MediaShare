@@ -1,28 +1,31 @@
 import mongoose from "mongoose";
 import { sharedLinkSchema } from "./SharedLink";
 
-const QuotaSchema = new mongoose.Schema({
-  max: {
-    type: Number,
-    required: [true, "Please provide the max storage quota"],
+const QuotaSchema = new mongoose.Schema(
+  {
+    max: {
+      type: Number,
+      required: [true, "Please provide the max storage quota"],
+    },
+    usedTotal: {
+      type: Number,
+      default: 0,
+    },
+    videoUsed: {
+      type: Number,
+      default: 0,
+    },
+    imageUsed: {
+      type: Number,
+      default: 0,
+    },
+    documentUsed: {
+      type: Number,
+      default: 0,
+    },
   },
-  usedTotal: {
-    type: Number,
-    default: 0,
-  },
-  videoUsed: {
-    type: Number,
-    default: 0,
-  },
-  imageUsed: {
-    type: Number,
-    default: 0,
-  },
-  documentUsed: {
-    type: Number,
-    default: 0,
-  },
-});
+  { _id: false }
+);
 
 const mediaSchema = new mongoose.Schema({
   _id: {

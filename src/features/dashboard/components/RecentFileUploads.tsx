@@ -50,13 +50,12 @@ const TableRow = ({ files, uploaded, size }: SharedLink) => {
       <Td>{displayBytesInReadableForm(size)}</Td>
       <Td>
         <Menu>
-          <MenuButton>
-            <IconButton
-              aria-label={"Menu icon"}
-              icon={<BsThreeDotsVertical />}
-              variant={"ghost"}
-            />
-          </MenuButton>
+          <MenuButton
+            as={IconButton}
+            aria-label={"Menu icon"}
+            icon={<BsThreeDotsVertical />}
+            variant={"ghost"}
+          ></MenuButton>
           <Portal>
             <MenuList>
               <MenuItem icon={<FaEye />}>View</MenuItem>
