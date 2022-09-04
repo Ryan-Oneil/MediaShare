@@ -17,7 +17,7 @@ const MediaModal = (props: TMedia) => {
       <Modal isOpen={isOpen} onClose={onClose} isCentered size={"xl"}>
         <ModalOverlay />
         <ModalContent>
-          <ModalCloseButton />
+          <ModalCloseButton bg={"white"} _hover={{ bg: "white" }} />
           <Media src={props.url} />
         </ModalContent>
       </Modal>

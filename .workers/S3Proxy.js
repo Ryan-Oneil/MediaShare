@@ -2,7 +2,13 @@ import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 addEventListener("fetch", (event) => {
-  event.respondWith(handleRequest(event));
+  if (event.request.method === "OPTIONS") {
+    event.respondWith(handleOptions(event.request));
+  } else if (event.request.method === "PUT") {
+    event.respondWith(handlePutRequest(event));
+  } else {
+    event.respondWith(new Response("Method not allowed", { status: 405 }));
+  }
 });
 
 const getSearchParam = (url, param) => {
@@ -63,7 +69,33 @@ async function verifySignature(request) {
   }
 }
 
-async function handleRequest(event) {
+function handleOptions(request) {
+  const headers = request.headers;
+
+  if (
+    !headers.get("Origin") ||
+    !headers.get("Access-Control-Request-Method") ||
+    !headers.get("Access-Control-Request-Headers")
+  ) {
+    return new Response(null, {
+      headers: {
+        Allow: "GET, HEAD, POST, OPTIONS",
+      },
+    });
+  }
+  return new Response(null, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "PUT,OPTIONS",
+      "Access-Control-Max-Age": "86400",
+      "Access-Control-Allow-Headers": request.headers.get(
+        "Access-Control-Request-Headers"
+      ),
+    },
+  });
+}
+
+async function handlePutRequest(event) {
   const request = event.request;
 
   try {
@@ -86,6 +118,8 @@ async function handleRequest(event) {
       secretAccessKey: AWS_SECRET_ACCESS_KEY,
     },
   });
+
+  console.log(request.body.file);
 
   const signedRequest = await getSignedUrl(
     s3Client,

@@ -20,8 +20,8 @@ const StorageStatus = ({ used, max }: storageProps) => {
       mb={"5px!important"}
       fontSize={size}
     >
-      <Flex align="center">
-        <Icon as={AiOutlineCloudServer} mr={2} fontSize={"lg"} />
+      <Flex align="center" fontSize={"lg"}>
+        <Icon as={AiOutlineCloudServer} mr={2} />
         Storage
       </Flex>
       <Progress

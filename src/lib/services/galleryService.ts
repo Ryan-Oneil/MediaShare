@@ -12,12 +12,14 @@ export const uploadMedia = async (
 ) => {
   await dbConnect();
 
-  const user = await User.findOne({ externalId: uploaderUid }, "medias").exec();
-  user.medias.push({
-    url: mediaUrl,
-  });
-
-  return user.save();
+  return User.findOneAndUpdate(
+    { externalId: uploaderUid },
+    {
+      $push: {
+        medias: { url: mediaUrl, size: mediaSize, contentType: contentType },
+      },
+    }
+  ).exec();
 };
 
 export const getUploadUrl = async (mediaName: string) => {

@@ -28,7 +28,9 @@ export const withAuthentication =
 
 export const withRequestAuth = (handler: any) => {
   return async (req: NextApiRequest, res: NextApiResponse) => {
-    const user = await getUserIdFromJWT(req.cookies.jwt);
+    const jwt = req.cookies.jwt || req.headers.authorization;
+
+    const user = await getUserIdFromJWT(jwt);
 
     if (!user) {
       return res.redirect(LOGIN_URL);

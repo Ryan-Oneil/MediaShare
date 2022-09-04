@@ -23,6 +23,7 @@ import {
   getUserIdFromJWT,
   withAuthentication,
 } from "@/lib/firebase/wrapperUtils";
+import { apiPostCall, apiPutCall } from "../../utils/axios";
 
 const Gallery = ({
   medias,
@@ -35,28 +36,40 @@ const Gallery = ({
   const [mediaList, setMediaList] = useState<TMedia[]>([]);
 
   const handleFileUpload = (acceptedFiles: File[]) => {
-    acceptedFiles.forEach((file) => {
-      const reader = new FileReader();
+    const mediaNames = acceptedFiles.map((file) => file.name);
 
-      reader.onerror = () => console.log("file reading has failed");
-      reader.onload = (event) => {
-        const result = event.target?.result as string;
+    apiPostCall("/api/media", mediaNames).then(({ data }) => {
+      data.forEach((url: string, index: number) => {
+        const formData = new FormData();
+        formData.append(acceptedFiles[index].name, acceptedFiles[index]);
 
-        setMediaList((prevState) => [
-          {
-            id: Math.random().toString(),
-            url: result,
-            size: 0,
-            filename: "",
-            added: new Date(),
-            type: MediaType.IMAGE,
-          },
-          ...prevState,
-        ]);
-        onClose();
-      };
-      reader.readAsDataURL(file);
+        apiPutCall(url, formData).then((response) => console.log(response));
+      });
     });
+
+    // acceptedFiles.forEach((file) => {
+    //   console.log(file);
+    //   const reader = new FileReader();
+    //
+    //   reader.onerror = () => console.log("file reading has failed");
+    //   reader.onload = (event) => {
+    //     const result = event.target?.result as string;
+    //
+    //     setMediaList((prevState) => [
+    //       {
+    //         id: Math.random().toString(),
+    //         url: result,
+    //         size: 0,
+    //         filename: "",
+    //         added: new Date(),
+    //         type: MediaType.IMAGE,
+    //       },
+    //       ...prevState,
+    //     ]);
+    //     onClose();
+    //   };
+    //   reader.readAsDataURL(file);
+    // });
   };
 
   return (

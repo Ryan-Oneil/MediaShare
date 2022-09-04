@@ -7,8 +7,10 @@ interface UploaderProps extends ContainerProps {
 }
 
 const Uploader = (props: UploaderProps) => {
+  const { handleUpload, ...rest } = props;
+
   return (
-    <Dropzone onDrop={props.handleUpload}>
+    <Dropzone onDrop={handleUpload}>
       {({ getRootProps, getInputProps }) => (
         <Container
           centerContent
@@ -20,7 +22,7 @@ const Uploader = (props: UploaderProps) => {
           borderColor={"brand.100"}
           _hover={{ borderColor: "brand.200", bg: "#FAFAFA" }}
           cursor={"pointer"}
-          {...props}
+          {...rest}
           {...getRootProps()}
         >
           <input {...getInputProps()} />

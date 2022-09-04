@@ -71,7 +71,6 @@ export const getServerSideProps = withAuthentication(
     const uid = await getUserIdFromJWT(req.cookies.jwt);
 
     const user = await getUserById(uid, "storage medias sharedLinks");
-    console.log(user);
 
     return {
       props: {
