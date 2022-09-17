@@ -119,12 +119,12 @@ async function handlePutRequest(event) {
     },
   });
 
-  console.log(request.body.file);
+  const bucketAndKey = getBucketAndKey(request.url);
 
   const signedRequest = await getSignedUrl(
     s3Client,
     new PutObjectCommand({
-      ...getBucketAndKey(request.url),
+      ...bucketAndKey,
       Body: request.body,
     }),
     {
@@ -132,26 +132,31 @@ async function handlePutRequest(event) {
     }
   );
 
-  const response = await fetch(signedRequest, {
+  const s3Response = await fetch(signedRequest, {
     method: "PUT",
     body: request.body,
     headers: request.headers,
   });
+
+  const s3MediaUrl = `${CDN_URL}/${bucketAndKey.Bucket}/${bucketAndKey.Key}`;
+
+  const response = new Response(s3MediaUrl, s3Response);
+  response.headers.set("Access-Control-Allow-Origin", "http://localhost:3000");
 
   if (WEBHOOK_URL && response.status === 200) {
     const contentLength = parseInt(request.headers.get("content-length") || 0);
 
     event.waitUntil(
       fetch(WEBHOOK_URL, {
-        method: "POST",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: request.headers.get("Authorization"),
+          authorization: request.headers.get("X-Authorization-Firebase"),
         },
         body: JSON.stringify({
           mediaSize: contentLength,
           mediaType: request.headers.get("content-type"),
-          url: response.url,
+          url: s3MediaUrl,
         }),
       })
     );
