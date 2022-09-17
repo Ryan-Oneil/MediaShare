@@ -17,7 +17,7 @@ const StorageStatus = ({ used, max }: storageProps) => {
       as={"section"}
       color={"white"}
       mt={"auto!important"}
-      mb={"5px!important"}
+      mb={"20px!important"}
       fontSize={size}
     >
       <Flex align="center" fontSize={"lg"}>

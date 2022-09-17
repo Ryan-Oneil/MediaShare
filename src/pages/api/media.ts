@@ -6,7 +6,9 @@ const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
   let urls: string[] = [];
 
   for (const mediaName of req.body) {
-    const url = await getUploadUrl(mediaName);
+    const url = await getUploadUrl(
+      encodeURIComponent(mediaName.replaceAll(" ", "_"))
+    );
     urls.push(url);
   }
 
@@ -33,6 +35,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "PUT") {
+    console.log(req.body);
     return handlePutCall(req, res);
   }
   return res.status(405).end();

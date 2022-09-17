@@ -36,6 +36,18 @@ const mediaSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  size: {
+    type: Number,
+    required: true,
+  },
+  contentType: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    required: true,
+  },
 });
 
 const UserSchema = new mongoose.Schema({

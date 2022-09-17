@@ -39,9 +39,9 @@ export const Sidebar = (props: BoxProps) => {
         >
           <Flex
             align="center"
-            px="4"
-            py={2}
-            pr={8}
+            px={4}
+            py={4}
+            pr={10}
             cursor="pointer"
             bg={currentRoute === url ? "brand.200" : ""}
             _hover={{

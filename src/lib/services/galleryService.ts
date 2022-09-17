@@ -16,7 +16,12 @@ export const uploadMedia = async (
     { externalId: uploaderUid },
     {
       $push: {
-        medias: { url: mediaUrl, size: mediaSize, contentType: contentType },
+        medias: {
+          url: mediaUrl,
+          size: mediaSize,
+          contentType: contentType,
+          date: new Date(),
+        },
       },
     }
   ).exec();

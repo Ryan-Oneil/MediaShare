@@ -1,7 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig } from "axios";
 import { getAuth } from "firebase/auth";
 
-export const AUTH_HEADER = "authorization";
+export const AUTH_HEADER = "X-Authorization-Firebase";
 
 const baseApi = axios.create();
 
@@ -31,8 +31,12 @@ export const apiPostCall = async (
   return baseApi.post(endpoint, data, options);
 };
 
-export const apiPutCall = async (endpoint: string, data?: any) => {
-  return baseApi.put(endpoint, data);
+export const apiPutCall = async (
+  endpoint: string,
+  data?: any,
+  options?: AxiosRequestConfig
+) => {
+  return baseApi.put(endpoint, data, options);
 };
 
 export const apiDeleteCall = async (endpoint: string) => {
