@@ -8,22 +8,21 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalHeader,
   ModalOverlay,
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import MediaCard from "@/features/gallery/components/MediaCard";
-import Uploader from "@/features/gallery/components/Uploader";
 import { GetServerSidePropsContext } from "next";
-import { MediaType, TMedia } from "@/features/gallery/types/TMedia";
+import { TMedia } from "@/features/gallery/types/TMedia";
 import Masonry from "@/features/base/components/Masonry";
 import { getUserById } from "@/lib/services/userService";
 import {
   getUserIdFromJWT,
   withAuthentication,
 } from "@/lib/firebase/wrapperUtils";
-import { apiPostCall, apiPutCall } from "../../utils/axios";
+import MediaUploader from "@/features/gallery/components/MediaUploader";
+import { apiDeleteCall, getApiError } from "@/utils/axios";
 
 const Gallery = ({
   medias,
@@ -33,43 +32,12 @@ const Gallery = ({
   storage: Storage;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mediaList, setMediaList] = useState<TMedia[]>([]);
+  const [mediaList, setMediaList] = useState<TMedia[]>(medias);
 
-  const handleFileUpload = (acceptedFiles: File[]) => {
-    const mediaNames = acceptedFiles.map((file) => file.name);
-
-    apiPostCall("/api/media", mediaNames).then(({ data }) => {
-      data.forEach((url: string, index: number) => {
-        const formData = new FormData();
-        formData.append(acceptedFiles[index].name, acceptedFiles[index]);
-
-        apiPutCall(url, formData).then((response) => console.log(response));
-      });
-    });
-
-    // acceptedFiles.forEach((file) => {
-    //   console.log(file);
-    //   const reader = new FileReader();
-    //
-    //   reader.onerror = () => console.log("file reading has failed");
-    //   reader.onload = (event) => {
-    //     const result = event.target?.result as string;
-    //
-    //     setMediaList((prevState) => [
-    //       {
-    //         id: Math.random().toString(),
-    //         url: result,
-    //         size: 0,
-    //         filename: "",
-    //         added: new Date(),
-    //         type: MediaType.IMAGE,
-    //       },
-    //       ...prevState,
-    //     ]);
-    //     onClose();
-    //   };
-    //   reader.readAsDataURL(file);
-    // });
+  const deleteMedia = (mediaId: string) => {
+    apiDeleteCall(`/api/media/${mediaId}`)
+      .then(() => setMediaList((prev) => prev.filter((m) => m._id !== mediaId)))
+      .catch((err) => console.log(getApiError(err)));
   };
 
   return (
@@ -86,19 +54,26 @@ const Gallery = ({
       </Flex>
       <Masonry columnsCount={5}>
         {mediaList.map((media: TMedia) => (
-          <MediaCard media={media} key={media.id} showControls={true} />
-        ))}
-        {medias.map((media) => (
-          <MediaCard media={media} key={media.id} showControls={true} />
+          <MediaCard
+            media={media}
+            key={media._id}
+            showControls={true}
+            deleteAction={deleteMedia}
+          />
         ))}
       </Masonry>
-      <Modal isOpen={isOpen} onClose={onClose} size={"lg"}>
+      <Modal isOpen={isOpen} onClose={onClose} size={"6xl"}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Upload Media</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
-            <Uploader h={100} handleUpload={handleFileUpload} />
+          <ModalBody p={0}>
+            <Flex gap={10} p={12}>
+              <MediaUploader
+                handleUploadFinished={(media: TMedia) =>
+                  setMediaList((prev) => [media, ...prev])
+                }
+              />
+            </Flex>
           </ModalBody>
         </ModalContent>
       </Modal>
@@ -111,12 +86,11 @@ export default Gallery;
 export const getServerSideProps = withAuthentication(
   async ({ req }: GetServerSidePropsContext) => {
     const uid = await getUserIdFromJWT(req.cookies.jwt);
-
     const user = await getUserById(uid, "storage medias");
 
     return {
       props: {
-        medias: user.medias,
+        medias: JSON.parse(JSON.stringify(user.medias)),
         storage: user.storage,
       },
     };

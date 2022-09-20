@@ -8,15 +8,17 @@ type MediaProps = {
 };
 
 const Media = ({ src, cursor, onClick }: MediaProps) => {
+  const [url, setUrl] = React.useState<string>(src);
+
   return (
     <Image
-      src={src}
-      fallbackSrc={"https://via.placeholder.com/800.png"}
+      src={url}
       loading={"lazy"}
       objectFit="cover"
       alt={"User uploaded image"}
       cursor={cursor}
       onClick={onClick}
+      onError={() => setUrl("/missing.png")}
     />
   );
 };

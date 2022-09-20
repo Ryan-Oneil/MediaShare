@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, IconButton } from "@chakra-ui/react";
+import { Box, IconButton, useClipboard } from "@chakra-ui/react";
 import { FaLink, FaTrash } from "react-icons/fa";
 import { Card } from "@/features/base/components/Card";
 import MediaModal from "./MediaModal";
@@ -8,9 +8,13 @@ import { TMedia } from "../types/TMedia";
 type props = {
   media: TMedia;
   showControls: boolean;
+  deleteAction: (mediaId: string) => void;
 };
 
-const MediaCard = ({ media, showControls = true }: props) => {
+const MediaCard = ({ media, showControls = true, deleteAction }: props) => {
+  const { onCopy } = useClipboard(media.url);
+  console.log(media);
+
   return (
     <Card
       position={"relative"}
@@ -37,12 +41,14 @@ const MediaCard = ({ media, showControls = true }: props) => {
             variant="ghost"
             aria-label="Copy share link"
             icon={<FaLink />}
+            onClick={onCopy}
           />
           <IconButton
             variant="ghost"
             colorScheme="red"
             aria-label="Delete media"
             icon={<FaTrash />}
+            onClick={() => deleteAction(media._id)}
           />
         </Box>
       )}
