@@ -6,7 +6,7 @@ import StatCard from "@/features/dashboard/components/StatCard";
 import CurrentPlanCard from "@/features/dashboard/components/CurrentPlanCard";
 import { GetServerSidePropsContext } from "next";
 import { DashboardUser } from "@/features/dashboard/types/DashboardUser";
-import { displayBytesInReadableForm } from "../../utils/helpers";
+import { displayBytesInReadableForm } from "@/utils/helpers";
 import MediaCard from "@/features/gallery/components/MediaCard";
 import { getUserById } from "@/lib/services/userService";
 import RecentFileUploads from "@/features/dashboard/components/RecentFileUploads";
@@ -54,7 +54,7 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
           <Heading size={"md"}>Recent Uploads</Heading>
           <Stack gap={6} direction={["column", "row"]}>
             {medias.map((media) => (
-              <MediaCard media={media} showControls={false} key={media.id} />
+              <MediaCard media={media} showControls={false} key={media._id} />
             ))}
           </Stack>
           <RecentFileUploads links={sharedLinks} />
