@@ -1,11 +1,6 @@
 import { ParsedUrlQuery } from "querystring";
-import {
-  GetServerSideProps,
-  GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse,
-} from "next";
-import { LOGIN_URL } from "../../utils/urls";
+import { GetServerSideProps, NextApiRequest, NextApiResponse } from "next";
+import { LOGIN_URL } from "@/utils/urls";
 import { getFirebaseAdmin } from "./FirebaseAdmin";
 
 export const withAuthentication =

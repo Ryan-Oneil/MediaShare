@@ -27,6 +27,7 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
         maxH={"60px"}
         rounded={4}
         onLoad={() => URL.revokeObjectURL(url)}
+        alt={"Upload preview"}
       />
       <VStack flex={1} gap={1}>
         <Text alignSelf={"start"}>{file.name}</Text>
@@ -56,7 +57,7 @@ const UploadList = ({ uploadItems }: { uploadItems: UploadItem[] }) => {
       <Heading size={"md"}>Uploaded files</Heading>
       <List w={"100%"} spacing={4} mt={4} mb={32}>
         {uploadItems.map((uploadItem) => (
-          <UploadListItem {...uploadItem} />
+          <UploadListItem {...uploadItem} key={uploadItem.file.name} />
         ))}
       </List>
       {uploadItems.length === 0 && (

@@ -44,8 +44,8 @@ export function AuthProvider({ children }: { children: JSX.Element }) {
     const firebaseAuth = getAuth(firebaseApp);
 
     const handle = setInterval(async () => {
-      const user = firebaseAuth.currentUser;
-      if (user) await user.getIdToken(true);
+      const currentUser = firebaseAuth.currentUser;
+      if (currentUser) await currentUser.getIdToken(true);
     }, 10 * 60 * 1000);
 
     // clean up setInterval

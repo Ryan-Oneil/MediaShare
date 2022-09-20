@@ -35,6 +35,7 @@ const DropzoneUploader = (props: DropZoneProps) => {
             width={280}
             height={200}
             draggable={false}
+            alt={"Upload Media"}
           />
           <Text mt={5}>Drag and drop your media</Text>
           <Text>Or</Text>
