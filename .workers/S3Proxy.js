@@ -120,6 +120,9 @@ async function handlePutRequest(event) {
   });
 
   const bucketAndKey = getBucketAndKey(request.url);
+  bucketAndKey.Key =
+    crypto.randomUUID() +
+    bucketAndKey.Key.slice(bucketAndKey.Key.lastIndexOf("."));
 
   const signedRequest = await getSignedUrl(
     s3Client,
@@ -141,7 +144,7 @@ async function handlePutRequest(event) {
   const s3MediaUrl = `${CDN_URL}/${bucketAndKey.Bucket}/${bucketAndKey.Key}`;
 
   const response = new Response(s3MediaUrl, s3Response);
-  response.headers.set("Access-Control-Allow-Origin", "http://localhost:3000");
+  response.headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
 
   if (WEBHOOK_URL && response.status === 200) {
     const contentLength = parseInt(request.headers.get("content-length") || 0);
@@ -156,6 +159,7 @@ async function handlePutRequest(event) {
         body: JSON.stringify({
           mediaSize: contentLength,
           mediaType: request.headers.get("content-type"),
+          id: bucketAndKey.Key,
           url: s3MediaUrl,
         }),
       })
