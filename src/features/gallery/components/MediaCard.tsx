@@ -8,7 +8,7 @@ import { TMedia } from "../types/TMedia";
 type props = {
   media: TMedia;
   showControls: boolean;
-  deleteAction: (mediaId: string) => void;
+  deleteAction?: (mediaId: string) => void;
 };
 
 const MediaCard = ({ media, showControls = true, deleteAction }: props) => {
