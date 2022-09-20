@@ -17,10 +17,10 @@ const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const handlePutCall = async (req: NextApiRequest, res: NextApiResponse) => {
   const uid = await getUserIdFromJWT(req.headers.authorization);
-  const { url, mediaSize, mediaType } = req.body;
+  const { url, mediaSize, mediaType, id } = req.body;
 
   try {
-    await uploadMedia(uid, url, mediaSize, mediaType);
+    await uploadMedia(uid, url, mediaSize, mediaType, id);
 
     return res.status(200).end();
   } catch (err) {
@@ -35,9 +35,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 
   if (req.method === "PUT") {
-    console.log(req.body);
     return handlePutCall(req, res);
   }
+
   return res.status(405).end();
 };
 
