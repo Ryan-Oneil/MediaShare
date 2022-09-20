@@ -75,7 +75,7 @@ export const getServerSideProps = withAuthentication(
     return {
       props: {
         storage: user.storage,
-        medias: user.medias,
+        medias: JSON.parse(JSON.stringify(user.medias)),
         sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
       },
     };

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Box, Heading, HStack, Text, useMediaQuery } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { DASHBOARD_URL, HOMEPAGE_URL } from "../../../utils/urls";
+import { DASHBOARD_URL, HOMEPAGE_URL } from "@/utils/urls";
 import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/router";
 import Image from "next/image";

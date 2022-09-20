@@ -7,8 +7,10 @@ const baseApi = axios.create();
 
 baseApi.interceptors.request.use(
   async (config: AxiosRequestConfig) => {
+    const authToken = await getAuth().currentUser?.getIdToken();
+
     // @ts-ignore
-    config.headers[AUTH_HEADER] = await getAuth()?.currentUser?.getIdToken();
+    config.headers[AUTH_HEADER] = authToken;
     return config;
   },
   (error) => {
@@ -45,7 +47,7 @@ export const apiDeleteCall = async (endpoint: string) => {
 
 export const getApiError = (error: AxiosError) => {
   if (error.response) {
-    return error.response.data;
+    return error.response.data as string;
   } else if (error.request) {
     return "Services are unreachable";
   } else {

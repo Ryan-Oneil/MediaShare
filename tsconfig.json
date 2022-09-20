@@ -18,6 +18,7 @@
     "paths": {
       "@/lib/*": ["src/lib/*"],
       "@/features/*": ["src/features/*"],
+      "@/utils/*": ["src/utils/*"]
     }
   },
   "include": [

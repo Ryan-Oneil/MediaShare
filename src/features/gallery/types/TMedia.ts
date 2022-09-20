@@ -1,5 +1,5 @@
 export type TMedia = {
-  id: string;
+  _id: string;
   filename: string;
   type: string;
   added: Date;
