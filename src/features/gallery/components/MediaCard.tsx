@@ -13,7 +13,6 @@ type props = {
 
 const MediaCard = ({ media, showControls = true, deleteAction }: props) => {
   const { onCopy } = useClipboard(media.url);
-  console.log(media);
 
   return (
     <Card
@@ -48,7 +47,7 @@ const MediaCard = ({ media, showControls = true, deleteAction }: props) => {
             colorScheme="red"
             aria-label="Delete media"
             icon={<FaTrash />}
-            onClick={() => deleteAction(media._id)}
+            onClick={() => (deleteAction ? deleteAction(media._id) : null)}
           />
         </Box>
       )}
