@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "name": "mediashare-proxy-worker",
+  "version": "1.0.0",
+  "description": "A cloudflare worker to proxy S3 uploads to media share",
+  "main": "S3Proxy.js",
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.154.0",
+    "@aws-sdk/s3-request-presigner": "^3.154.0"
+  }
+}
