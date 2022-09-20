@@ -16,7 +16,9 @@ export const LabeledInput = (props) => {
         {label}
       </FormLabel>
       <InputGroup>
-        {icon && <InputLeftElement pointerEvents="none" children={icon} />}
+        {icon && (
+          <InputLeftElement pointerEvents="none">{icon}</InputLeftElement>
+        )}
         <Input {...props} />
       </InputGroup>
       {error && touched && <FormErrorMessage>{error}</FormErrorMessage>}
