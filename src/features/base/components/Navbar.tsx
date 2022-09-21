@@ -21,7 +21,7 @@ import {
   LOGIN_URL,
   PRICE_URL,
   REGISTER_URL,
-} from "../../../utils/urls";
+} from "@/utils/urls";
 import NextLink from "next/link";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { NavItem } from "../types/NavItem";
@@ -59,9 +59,8 @@ export default function Navbar() {
         w={"100%"}
       >
         <Logo />
-        {isDesktop ? (
-          <DesktopNav />
-        ) : (
+        {isDesktop && <DesktopNav />}
+        {!isDesktop && (
           <IconButton
             onClick={onToggle}
             icon={isOpen ? <FaTimes /> : <FaBars />}

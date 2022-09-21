@@ -54,7 +54,7 @@ const MediaUploader = ({ handleUploadFinished }: props) => {
         });
         handleUploadFinished({
           url: uploadedUrl,
-          type: uploadingFile.type,
+          contentType: uploadingFile.type,
           filename: uploadingFile.name,
           _id: uploadedUrl.slice(uploadedUrl.lastIndexOf("/") + 1),
           added: new Date(),
