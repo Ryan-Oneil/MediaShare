@@ -3,7 +3,6 @@ import {
   Container,
   Heading,
   IconButton,
-  Image,
   List,
   ListItem,
   Progress,
@@ -15,6 +14,7 @@ import {
 import { AiOutlineShareAlt } from "react-icons/ai";
 import { UploadItem, UploadStatus } from "@/features/gallery/types/UploadTypes";
 import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
+import Media from "@/features/gallery/components/Media";
 
 const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
   const url = useMemo(() => URL.createObjectURL(file), [file]);
@@ -22,9 +22,11 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
 
   return (
     <ListItem display={"flex"} flex={1} gap={4} alignItems={"center"}>
-      <Image
+      <Media
         src={url}
-        maxH={"60px"}
+        contentType={file.type}
+        h={"100px"}
+        w={"160px"}
         rounded={4}
         onLoad={() => URL.revokeObjectURL(url)}
         alt={"Upload preview"}

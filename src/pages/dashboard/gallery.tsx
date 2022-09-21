@@ -22,7 +22,7 @@ import {
   withAuthentication,
 } from "@/lib/firebase/wrapperUtils";
 import MediaUploader from "@/features/gallery/components/MediaUploader";
-import { apiDeleteCall, getApiError } from "@/utils/axios";
+import { apiDeleteCall } from "@/utils/axios";
 
 const Gallery = ({
   medias,
@@ -35,9 +35,15 @@ const Gallery = ({
   const [mediaList, setMediaList] = useState<TMedia[]>(medias);
 
   const deleteMedia = (mediaId: string) => {
-    apiDeleteCall(`/api/media/${mediaId}`)
-      .then(() => setMediaList((prev) => prev.filter((m) => m._id !== mediaId)))
-      .catch((err) => console.log(getApiError(err)));
+    const media = mediaList.find((m) => m._id === mediaId);
+
+    if (media) {
+      setMediaList((prev) => prev.filter((m) => m._id !== mediaId));
+
+      apiDeleteCall(`/api/media/${mediaId}`).catch(() => {
+        setMediaList((prev) => [...prev, media]);
+      });
+    }
   };
 
   return (
@@ -64,7 +70,7 @@ const Gallery = ({
       </Masonry>
       <Modal isOpen={isOpen} onClose={onClose} size={"6xl"}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent maxH={"80vh"} overflow={"auto"}>
           <ModalCloseButton />
           <ModalBody p={0}>
             <Flex gap={10} p={12}>

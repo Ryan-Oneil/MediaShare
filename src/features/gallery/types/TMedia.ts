@@ -1,7 +1,7 @@
 export type TMedia = {
   _id: string;
   filename: string;
-  type: string;
+  contentType: string;
   added: Date;
   url: string;
   size: number;
