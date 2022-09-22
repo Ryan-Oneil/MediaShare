@@ -6,9 +6,7 @@ const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
   let urls: string[] = [];
 
   for (const mediaName of req.body) {
-    const url = await getUploadUrl(
-      encodeURIComponent(mediaName.replaceAll(" ", "_"))
-    );
+    const url = await getUploadUrl(mediaName);
     urls.push(url);
   }
 

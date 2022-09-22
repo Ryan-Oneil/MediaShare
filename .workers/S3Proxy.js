@@ -30,7 +30,9 @@ const getBucketAndKey = (url) => {
 
 // Verify the signature on the incoming request
 async function verifySignature(request) {
-  const url = new URL(request.url);
+  // Double decodes the URI as the request URL is encoded twice from S3 sdk
+  const decodedUrl = decodeURIComponent(decodeURIComponent(request.url));
+  const url = new URL(decodedUrl);
   const credential = getSearchParam(url, "X-Amz-Credential");
   const accessKeyId = credential.split("/")[0];
 
@@ -51,7 +53,7 @@ async function verifySignature(request) {
 
   const signedURl = await getSignedUrl(
     proxyS3Client,
-    new PutObjectCommand(getBucketAndKey(request.url)),
+    new PutObjectCommand(getBucketAndKey(decodedUrl)),
     {
       expiresIn: 3600,
       signingDate: new Date(date),
