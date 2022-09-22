@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, IconButton, useClipboard } from "@chakra-ui/react";
+import { Box, IconButton, Tooltip, useClipboard } from "@chakra-ui/react";
 import { FaLink, FaTrash } from "react-icons/fa";
 import { Card } from "@/features/base/components/Card";
 import MediaModal from "./MediaModal";
@@ -22,6 +22,7 @@ const MediaCard = ({ media, showControls = true, deleteAction }: props) => {
       _hover={{ shadow: "xl" }}
       rounded={10}
       height={"fit-content"}
+      maxH={"100%"}
     >
       <MediaModal {...media} />
       {showControls && (
@@ -36,19 +37,23 @@ const MediaCard = ({ media, showControls = true, deleteAction }: props) => {
           left={"50%"}
           transform={"translateX(-50%)"}
         >
-          <IconButton
-            variant="ghost"
-            aria-label="Copy share link"
-            icon={<FaLink />}
-            onClick={onCopy}
-          />
-          <IconButton
-            variant="ghost"
-            colorScheme="red"
-            aria-label="Delete media"
-            icon={<FaTrash />}
-            onClick={() => (deleteAction ? deleteAction(media._id) : null)}
-          />
+          <Tooltip label={"Copy link"}>
+            <IconButton
+              variant="ghost"
+              aria-label="Copy share link"
+              icon={<FaLink />}
+              onClick={onCopy}
+            />
+          </Tooltip>
+          <Tooltip label={"Delete media"}>
+            <IconButton
+              variant="ghost"
+              colorScheme="red"
+              aria-label="Delete media"
+              icon={<FaTrash />}
+              onClick={() => (deleteAction ? deleteAction(media._id) : null)}
+            />
+          </Tooltip>
         </Box>
       )}
     </Card>

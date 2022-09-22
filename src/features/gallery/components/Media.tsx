@@ -7,6 +7,7 @@ interface MediaProps extends ImageProps {
   onClick?: MouseEventHandler;
   contentType: string;
   onLoad?: () => void;
+  showControls?: boolean;
 }
 
 const Media = ({
@@ -15,6 +16,7 @@ const Media = ({
   onClick,
   contentType,
   onLoad,
+  showControls = true,
   ...rest
 }: MediaProps) => {
   const [url, setUrl] = React.useState<string>(src);
@@ -38,10 +40,11 @@ const Media = ({
       <Box {...rest}>
         <video
           src={url}
-          controls
-          style={{ maxWidth: "100%", maxHeight: "100%" }}
+          controls={showControls}
+          style={{ maxWidth: "100%", maxHeight: "100%", width: "100%" }}
           muted
           onLoad={onLoad}
+          onClick={onClick}
         />
       </Box>
     );

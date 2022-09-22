@@ -8,6 +8,7 @@ import {
   Progress,
   Spinner,
   Text,
+  Tooltip,
   useClipboard,
   VStack,
 } from "@chakra-ui/react";
@@ -32,7 +33,9 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
         alt={"Upload preview"}
       />
       <VStack flex={1} gap={1}>
-        <Text alignSelf={"start"}>{file.name}</Text>
+        <Text alignSelf={"start"} wordBreak={"break-all"}>
+          {file.name}
+        </Text>
         <Progress
           size="xs"
           value={status === UploadStatus.FAILED ? 100 : progress}
@@ -43,11 +46,15 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
       </VStack>
       {status === UploadStatus.UPLOADING && <Spinner />}
       {status === UploadStatus.UPLOADED && (
-        <IconButton
-          aria-label={"Copy share link"}
-          icon={<AiOutlineShareAlt size={"28"} />}
-          onClick={onCopy}
-        />
+        <Tooltip label={"Copy link"}>
+          <IconButton
+            aria-label={"Copy share link"}
+            icon={<AiOutlineShareAlt size={"24"} />}
+            onClick={onCopy}
+            rounded={"full"}
+            size={"sm"}
+          />
+        </Tooltip>
       )}
     </ListItem>
   );
