@@ -7,7 +7,6 @@ let nextConfig = {
   images: {
     domains: ["via.placeholder.com"],
   },
-  output: "standalone",
 };
 
 if (shouldAnalyzeBundles) {
