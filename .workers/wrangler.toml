@@ -1,0 +1,14 @@
+name = "mediashare-s3-proxy"
+
+workers_dev = true
+main = "S3Proxy.js"
+compatibility_date = "2022-07-21"
+
+[vars]
+AWS_ACCESS_KEY_ID = ""
+AWS_SECRET_ACCESS_KEY = ""
+AWS_S3_ENDPOINT = "https://s3.eu-central-003.backblazeb2.com"
+AWS_S3_REGION = "eu-central-003"
+WEBHOOK_URL = "http://localhost:3000/api/media"
+CDN_URL= "https://cdn.ryanoneil.me/file"
+ALLOWED_ORIGIN = "http://localhost:3000"
