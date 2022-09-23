@@ -5,13 +5,14 @@ import Image from "next/image";
 
 interface DropZoneProps extends ContainerProps {
   handleFileSelected: DropzoneOptions["onDrop"];
+  accept: DropzoneOptions["accept"];
 }
 
 const DropzoneUploader = (props: DropZoneProps) => {
-  const { handleFileSelected, ...rest } = props;
+  const { handleFileSelected, accept, ...rest } = props;
 
   return (
-    <Dropzone onDrop={handleFileSelected}>
+    <Dropzone onDrop={handleFileSelected} accept={accept}>
       {({ getRootProps, getInputProps }) => (
         <Container
           centerContent
