@@ -52,8 +52,8 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
             />
           </Flex>
           <Heading size={"md"}>Recent Uploads</Heading>
-          <Stack gap={6} direction={["column", "row"]}>
-            {medias.map((media) => (
+          <Stack gap={6} direction={["column", "row"]} maxH={200}>
+            {medias.slice(0, 5).map((media) => (
               <MediaCard media={media} showControls={false} key={media._id} />
             ))}
           </Stack>

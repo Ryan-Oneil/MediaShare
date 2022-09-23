@@ -10,9 +10,8 @@ const handleDeleteCall = async (req: NextApiRequest, res: NextApiResponse) => {
     await deleteMedia(uid, mediaId);
 
     return res.status(200).end();
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ error: "Error deleting media" });
+  } catch (err: any) {
+    return res.status(500).json(err.message);
   }
 };
 
