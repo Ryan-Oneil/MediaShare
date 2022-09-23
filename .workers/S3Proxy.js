@@ -53,7 +53,10 @@ async function verifySignature(request) {
 
   const signedURl = await getSignedUrl(
     proxyS3Client,
-    new PutObjectCommand(getBucketAndKey(decodedUrl)),
+    new PutObjectCommand({
+      ...getBucketAndKey(decodedUrl),
+      ContentLength: request.headers.get("content-length"),
+    }),
     {
       expiresIn: 3600,
       signingDate: new Date(date),

@@ -11,7 +11,9 @@ type props = {
 };
 
 const getUploadUrls = async (acceptedFiles: UploadItem[]) => {
-  const mediaNames = acceptedFiles.map((media) => media.file.name);
+  const mediaNames = acceptedFiles.map((media) => {
+    return { name: media.file.name, size: media.file.size };
+  });
   const urls = await apiPostCall("/api/media", mediaNames);
 
   return urls.data;
@@ -40,7 +42,7 @@ const MediaUploader = ({ handleUploadFinished }: props) => {
         const current = progressEvent.loaded;
 
         const progress = Math.floor((current / total) * 100);
-        updateUpload({ ...media, progress });
+        updateUpload({ ...media, progress, status: UploadStatus.UPLOADING });
       },
     })
       .then((response) => {
@@ -61,13 +63,7 @@ const MediaUploader = ({ handleUploadFinished }: props) => {
           size: uploadingFile.size,
         });
       })
-      .catch((error) => {
-        toast({
-          title: "Error uploading file",
-          description: getApiError(error),
-          status: "error",
-          isClosable: true,
-        });
+      .catch(() => {
         updateUpload({ ...media, status: UploadStatus.FAILED });
       });
   };
@@ -78,21 +74,43 @@ const MediaUploader = ({ handleUploadFinished }: props) => {
         src: "",
         progress: 0,
         file,
-        status: UploadStatus.UPLOADING,
+        status: UploadStatus.PENDDING,
       };
     });
     setUploadingMedia((prevState) => [...prevState, ...mediaToUpload]);
 
-    const urls = await getUploadUrls(mediaToUpload);
+    try {
+      const urls = await getUploadUrls(mediaToUpload);
 
-    urls.forEach((url: string, index: number) => {
-      uploadMedia(mediaToUpload[index], url);
-    });
+      urls.forEach((url: string, index: number) => {
+        uploadMedia(mediaToUpload[index], url);
+      });
+    } catch (error: any) {
+      toast({
+        title: "Error uploading media",
+        description: getApiError(error),
+        status: "error",
+        isClosable: true,
+      });
+      setUploadingMedia((prevState) => {
+        const nonFailedMedia = prevState.filter(
+          (m) => m.status !== UploadStatus.PENDDING
+        );
+
+        return [
+          ...nonFailedMedia,
+          ...mediaToUpload.map((m) => ({ ...m, status: UploadStatus.FAILED })),
+        ];
+      });
+    }
   };
 
   return (
     <>
-      <DropzoneUploader handleFileSelected={handleFileDrop} />
+      <DropzoneUploader
+        handleFileSelected={handleFileDrop}
+        accept={{ "image/*": [".png", ".gif", ".jpeg", ".jpg"], "video/*": [] }}
+      />
       <UploadList uploadItems={uploadingMedia} />
     </>
   );

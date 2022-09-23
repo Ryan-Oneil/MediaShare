@@ -25,14 +25,16 @@ export const uploadMedia = async (
           date: new Date(),
         },
       },
+      $inc: { "storage.usedTotal": mediaSize },
     }
   ).exec();
 };
 
-export const getUploadUrl = async (mediaName: string) => {
+export const getUploadUrl = async (mediaName: string, mediaSize: number) => {
   const uploadParams = {
     Bucket: process.env.S3_MEDIA_BUCKET,
     Key: mediaName,
+    ContentLength: mediaSize,
   };
 
   const s3Client = getProxyS3Client();
@@ -44,12 +46,22 @@ export const getUploadUrl = async (mediaName: string) => {
     {
       expiresIn: 3600,
       signingDate: date,
+      signableHeaders: new Set<string>(["host", "content-length"]),
     }
   );
   return signedURl + "&date=" + date.toISOString();
 };
 
-export const deleteMedia = (uploaderUid: string, mediaId: string) => {
+export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
+  const { medias } = await User.findOne(
+    { externalId: uploaderUid },
+    { medias: { $elemMatch: { _id: mediaId } } }
+  ).exec();
+
+  if (medias.length === 0) {
+    throw new Error("Media not found");
+  }
+
   const deleteParams = {
     Bucket: process.env.S3_MEDIA_BUCKET,
     Key: mediaId,
@@ -61,7 +73,10 @@ export const deleteMedia = (uploaderUid: string, mediaId: string) => {
     .then(() => {
       return User.findOneAndUpdate(
         { externalId: uploaderUid },
-        { $pull: { medias: { _id: mediaId } } }
+        {
+          $pull: { medias: { _id: mediaId } },
+          $inc: { "storage.usedTotal": -medias[0].size },
+        }
       )
         .exec()
         .catch((err) => console.log("Error occurred", err));

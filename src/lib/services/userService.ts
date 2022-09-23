@@ -31,3 +31,14 @@ export const createUser = async (userUid: string) => {
   };
   return User.create(user);
 };
+
+export const checkUserStorage = async (userUid: string, mediaSize: number) => {
+  await dbConnect();
+
+  const { storage } = await User.findOne(
+    { externalId: userUid },
+    { storage: 1 }
+  ).exec();
+
+  return storage.usedTotal + mediaSize <= storage.max;
+};
