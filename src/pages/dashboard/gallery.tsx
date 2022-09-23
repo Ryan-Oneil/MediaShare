@@ -55,7 +55,7 @@ const Gallery = ({
         setMediaList((prev) => [...prev, media]);
         setStorageQuota((prev) => ({
           ...prev,
-          used: prev.usedTotal - media.size,
+          usedTotal: prev.usedTotal - media.size,
         }));
       });
     }
@@ -94,6 +94,7 @@ const Gallery = ({
           <ModalBody p={0}>
             <Flex gap={10} p={12} maxW={"100%"}>
               <MediaUploader
+                quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
                 handleUploadFinished={(media: TMedia) => {
                   setMediaList((prev) => [media, ...prev]);
                   setStorageQuota((prev) => ({
