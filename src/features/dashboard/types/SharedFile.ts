@@ -7,7 +7,9 @@ export type SharedFile = {
 
 export type SharedLink = {
   id: string;
-  files: [SharedFile];
+  files: Array<SharedFile>;
+  title: string;
   size: number;
   uploaded: string;
+  expires: string;
 };
