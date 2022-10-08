@@ -15,26 +15,28 @@ import {
 } from "@chakra-ui/react";
 import MediaCard from "@/features/gallery/components/MediaCard";
 import { GetServerSidePropsContext } from "next";
-import { TMedia } from "@/features/gallery/types/TMedia";
+import { IMedia } from "@/features/gallery/types/IMedia";
 import Masonry from "@/features/base/components/Masonry";
 import { getUserById } from "@/lib/services/userService";
 import {
   getUserIdFromJWT,
   withAuthentication,
 } from "@/lib/firebase/wrapperUtils";
-import MediaUploader from "@/features/gallery/components/MediaUploader";
+import FileUploader from "@/features/gallery/components/FileUploader";
 import { apiDeleteCall, getApiError } from "@/utils/axios";
 import { Storage } from "@/features/dashboard/types/DashboardUser";
+import { UploadedItem } from "@/features/gallery/types/UploadTypes";
+import MediaUploader from "@/features/gallery/components/MediaUploader";
 
 const Gallery = ({
   medias,
   storage,
 }: {
-  medias: Array<TMedia>;
+  medias: Array<IMedia>;
   storage: Storage;
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [mediaList, setMediaList] = useState<TMedia[]>(medias);
+  const [mediaList, setMediaList] = useState<IMedia[]>(medias);
   const [storageQuota, setStorageQuota] = useState<Storage>(storage);
   const toast = useToast();
 
@@ -78,7 +80,7 @@ const Gallery = ({
         </Button>
       </Flex>
       <Masonry columnsCount={5}>
-        {mediaList.map((media: TMedia) => (
+        {mediaList.map((media: IMedia) => (
           <MediaCard
             media={media}
             key={media._id}
@@ -95,7 +97,7 @@ const Gallery = ({
             <Flex gap={10} p={12} maxW={"100%"}>
               <MediaUploader
                 quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
-                handleUploadFinished={(media: TMedia) => {
+                handleUploadFinished={(media: UploadedItem) => {
                   setMediaList((prev) => [media, ...prev]);
                   setStorageQuota((prev) => ({
                     ...prev,
