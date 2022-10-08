@@ -1,7 +1,11 @@
 import { ParsedUrlQuery } from "querystring";
 import { GetServerSideProps, NextApiRequest, NextApiResponse } from "next";
-import { LOGIN_URL } from "@/utils/urls";
+import { DASHBOARD_URL, LOGIN_URL } from "@/utils/urls";
 import { getFirebaseAdmin } from "./FirebaseAdmin";
+
+const getRedirectUrl = (currentPath: string) => {
+  return `${LOGIN_URL}?redirect=${currentPath}`;
+};
 
 export const withAuthentication =
   <P, Q extends ParsedUrlQuery = ParsedUrlQuery>(
@@ -14,7 +18,7 @@ export const withAuthentication =
       return {
         redirect: {
           permanent: false,
-          destination: LOGIN_URL,
+          destination: getRedirectUrl(ctx.resolvedUrl),
         },
       };
     }
@@ -28,7 +32,7 @@ export const withRequestAuth = (handler: any) => {
     const user = await getUserIdFromJWT(jwt);
 
     if (!user) {
-      return res.redirect(LOGIN_URL);
+      return res.redirect(getRedirectUrl(req.url || DASHBOARD_URL));
     }
     return handler(req, res);
   };

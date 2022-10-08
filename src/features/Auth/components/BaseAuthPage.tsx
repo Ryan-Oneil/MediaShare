@@ -26,7 +26,15 @@ const BaseAuthPage = ({
   const router = useRouter();
 
   useEffect(() => {
-    if (auth.user && shouldRedirect) {
+    const path = router.query.redirect as string;
+
+    if (!auth.user || !shouldRedirect) {
+      return;
+    }
+
+    if (path) {
+      router.push(path);
+    } else {
       router.replace(DASHBOARD_URL);
     }
   }, [auth]);
