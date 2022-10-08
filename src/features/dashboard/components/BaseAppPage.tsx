@@ -40,7 +40,11 @@ const BaseAppPage = ({
       <Head>
         <title>{title} - Media Share</title>
       </Head>
-      <Flex flexWrap={{ base: "wrap", md: "nowrap" }} minH={"100vh"}>
+      <Flex
+        flexWrap={{ base: "wrap", md: "nowrap" }}
+        minH={"100vh"}
+        as={"main"}
+      >
         <Sidebar display={{ base: "none", md: "block" }}>
           <StorageStatus used={used} max={max} />
         </Sidebar>
@@ -50,7 +54,7 @@ const BaseAppPage = ({
             as="nav"
             bg={"white"}
             boxShadow={"inset 0px -1px 0px #F1F1F1"}
-            p={3}
+            p={6}
           >
             <IconButton
               display={{ base: "inline-flex", md: "none" }}
@@ -60,7 +64,9 @@ const BaseAppPage = ({
               aria-label={"Menu label"}
               mr={5}
             />
-            <Heading size={"md"}>{title}</Heading>
+            <Heading size={"md"} fontWeight={"extrabold"}>
+              {title}
+            </Heading>
             <Spacer />
             <NotificationButton />
             <SettingDropDown />
