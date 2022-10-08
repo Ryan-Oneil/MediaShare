@@ -5,6 +5,15 @@ export type UploadItem = {
   status: UploadStatus;
 };
 
+export type UploadedItem = {
+  _id: string;
+  contentType: string;
+  added: Date;
+  size: number;
+  filename: string;
+  url: string;
+};
+
 export enum UploadStatus {
   UPLOADING,
   UPLOADED,

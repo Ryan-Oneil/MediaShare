@@ -1,10 +1,10 @@
-import { TMedia } from "../../gallery/types/TMedia";
+import { IMedia } from "../../gallery/types/IMedia";
 import { SharedLink } from "./SharedFile";
 
 export type DashboardUser = {
   externalId: string;
   storage: Storage;
-  medias: [TMedia];
+  medias: [IMedia];
   sharedLinks: [SharedLink];
 };
 

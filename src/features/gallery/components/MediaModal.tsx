@@ -7,9 +7,9 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import Media from "./Media";
-import { TMedia } from "../types/TMedia";
+import { IMedia } from "../types/IMedia";
 
-const MediaModal = (props: TMedia) => {
+const MediaModal = (props: IMedia) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>
