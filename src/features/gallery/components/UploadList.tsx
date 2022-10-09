@@ -42,6 +42,7 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
           colorScheme={status === UploadStatus.FAILED ? "red" : "blue"}
           w={"100%"}
           rounded={"full"}
+          isIndeterminate={status === UploadStatus.PENDING}
         />
       </VStack>
       {status === UploadStatus.UPLOADING && <Spinner />}

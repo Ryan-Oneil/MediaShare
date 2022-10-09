@@ -18,5 +18,5 @@ export enum UploadStatus {
   UPLOADING,
   UPLOADED,
   FAILED,
-  PENDDING,
+  PENDING,
 }

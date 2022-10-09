@@ -18,7 +18,7 @@ const DropzoneFileSelector = (props: DropZoneProps) => {
         src: "",
         progress: 0,
         file,
-        status: UploadStatus.PENDDING,
+        status: UploadStatus.PENDING,
       };
     });
     handleFilesChosen(mediaToUpload);
