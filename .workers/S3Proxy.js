@@ -20,6 +20,17 @@ const getSearchParam = (url, param) => {
   return paramSearch;
 };
 
+//get all search param starting with X-Amz-meta
+const getMetaParams = (url) => {
+  const metaParams = {};
+  url.searchParams.forEach((value, key) => {
+    if (key.toLocaleLowerCase().startsWith("x-amz-meta")) {
+      metaParams[key] = value;
+    }
+  });
+  return metaParams;
+};
+
 const getBucketAndKey = (url) => {
   const splitUrl = url.split("/");
   return {
@@ -51,12 +62,20 @@ async function verifySignature(request) {
     },
   });
 
+  const params = {
+    ...getBucketAndKey(decodedUrl),
+    ContentLength: request.headers.get("content-length"),
+    Metadata: {},
+  };
+  const metaParams = getMetaParams(url);
+
+  Object.keys(metaParams).forEach((key) => {
+    params.Metadata[key.replace("x-amz-meta-", "")] = metaParams[key];
+  });
+
   const signedURl = await getSignedUrl(
     proxyS3Client,
-    new PutObjectCommand({
-      ...getBucketAndKey(decodedUrl),
-      ContentLength: request.headers.get("content-length"),
-    }),
+    new PutObjectCommand(params),
     {
       expiresIn: 3600,
       signingDate: new Date(date),
@@ -125,6 +144,8 @@ async function handlePutRequest(event) {
   });
 
   const bucketAndKey = getBucketAndKey(request.url);
+  const originalFileName = bucketAndKey.Key;
+
   bucketAndKey.Key =
     crypto.randomUUID() +
     bucketAndKey.Key.slice(bucketAndKey.Key.lastIndexOf("."));
@@ -153,6 +174,13 @@ async function handlePutRequest(event) {
 
   if (WEBHOOK_URL && response.status === 200) {
     const contentLength = parseInt(request.headers.get("content-length") || 0);
+    const metaParams = {};
+    const url = new URL(request.url);
+
+    Object.keys(getMetaParams(url)).forEach((key) => {
+      metaParams[key.replace("x-amz-meta-", "").replaceAll("-", "")] =
+        getSearchParam(url, key);
+    });
 
     event.waitUntil(
       fetch(WEBHOOK_URL, {
@@ -162,10 +190,12 @@ async function handlePutRequest(event) {
           authorization: request.headers.get("X-Authorization-Firebase"),
         },
         body: JSON.stringify({
-          mediaSize: contentLength,
-          mediaType: request.headers.get("content-type"),
+          size: contentLength,
+          contentType: request.headers.get("content-type"),
           id: bucketAndKey.Key,
           url: s3MediaUrl,
+          originalFileName,
+          ...metaParams,
         }),
       })
     );
