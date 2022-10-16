@@ -143,7 +143,8 @@ async function handlePutRequest(event) {
     },
   });
 
-  const bucketAndKey = getBucketAndKey(request.url);
+  const decodedUrl = decodeURIComponent(decodeURIComponent(request.url));
+  const bucketAndKey = getBucketAndKey(decodedUrl);
   const originalFileName = bucketAndKey.Key;
 
   bucketAndKey.Key =
