@@ -7,12 +7,15 @@ import {
 import { useToast } from "@chakra-ui/react";
 import { apiPostCall, apiPutCall, getApiError } from "@/utils/axios";
 
-const useFileUpload = (presignedUrlEndpoint: string) => {
-  const [uploadItems, setUploadItems] = useState<UploadItem[]>([]);
+const useFileUpload = (
+  presignedUrlEndpoint: string,
+  handleUploadFinished: (uploadedFile: UploadedItem) => void
+) => {
+  const [uploadItemList, setUploadItemList] = useState<UploadItem[]>([]);
   const toast = useToast();
 
   const updateUpload = (uploadItem: UploadItem) => {
-    setUploadItems((prev) => {
+    setUploadItemList((prev) => {
       const newItem = prev.filter((m) => m.file.name !== uploadItem.file.name);
       newItem.push(uploadItem);
 
@@ -71,20 +74,19 @@ const useFileUpload = (presignedUrlEndpoint: string) => {
       });
   };
 
-  const uploadFiles = async (
-    acceptedFiles: UploadItem[],
-    handleUploadFinished: (uploadedFile: UploadedItem) => void
-  ) => {
-    setUploadItems((prevState) => [...prevState, ...acceptedFiles]);
+  const addFilesToBeUploaded = (acceptedFiles: UploadItem[]) => {
+    setUploadItemList((prevState) => [...prevState, ...acceptedFiles]);
+  };
 
+  const uploadSelectedFiles = async (filesToBeUploaded: UploadItem[]) => {
     try {
-      const urls = await getUploadUrls(acceptedFiles);
+      const urls = await getUploadUrls(filesToBeUploaded);
 
       for (const url of urls) {
         const index: number = urls.indexOf(url);
-        const uploadedItem = await uploadFile(acceptedFiles[index], url);
+        const uploadedItem = await uploadFile(filesToBeUploaded[index], url);
 
-        if (uploadedItem) {
+        if (uploadedItem && handleUploadFinished) {
           handleUploadFinished(uploadedItem);
         }
       }
@@ -99,7 +101,30 @@ const useFileUpload = (presignedUrlEndpoint: string) => {
     }
   };
 
-  return { uploadFiles, uploadItems };
+  const uploadWaitingFiles = (
+    uploadUrls: Array<{ url: string; fileName: string }>
+  ) => {
+    const waitingFiles = uploadItemList.filter(
+      (m) => m.status === UploadStatus.PENDING
+    );
+
+    return Promise.all(
+      uploadUrls.map((upload, index) => {
+        const waitingFile = waitingFiles.find(
+          (m) => m.file.name === upload.fileName
+        ) as UploadItem;
+
+        return uploadFile(waitingFile, upload.url);
+      })
+    );
+  };
+
+  return {
+    uploadSelectedFiles,
+    uploadItemList,
+    addFilesToBeUploaded,
+    uploadWaitingFiles,
+  };
 };
 
 export default useFileUpload;

@@ -36,14 +36,15 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
         <Text alignSelf={"start"} wordBreak={"break-all"}>
           {file.name}
         </Text>
-        <Progress
-          size="xs"
-          value={status === UploadStatus.FAILED ? 100 : progress}
-          colorScheme={status === UploadStatus.FAILED ? "red" : "blue"}
-          w={"100%"}
-          rounded={"full"}
-          isIndeterminate={status === UploadStatus.PENDING}
-        />
+        {status !== UploadStatus.PENDING && (
+          <Progress
+            size="xs"
+            value={status === UploadStatus.FAILED ? 100 : progress}
+            colorScheme={status === UploadStatus.FAILED ? "red" : "blue"}
+            w={"100%"}
+            rounded={"full"}
+          />
+        )}
       </VStack>
       {status === UploadStatus.UPLOADING && <Spinner />}
       {status === UploadStatus.UPLOADED && (

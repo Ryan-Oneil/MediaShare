@@ -13,7 +13,10 @@ const MediaUploader = ({
   handleUploadFinished,
   quotaSpaceRemaining,
 }: props) => {
-  const { uploadFiles, uploadItems } = useFileUpload("/api/media");
+  const { uploadSelectedFiles, uploadItemList } = useFileUpload(
+    "/api/media",
+    handleUploadFinished
+  );
 
   return (
     <>
@@ -21,7 +24,9 @@ const MediaUploader = ({
         maxSize={quotaSpaceRemaining}
         accept={{ "image/*": [".png", ".gif", ".jpeg", ".jpg"], "video/*": [] }}
         validator={(file) => {
-          const fileExists = uploadItems.some((m) => m.file.name === file.name);
+          const fileExists = uploadItemList.some(
+            (m) => m.file.name === file.name
+          );
           if (fileExists) {
             return {
               code: "file-exists",
@@ -30,9 +35,9 @@ const MediaUploader = ({
           }
           return null;
         }}
-        handleFilesChosen={(files) => uploadFiles(files, handleUploadFinished)}
+        handleFilesChosen={uploadSelectedFiles}
       />
-      <UploadList uploadItems={uploadItems} />
+      <UploadList uploadItems={uploadItemList} />
     </>
   );
 };
