@@ -1,11 +1,35 @@
 import mongoose from "mongoose";
-import { sharedLinkSchema } from "./SharedLink";
+import {
+  IPendingFile,
+  ISharedLink,
+  pendingFileUploadSchema,
+  SharedLinkSchema,
+} from "./SharedLink";
+import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 
-const QuotaSchema = new mongoose.Schema(
+interface IQuota {
+  max: number;
+  usedTotal: number;
+  videoUsed: number;
+  imageUsed: number;
+  documentUsed: number;
+}
+
+interface IUser {
+  _id: string;
+  externalId: string;
+  storage: IQuota;
+  medias: Array<UploadedItem>;
+  sharedLinks: Array<ISharedLink>;
+  pendingFileUploads: Array<IPendingFile>;
+}
+
+const QuotaSchema = new mongoose.Schema<IQuota>(
   {
     max: {
       type: Number,
-      required: [true, "Please provide the max storage quota"],
+      // 2GB in bytes
+      default: 2147483648,
     },
     usedTotal: {
       type: Number,
@@ -27,7 +51,7 @@ const QuotaSchema = new mongoose.Schema(
   { _id: false }
 );
 
-const mediaSchema = new mongoose.Schema({
+const mediaSchema = new mongoose.Schema<UploadedItem>({
   _id: {
     type: String,
     default: () => new mongoose.Types.ObjectId().toHexString(),
@@ -44,13 +68,13 @@ const mediaSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  date: {
+  added: {
     type: Date,
     required: true,
   },
 });
 
-const UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema<IUser>({
   _id: {
     type: String,
     default: () => new mongoose.Types.ObjectId().toHexString(),
@@ -60,9 +84,23 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Please provide the externalId of the user"],
     immutable: true,
   },
-  storage: QuotaSchema,
-  medias: [mediaSchema],
-  sharedLinks: [sharedLinkSchema],
+  storage: {
+    type: QuotaSchema,
+    default: () => ({}),
+  },
+  medias: {
+    type: [mediaSchema],
+    default: () => [],
+  },
+  sharedLinks: {
+    type: [SharedLinkSchema],
+    default: () => [],
+  },
+  pendingFileUploads: {
+    type: [pendingFileUploadSchema],
+    default: () => [],
+  },
 });
 
-export default mongoose.models.User || mongoose.model("User", UserSchema);
+export default (mongoose.models.User as mongoose.Model<IUser>) ||
+  mongoose.model<IUser>("User", UserSchema);
