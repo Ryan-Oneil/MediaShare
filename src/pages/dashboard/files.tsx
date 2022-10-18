@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import {
   Box,
@@ -7,11 +7,11 @@ import {
   Flex,
   IconButton,
   Input,
+  SimpleGrid,
   Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import { GetServerSidePropsContext } from "next";
-import { SharedLink } from "@/features/dashboard/types/SharedFile";
 import { Storage } from "@/features/dashboard/types/DashboardUser";
 import { getUserById } from "@/lib/services/userService";
 import { FiColumns } from "react-icons/fi";
@@ -22,15 +22,22 @@ import {
 import { BiGridAlt } from "react-icons/bi";
 import FileCard from "@/features/fileshare/components/FileCard";
 import DetailedSharedFileDrawer from "@/features/fileshare/components/DetailedSharedFileDrawer";
+import FileUploader from "@/features/gallery/components/FileUploader";
+import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 
 const Files = ({
   sharedLinks,
   storage,
 }: {
-  sharedLinks: [SharedLink];
+  sharedLinks: Array<ISharedLink>;
   storage: Storage;
 }) => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [storageQuota, setStorageQuota] = useState<Storage>(storage);
+  const [activeLinkId, setActiveLinkId] = useState<string>("");
+  const [sharedLinksList, setSharedLinksList] =
+    useState<Array<ISharedLink>>(sharedLinks);
+  const infoPanel = useDisclosure();
+  const uploadModal = useDisclosure();
 
   return (
     <BaseAppPage
@@ -48,7 +55,11 @@ const Files = ({
             borderRight={"1px solid"}
             borderColor={"#F1F1F1"}
           >
-            <Button variant="outline" rounded={"full"}>
+            <Button
+              variant="outline"
+              rounded={"full"}
+              onClick={uploadModal.onOpen}
+            >
               Share Files
             </Button>
             <Input placeholder={"Search name"} width="auto" rounded={"full"} />
@@ -58,49 +69,47 @@ const Files = ({
               <IconButton aria-label={"Show table"} icon={<FiColumns />} />
             </ButtonGroup>
           </Flex>
-          <Flex p={5}>
-            <FileCard
-              id={""}
-              files={[
-                { name: "test", type: "image", id: "", size: 0 },
-                { name: "test", type: "image", id: "", size: 0 },
-                { name: "test", type: "image", id: "", size: 0 },
-                { name: "test", type: "image", id: "", size: 0 },
-                { name: "test", type: "image", id: "", size: 0 },
-                { name: "test", type: "image", id: "", size: 0 },
-              ]}
-              title={"Lecture Files"}
-              size={2654156}
-              uploaded={new Date().toLocaleDateString()}
-              expires={new Date().toLocaleDateString()}
-              onClick={onOpen}
-            />
-          </Flex>
+          <SimpleGrid minChildWidth={"240px"} p={5} gap={5}>
+            {sharedLinksList.map((sharedLink) => (
+              <FileCard
+                key={sharedLink._id}
+                {...sharedLink}
+                onClick={() => {
+                  setActiveLinkId(sharedLink._id);
+                  infoPanel.onOpen();
+                }}
+              />
+            ))}
+          </SimpleGrid>
         </Box>
-        {isOpen && (
+        {infoPanel.isOpen && (
           <DetailedSharedFileDrawer
-            id={""}
-            title={"Lecture Files"}
-            files={[
-              {
-                name: "testaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-                type: "image",
-                id: "",
-                size: 0,
-              },
-              { name: "test", type: "image", id: "", size: 0 },
-              { name: "test", type: "image", id: "", size: 0 },
-              { name: "test", type: "image", id: "", size: 0 },
-              { name: "test", type: "image", id: "", size: 0 },
-              { name: "test", type: "image", id: "", size: 0 },
-            ]}
-            size={2654156}
-            uploaded={new Date().toLocaleDateString()}
-            expires={new Date().toLocaleDateString()}
-            onClose={onClose}
+            {...(sharedLinksList.find(
+              (link) => link._id === activeLinkId
+            ) as ISharedLink)}
+            expires={new Date()}
+            onClose={() => {
+              infoPanel.onClose();
+              setActiveLinkId("");
+            }}
           />
         )}
       </Flex>
+      {uploadModal.isOpen && (
+        <FileUploader
+          handleUploadFinished={(sharedLink: ISharedLink) => {
+            setSharedLinksList((prev) => [sharedLink, ...prev]);
+            setActiveLinkId(sharedLink._id);
+            setStorageQuota((prev) => ({
+              ...prev,
+              usedTotal: prev.usedTotal + sharedLink.size,
+            }));
+            infoPanel.onOpen();
+          }}
+          quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
+          onClose={uploadModal.onClose}
+        />
+      )}
     </BaseAppPage>
   );
 };
@@ -112,10 +121,13 @@ export const getServerSideProps = withAuthentication(
     const uid = await getUserIdFromJWT(req.cookies.jwt);
 
     const user = await getUserById(uid, "storage sharedLinks");
+    const filteredLinks = user.sharedLinks.filter(
+      (link) => link.files.length > 0
+    );
 
     return {
       props: {
-        sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
+        sharedLinks: JSON.parse(JSON.stringify(filteredLinks)),
         storage: user.storage,
       },
     };

@@ -11,7 +11,7 @@ export interface ISharedLink {
 }
 
 export interface IPendingFile {
-  fileName: string;
+  name: string;
   linkId: string;
   added: Date;
   size: number;
@@ -22,7 +22,7 @@ export const fileSchema = new mongoose.Schema<UploadedItem>({
     type: String,
     default: () => new mongoose.Types.ObjectId().toHexString(),
   },
-  filename: {
+  name: {
     type: String,
     required: true,
   },
@@ -41,7 +41,7 @@ export const fileSchema = new mongoose.Schema<UploadedItem>({
 });
 
 export const pendingFileUploadSchema = new mongoose.Schema<IPendingFile>({
-  fileName: {
+  name: {
     type: String,
     required: true,
   },
@@ -67,6 +67,7 @@ export const SharedLinkSchema = new mongoose.Schema<ISharedLink>({
   title: {
     type: String,
     default: "Untitled",
+    maxlength: 60,
   },
   size: {
     type: Number,

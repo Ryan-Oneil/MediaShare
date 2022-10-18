@@ -1,11 +1,11 @@
 import { IMedia } from "../../gallery/types/IMedia";
-import { SharedLink } from "./SharedFile";
+import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 
 export type DashboardUser = {
   externalId: string;
   storage: Storage;
   medias: [IMedia];
-  sharedLinks: [SharedLink];
+  sharedLinks: [ISharedLink];
 };
 
 export type Storage = {

@@ -13,13 +13,13 @@ import {
   DrawerBody,
   Drawer,
 } from "@chakra-ui/react";
-import { SharedLink } from "@/features/dashboard/types/SharedFile";
 import { displayBytesInReadableForm } from "@/utils/helpers";
 import FileDetail from "@/features/fileshare/components/FileDetail";
 import { FaEdit, FaLink, FaTrash } from "react-icons/fa";
 import LabelIconButton from "@/features/base/components/LabelIconButton";
+import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 
-interface DetailedSharedFileDrawerProps extends SharedLink {
+interface DetailedSharedFileDrawerProps extends ISharedLink {
   onClose: () => void;
 }
 
@@ -58,11 +58,14 @@ const DetailedFileInfo = ({
       <VStack gap={2} alignItems={"start"} p={4} as={"article"}>
         <Heading size={"md"}>Info</Heading>
         <InfoSection title={"Size"} value={displayBytesInReadableForm(size)} />
-        <InfoSection title={"Expires"} value={expires} />
+        <InfoSection
+          title={"Expires"}
+          value={new Date().toLocaleDateString()}
+        />
         <Heading size={"md"}>Files</Heading>
         <VStack p={4} w={"100%"} gap={4} as={"ul"}>
           {files.map((file) => (
-            <FileDetail {...file} key={file.id} />
+            <FileDetail {...file} key={file.name} />
           ))}
         </VStack>
       </VStack>

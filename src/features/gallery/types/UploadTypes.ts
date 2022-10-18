@@ -10,7 +10,7 @@ export type UploadedItem = {
   contentType: string;
   added: Date;
   size: number;
-  filename: string;
+  name: string;
   url: string;
 };
 

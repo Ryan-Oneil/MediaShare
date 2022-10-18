@@ -8,10 +8,10 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import { IPendingFile } from "@/lib/mongoose/model/SharedLink";
 
-const getUploadUrl = async (fileName: string, size: number, linkId: string) => {
+const getUploadUrl = async (name: string, size: number, linkId: string) => {
   const uploadParams = {
     Bucket: process.env.S3_FILE_BUCKET,
-    Key: fileName,
+    Key: name,
     ContentLength: size,
     Metadata: {
       "link-id": linkId,
@@ -82,8 +82,8 @@ export const createShareLink = async (
   const uploadUrls = await Promise.all(
     files.map(async (file) => {
       return {
-        fileName: file.fileName,
-        url: await getUploadUrl(file.fileName, file.size, linkId),
+        name: file.name,
+        url: await getUploadUrl(file.name, file.size, linkId),
       };
     })
   );
@@ -107,6 +107,7 @@ export const createShareLink = async (
 
   return {
     linkId,
+    size: totalSize,
     uploadUrls,
   };
 };
@@ -126,7 +127,7 @@ export const addPendingFilesToLink = async (
   }
 
   const uploadUrls = await Promise.all(
-    files.map((file) => getUploadUrl(file.fileName, file.size, linkId))
+    files.map((file) => getUploadUrl(file.name, file.size, linkId))
   );
 
   await savePendingUpload(uploaderUid, files);
@@ -147,7 +148,7 @@ const getPendingFilesByName = async (
       pendingFileUploads: {
         $elemMatch: {
           linkId: linkId,
-          fileName: { $in: uploadNames },
+          name: { $in: uploadNames },
         },
       },
     }
@@ -165,7 +166,7 @@ export const addFilesToLink = async (
   files: Array<UploadedItem>
 ) => {
   await dbConnect();
-  const uploadNames = files.map((file) => file.filename);
+  const uploadNames = files.map((file) => file.name);
 
   const pendingFileUploads = await getPendingFilesByName(
     uploaderUid,
@@ -176,11 +177,11 @@ export const addFilesToLink = async (
   // TODO: delete files from cloud storage if not in pending uploads
   const uploadedFiles = pendingFileUploads.map((pendingUpload) => {
     const file = files.find(
-      (file) => file.filename === pendingUpload.fileName
+      (file) => file.name === pendingUpload.name
     ) as UploadedItem;
 
     return {
-      filename: pendingUpload.fileName,
+      name: pendingUpload.name,
       size: pendingUpload.size,
       url: file.url,
       contentType: file.contentType,
@@ -207,7 +208,7 @@ export const addFilesToLink = async (
       },
       $pull: {
         pendingFileUploads: {
-          fileName: {
+          name: {
             $in: uploadNames,
           },
           linkId,

@@ -9,7 +9,7 @@ import { apiPostCall, apiPutCall, getApiError } from "@/utils/axios";
 
 const useFileUpload = (
   presignedUrlEndpoint: string,
-  handleUploadFinished: (uploadedFile: UploadedItem) => void
+  handleUploadFinished?: (uploadedFile: UploadedItem) => void
 ) => {
   const [uploadItemList, setUploadItemList] = useState<UploadItem[]>([]);
   const toast = useToast();
@@ -63,7 +63,7 @@ const useFileUpload = (
         return {
           url: uploadedUrl,
           contentType: file.type,
-          filename: file.name,
+          name: file.name,
           _id: src.slice(src.lastIndexOf("/") + 1),
           added: new Date(),
           size: file.size,
@@ -71,6 +71,7 @@ const useFileUpload = (
       })
       .catch(() => {
         updateUpload({ ...uploadItem, status: UploadStatus.FAILED });
+        throw new Error("Upload failed");
       });
   };
 
@@ -102,7 +103,7 @@ const useFileUpload = (
   };
 
   const uploadWaitingFiles = (
-    uploadUrls: Array<{ url: string; fileName: string }>
+    uploadUrls: Array<{ url: string; name: string }>
   ) => {
     const waitingFiles = uploadItemList.filter(
       (m) => m.status === UploadStatus.PENDING
@@ -111,7 +112,7 @@ const useFileUpload = (
     return Promise.all(
       uploadUrls.map((upload, index) => {
         const waitingFile = waitingFiles.find(
-          (m) => m.file.name === upload.fileName
+          (m) => m.file.name === upload.name
         ) as UploadItem;
 
         return uploadFile(waitingFile, upload.url);

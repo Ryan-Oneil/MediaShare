@@ -10,26 +10,21 @@ import {
 } from "@chakra-ui/react";
 import { FaRegFileAlt } from "react-icons/fa";
 import { ImDownload3 } from "react-icons/im";
-import { displayBytesInReadableForm } from "../../../utils/helpers";
-
-type FileProps = {
-  filename: string;
-  size: number;
-  fileType: string;
-};
+import { displayBytesInReadableForm } from "@/utils/helpers";
+import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 
 const FileList = () => {
   return (
     <List spacing={5}>
-      <FileDetail filename={"Example.docx"} fileType={"DOC"} size={12312412} />
-      <FileDetail filename={"Example.docx"} fileType={"DOC"} size={12312412} />
-      <FileDetail filename={"Example.docx"} fileType={"DOC"} size={12312412} />
-      <FileDetail filename={"Example.docx"} fileType={"DOC"} size={12312412} />
+      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
+      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
+      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
+      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
     </List>
   );
 };
 
-const FileDetail = ({ filename, size, fileType }: FileProps) => {
+const FileDetail = ({ name, size, contentType }: UploadedItem) => {
   return (
     <ListItem>
       <HStack as={"section"}>
@@ -43,9 +38,9 @@ const FileDetail = ({ filename, size, fileType }: FileProps) => {
           <FaRegFileAlt size={24} />
         </Box>
         <VStack spacing={0} alignItems={"start"}>
-          <Text>{filename}</Text>
+          <Text>{name}</Text>
           <Text fontSize={"xs"} color={"rgba(0, 0, 0, 0.4)"}>
-            {fileType} - {displayBytesInReadableForm(size)}
+            {contentType} - {displayBytesInReadableForm(size)}
           </Text>
         </VStack>
         <IconButton

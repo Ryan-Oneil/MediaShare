@@ -4,13 +4,20 @@ import { AiOutlineFileExcel } from "react-icons/ai";
 
 type FileIconProps = {
   type: string;
-  fileName: string;
+  name: string;
 };
 
-const FileIcon = ({ type, fileName }: FileIconProps) => {
+const FileIcon = ({ type, name }: FileIconProps) => {
   return (
-    <Tooltip label={fileName}>
-      <Center color="white" bg={"green"} p={2} rounded={12}>
+    <Tooltip label={name}>
+      <Center
+        color="white"
+        bg={"green"}
+        p={2}
+        rounded={12}
+        h={"fit-content"}
+        w={"fit-content"}
+      >
         <AiOutlineFileExcel fontSize={32} />
       </Center>
     </Tooltip>

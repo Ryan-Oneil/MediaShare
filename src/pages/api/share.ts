@@ -21,7 +21,7 @@ const handlePutCall = async (req: NextApiRequest, res: NextApiResponse) => {
   // delete file if functions fails
   addFilesToLink(uid, linkid, [
     {
-      filename: originalFileName,
+      name: originalFileName,
       url,
       _id: id,
       contentType,
