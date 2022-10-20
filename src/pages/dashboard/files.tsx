@@ -57,7 +57,7 @@ const Files = ({
       setSharedLinksList((prev) => [link, ...prev]);
     });
   };
-  console.log(sharedLinksList);
+
   return (
     <BaseAppPage
       title={"Shared Files"}
