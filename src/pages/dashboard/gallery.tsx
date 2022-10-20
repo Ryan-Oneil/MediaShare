@@ -11,7 +11,6 @@ import {
   ModalOverlay,
   Spacer,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
 import MediaCard from "@/features/gallery/components/MediaCard";
 import { GetServerSidePropsContext } from "next";
@@ -22,11 +21,11 @@ import {
   getUserIdFromJWT,
   withAuthentication,
 } from "@/lib/firebase/wrapperUtils";
-import FileUploader from "@/features/gallery/components/FileUploader";
-import { apiDeleteCall, getApiError } from "@/utils/axios";
+import { apiDeleteCall } from "@/utils/axios";
 import { Storage } from "@/features/dashboard/types/DashboardUser";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import MediaUploader from "@/features/gallery/components/MediaUploader";
+import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
 
 const Gallery = ({
   medias,
@@ -38,7 +37,7 @@ const Gallery = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [mediaList, setMediaList] = useState<IMedia[]>(medias);
   const [storageQuota, setStorageQuota] = useState<Storage>(storage);
-  const toast = useToast();
+  const { createToast } = useDisplayApiError();
 
   const deleteMedia = (mediaId: string) => {
     const media = mediaList.find((m) => m._id === mediaId);
@@ -47,13 +46,7 @@ const Gallery = ({
       setMediaList((prev) => prev.filter((m) => m._id !== mediaId));
 
       apiDeleteCall(`/api/media/${mediaId}`).catch((err) => {
-        toast({
-          title: "Couldn't delete media",
-          description: getApiError(err),
-          status: "error",
-          duration: 2000,
-          isClosable: true,
-        });
+        createToast("Error deleting media", err);
         setMediaList((prev) => [...prev, media]);
         setStorageQuota((prev) => ({
           ...prev,

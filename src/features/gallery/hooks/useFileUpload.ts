@@ -4,15 +4,15 @@ import {
   UploadItem,
   UploadStatus,
 } from "@/features/gallery/types/UploadTypes";
-import { useToast } from "@chakra-ui/react";
-import { apiPostCall, apiPutCall, getApiError } from "@/utils/axios";
+import { apiPostCall, apiPutCall } from "@/utils/axios";
+import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
 
 const useFileUpload = (
   presignedUrlEndpoint: string,
   handleUploadFinished?: (uploadedFile: UploadedItem) => void
 ) => {
   const [uploadItemList, setUploadItemList] = useState<UploadItem[]>([]);
-  const toast = useToast();
+  const { createToast } = useDisplayApiError();
 
   const updateUpload = (uploadItem: UploadItem) => {
     setUploadItemList((prev) => {
@@ -92,13 +92,7 @@ const useFileUpload = (
         }
       }
     } catch (error: any) {
-      toast({
-        title: "Error uploading File",
-        description: getApiError(error),
-        status: "error",
-        isClosable: true,
-        duration: 2000,
-      });
+      createToast("Error uploading File", error);
     }
   };
 
@@ -106,7 +100,8 @@ const useFileUpload = (
     uploadUrls: Array<{ url: string; name: string }>
   ) => {
     const waitingFiles = uploadItemList.filter(
-      (m) => m.status === UploadStatus.PENDING
+      (m) =>
+        m.status === UploadStatus.PENDING || m.status === UploadStatus.FAILED
     );
 
     return Promise.all(

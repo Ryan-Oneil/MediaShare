@@ -1,7 +1,6 @@
 import React from "react";
 import DropzoneFileSelector from "@/features/gallery/components/DropzoneFileSelector";
 import UploadList from "@/features/gallery/components/UploadList";
-import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import {
   Box,
   Button,
@@ -13,11 +12,11 @@ import {
   ModalContent,
   ModalFooter,
   ModalOverlay,
-  useToast,
 } from "@chakra-ui/react";
 import useFileUpload from "@/features/gallery/hooks/useFileUpload";
-import { apiPostCall, getApiError } from "@/utils/axios";
+import { apiPostCall } from "@/utils/axios";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
+import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
 
 type props = {
   handleUploadFinished: (sharedLink: ISharedLink) => void;
@@ -33,9 +32,8 @@ const FileUploader = ({
   const { uploadItemList, addFilesToBeUploaded, uploadWaitingFiles } =
     useFileUpload("/api/share");
   const [shareTitle, setShareTitle] = React.useState<string>("");
-  const [shareId, setShareId] = React.useState<string>("");
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
-  const toast = useToast();
+  const { createToast } = useDisplayApiError();
 
   const shareFiles = async () => {
     setIsUploading(true);
@@ -45,7 +43,6 @@ const FileUploader = ({
         return { name: file.name, size: file.size };
       }),
     });
-    setShareId(data.linkId);
 
     uploadWaitingFiles(data.uploadUrls)
       .then((uploadedFiles) => {
@@ -54,20 +51,14 @@ const FileUploader = ({
           size: uploadedFiles.reduce((acc, item) => acc + item.size, 0),
           expires: new Date(),
           files: uploadedFiles,
-          _id: shareId,
+          _id: data.linkId,
           uploaded: new Date(),
         };
         handleUploadFinished(link);
         onClose();
       })
       .catch((error) => {
-        toast({
-          title: "Error uploading File",
-          description: getApiError(error),
-          status: "error",
-          isClosable: true,
-          duration: 2000,
-        });
+        createToast("Error uploading files", error);
         setIsUploading(false);
       });
   };
