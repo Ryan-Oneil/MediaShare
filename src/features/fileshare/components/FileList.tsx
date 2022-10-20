@@ -12,14 +12,14 @@ import { FaRegFileAlt } from "react-icons/fa";
 import { ImDownload3 } from "react-icons/im";
 import { displayBytesInReadableForm } from "@/utils/helpers";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
+import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 
-const FileList = () => {
+const FileList = ({ files }: ISharedLink) => {
   return (
     <List spacing={5}>
-      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
-      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
-      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
-      <FileDetail name={"Example.docx"} contentType={"DOC"} size={12312412} />
+      {files.map((file: UploadedItem) => (
+        <FileDetail key={file.name} {...file} />
+      ))}
     </List>
   );
 };

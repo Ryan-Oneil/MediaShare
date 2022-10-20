@@ -2,7 +2,7 @@ import React from "react";
 import BaseAuthPage from "@/features/Auth/components/BaseAuthPage";
 import { Card } from "@/features/base/components/Card";
 import FileList from "@/features/fileshare/components/FileList";
-import { Button, Center } from "@chakra-ui/react";
+import { Button, Center, Heading } from "@chakra-ui/react";
 import { GetServerSidePropsContext } from "next";
 import { getSharedLink } from "@/lib/services/fileshareService";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
@@ -15,7 +15,12 @@ const Share = ({ sharedLink }: { sharedLink: ISharedLink }) => {
       shouldRedirect={false}
     >
       <Card m={"auto"} rounded={10} p={5} mt={10}>
-        <FileList />
+        {sharedLink.title && (
+          <Heading fontSize={"2xl"} pb={5}>
+            {sharedLink.title}
+          </Heading>
+        )}
+        <FileList {...sharedLink} />
         <Center mt={5}>
           <Button>Download All</Button>
         </Center>

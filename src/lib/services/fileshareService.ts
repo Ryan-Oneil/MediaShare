@@ -181,6 +181,7 @@ export const addFilesToLink = async (
     ) as UploadedItem;
 
     return {
+      _id: file._id,
       name: pendingUpload.name,
       size: pendingUpload.size,
       url: file.url,
