@@ -10,14 +10,17 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { SharedLink } from "../types/SharedFile";
-import { displayBytesInReadableForm } from "../../../utils/helpers";
+import { displayBytesInReadableForm } from "@/utils/helpers";
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { FaEye, FaLink, FaTrash } from "react-icons/fa";
+import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
+import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
+import { useRouter } from "next/router";
+import { FILE_SHARE_URL } from "@/utils/urls";
 
 type props = {
-  links: [SharedLink];
+  links: [ISharedLink];
 };
 
 const RecentFileUploads = ({ links }: props) => {
@@ -34,7 +37,7 @@ const RecentFileUploads = ({ links }: props) => {
         </Thead>
         <Tbody>
           {links.map((sharedLink) => (
-            <TableRow {...sharedLink} key={sharedLink.id} />
+            <TableRow {...sharedLink} key={sharedLink._id} />
           ))}
         </Tbody>
       </Table>
@@ -42,10 +45,12 @@ const RecentFileUploads = ({ links }: props) => {
   );
 };
 
-const TableRow = ({ files, uploaded, size }: SharedLink) => {
+const TableRow = ({ _id, title, uploaded, size }: ISharedLink) => {
+  const { onCopy } = useCopyLink(_id);
+  const router = useRouter();
   return (
     <Tr bg={"white"}>
-      <Td>{files[0].name}</Td>
+      <Td>{title}</Td>
       <Td>{new Date(uploaded).toLocaleDateString()}</Td>
       <Td>{displayBytesInReadableForm(size)}</Td>
       <Td>
@@ -58,8 +63,15 @@ const TableRow = ({ files, uploaded, size }: SharedLink) => {
           ></MenuButton>
           <Portal>
             <MenuList>
-              <MenuItem icon={<FaEye />}>View</MenuItem>
-              <MenuItem icon={<FaLink />}>Copy Link</MenuItem>
+              <MenuItem
+                icon={<FaEye />}
+                onClick={() => router.push(`${FILE_SHARE_URL}/${_id}`)}
+              >
+                View
+              </MenuItem>
+              <MenuItem icon={<FaLink />} onClick={onCopy}>
+                Copy Link
+              </MenuItem>
               <MenuItem icon={<FaTrash color={"red"} />}>Delete</MenuItem>
             </MenuList>
           </Portal>
