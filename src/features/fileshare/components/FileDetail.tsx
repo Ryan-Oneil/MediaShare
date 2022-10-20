@@ -21,6 +21,7 @@ const FileDetail = ({ name, contentType, size }: UploadedItem) => {
         aria-label={"Delete"}
         icon={<FaTrash color={"red"} />}
         variant={"ghost"}
+        disabled
       />
     </Flex>
   );

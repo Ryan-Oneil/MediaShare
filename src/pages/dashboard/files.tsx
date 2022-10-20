@@ -24,6 +24,9 @@ import FileCard from "@/features/fileshare/components/FileCard";
 import DetailedSharedFileDrawer from "@/features/fileshare/components/DetailedSharedFileDrawer";
 import FileUploader from "@/features/gallery/components/FileUploader";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
+import { apiDeleteCall } from "@/utils/axios";
+import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
+import { AxiosError } from "axios";
 
 const Files = ({
   sharedLinks,
@@ -38,7 +41,23 @@ const Files = ({
     useState<Array<ISharedLink>>(sharedLinks);
   const infoPanel = useDisclosure();
   const uploadModal = useDisclosure();
+  const { createToast } = useDisplayApiError();
 
+  const deleteLink = (id: string) => {
+    const link = sharedLinksList.find((link) => link._id === id) as ISharedLink;
+
+    if (activeLinkId === id) {
+      infoPanel.onClose();
+      setActiveLinkId("");
+    }
+    setSharedLinksList((prev) => prev.filter((link) => link._id !== id));
+
+    apiDeleteCall(`/api/share/${link._id}`).catch((err) => {
+      createToast("Error deleting link", err);
+      setSharedLinksList((prev) => [link, ...prev]);
+    });
+  };
+  console.log(sharedLinksList);
   return (
     <BaseAppPage
       title={"Shared Files"}
@@ -78,11 +97,12 @@ const Files = ({
                   setActiveLinkId(sharedLink._id);
                   infoPanel.onOpen();
                 }}
+                onDelete={() => deleteLink(sharedLink._id)}
               />
             ))}
           </SimpleGrid>
         </Box>
-        {infoPanel.isOpen && (
+        {infoPanel.isOpen && activeLinkId && (
           <DetailedSharedFileDrawer
             {...(sharedLinksList.find(
               (link) => link._id === activeLinkId
@@ -92,6 +112,7 @@ const Files = ({
               infoPanel.onClose();
               setActiveLinkId("");
             }}
+            onDelete={() => deleteLink(activeLinkId)}
           />
         )}
       </Flex>

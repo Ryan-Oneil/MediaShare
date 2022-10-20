@@ -18,9 +18,11 @@ import FileDetail from "@/features/fileshare/components/FileDetail";
 import { FaEdit, FaLink, FaTrash } from "react-icons/fa";
 import LabelIconButton from "@/features/base/components/LabelIconButton";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
+import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
 
 interface DetailedSharedFileDrawerProps extends ISharedLink {
   onClose: () => void;
+  onDelete: () => void;
 }
 
 const InfoSection = ({ title, value }: { title: string; value: string }) => {
@@ -36,12 +38,16 @@ const InfoSection = ({ title, value }: { title: string; value: string }) => {
 };
 
 const DetailedFileInfo = ({
+  _id,
   title,
   size,
   expires,
   files,
   onClose,
+  onDelete,
 }: DetailedSharedFileDrawerProps) => {
+  const { onCopy } = useCopyLink(_id);
+
   return (
     <Flex
       bg={"white"}
@@ -79,6 +85,7 @@ const DetailedFileInfo = ({
         <LabelIconButton
           aria-label={"Copy Link"}
           icon={<FaLink fontSize={24} />}
+          onClick={onCopy}
         />
         <LabelIconButton
           aria-label={"Edit Title"}
@@ -87,6 +94,7 @@ const DetailedFileInfo = ({
         <LabelIconButton
           aria-label={"Delete"}
           icon={<FaTrash color={"red"} fontSize={24} />}
+          onClick={onDelete}
         />
       </ButtonGroup>
     </Flex>

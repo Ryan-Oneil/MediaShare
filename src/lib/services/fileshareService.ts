@@ -2,9 +2,9 @@ import User from "@/lib/mongoose/model/User";
 import { UUID } from "bson";
 import dbConnect from "../mongoose";
 import { hasSufficientStorage } from "@/lib/services/userService";
-import { getProxyS3Client } from "@/lib/amazon/S3Client";
+import { getProxyS3Client, getS3Client } from "@/lib/amazon/S3Client";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import { IPendingFile } from "@/lib/mongoose/model/SharedLink";
 
@@ -216,4 +216,61 @@ export const addFilesToLink = async (
       },
     }
   ).exec();
+};
+
+const deleteS3Files = (files: Array<UploadedItem>) => {
+  const s3Client = getS3Client();
+
+  const deleteParams = {
+    Bucket: process.env.S3_FILE_BUCKET,
+    Delete: {
+      Objects: files.map((file) => ({ Key: file._id })),
+    },
+  };
+
+  return s3Client.send(new DeleteObjectsCommand(deleteParams));
+};
+
+export const deleteSharedLink = async (userUid: string, linkId: string) => {
+  await dbConnect();
+  const { sharedLinks } = await User.findOne(
+    { externalId: userUid, "sharedLinks._id": linkId },
+    { "sharedLinks.$": 1 }
+  )
+    .orFail(() => new Error("Link not found"))
+    .lean()
+    .exec();
+
+  const linkSize = sharedLinks[0].size;
+  deleteS3Files(sharedLinks[0].files);
+
+  return User.findOneAndUpdate(
+    { externalId: userUid, "sharedLinks._id": linkId },
+    {
+      $inc: {
+        "storage.usedTotal": -linkSize,
+        "storage.documentUsed": -linkSize,
+      },
+      $pull: {
+        sharedLinks: {
+          _id: linkId,
+        },
+      },
+    }
+  ).exec();
+};
+
+// get shared link by link id without user id
+export const getSharedLink = async (linkId: string) => {
+  await dbConnect();
+
+  const { sharedLinks } = await User.findOne(
+    { "sharedLinks._id": linkId },
+    { "sharedLinks.$": 1 }
+  )
+    .orFail(() => new Error("Link not found"))
+    .lean()
+    .exec();
+
+  return sharedLinks[0];
 };

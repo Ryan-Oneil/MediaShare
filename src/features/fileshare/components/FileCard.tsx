@@ -5,14 +5,12 @@ import {
   Flex,
   Heading,
   IconButton,
-  Link,
   SimpleGrid,
   Spacer,
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { FILE_SHARE_URL, HOMEPAGE_URL } from "@/utils/urls";
-import NextLink from "next/link";
+import { FILE_SHARE_URL } from "@/utils/urls";
 import FileIcon from "@/features/fileshare/components/FileIcon";
 import { displayBytesInReadableForm } from "@/utils/helpers";
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
@@ -20,9 +18,12 @@ import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaEye, FaLink, FaTrash } from "react-icons/fa";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
+import { useRouter } from "next/router";
+import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
 
 interface FileCardProps extends ISharedLink {
   onClick?: () => void;
+  onDelete: () => void;
 }
 
 const FileCard = ({
@@ -32,7 +33,11 @@ const FileCard = ({
   files,
   onClick,
   _id,
+  onDelete,
 }: FileCardProps) => {
+  const { onCopy } = useCopyLink(_id);
+  const router = useRouter();
+
   return (
     <Card
       width={"fit-content"}
@@ -66,11 +71,33 @@ const FileCard = ({
               as={IconButton}
               icon={<HiOutlineDotsVertical size={26} />}
               variant={"ghost"}
+              onClick={(e) => e.stopPropagation()}
             />
             <MenuList>
-              <MenuItem icon={<FaEye />}>View</MenuItem>
-              <MenuItem icon={<FaLink />}>Copy Link</MenuItem>
-              <MenuItem icon={<FaTrash color={"red"} />}>Delete</MenuItem>
+              <MenuItem
+                icon={<FaEye />}
+                onClick={() => router.push(`${FILE_SHARE_URL}/${_id}`)}
+              >
+                View
+              </MenuItem>
+              <MenuItem
+                icon={<FaLink />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onCopy();
+                }}
+              >
+                Copy Link
+              </MenuItem>
+              <MenuItem
+                icon={<FaTrash color={"red"} />}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+              >
+                Delete
+              </MenuItem>
             </MenuList>
           </Menu>
         </Flex>
