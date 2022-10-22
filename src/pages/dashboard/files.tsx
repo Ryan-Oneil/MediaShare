@@ -3,23 +3,18 @@ import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import {
   Box,
   Button,
-  ButtonGroup,
   Flex,
-  IconButton,
   Input,
   SimpleGrid,
-  Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import { GetServerSidePropsContext } from "next";
 import { Storage } from "@/features/dashboard/types/DashboardUser";
 import { getUserById } from "@/lib/services/userService";
-import { FiColumns } from "react-icons/fi";
 import {
   getUserIdFromJWT,
   withAuthentication,
 } from "@/lib/firebase/wrapperUtils";
-import { BiGridAlt } from "react-icons/bi";
 import FileCard from "@/features/fileshare/components/FileCard";
 import DetailedSharedFileDrawer from "@/features/fileshare/components/DetailedSharedFileDrawer";
 import FileUploader from "@/features/gallery/components/FileUploader";
@@ -89,11 +84,6 @@ const Files = ({
               Share Files
             </Button>
             <Input placeholder={"Search name"} width="auto" rounded={"full"} />
-            <Spacer />
-            <ButtonGroup isAttached variant="outline">
-              <IconButton aria-label={"Show grid"} icon={<BiGridAlt />} />
-              <IconButton aria-label={"Show table"} icon={<FiColumns />} />
-            </ButtonGroup>
           </Flex>
           <SimpleGrid minChildWidth={"240px"} p={5} gap={5}>
             {sharedLinksList.map((sharedLink) => (
