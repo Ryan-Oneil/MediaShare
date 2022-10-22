@@ -76,7 +76,7 @@ const FileUploader = ({
       <ModalContent maxH={"80vh"} overflowX={"hidden"} overflowY={"auto"}>
         <ModalCloseButton />
         <ModalBody p={0}>
-          <Flex gap={10} p={12} pb={0} maxW={"100%"}>
+          <Flex gap={10} p={12} pb={0} maxW={"100%"} maxH={"60vh"}>
             <DropzoneFileSelector
               maxSize={quotaSpaceRemaining}
               validator={(file) => {
@@ -94,7 +94,7 @@ const FileUploader = ({
               handleFilesChosen={addFilesToBeUploaded}
               disabled={isUploading}
             />
-            <Box w={"100%"}>
+            <Box w={"100%"} overflow={"auto"}>
               <Input
                 placeholder="Title"
                 mb={4}

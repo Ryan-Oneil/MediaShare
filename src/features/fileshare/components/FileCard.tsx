@@ -1,6 +1,7 @@
 import React from "react";
 import { Card } from "@/features/base/components/Card";
 import {
+  Center,
   Container,
   Flex,
   Heading,
@@ -20,6 +21,7 @@ import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import { useRouter } from "next/router";
 import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
+import { AiOutlineFileText } from "react-icons/ai";
 
 interface FileCardProps extends ISharedLink {
   onClick?: () => void;
@@ -49,14 +51,25 @@ const FileCard = ({
     >
       <VStack gap={2} h={"100%"}>
         <SimpleGrid columns={4} gap={4} p={4}>
-          {files.map((file: UploadedItem) => (
+          {files.slice(0, 7).map((file: UploadedItem) => (
             <FileIcon key={_id + file.name} {...file} />
           ))}
+          {files.length > 7 && (
+            <Center
+              bg={"#F0F0F0"}
+              p={2}
+              rounded={12}
+              m={"auto"}
+              fontWeight={"bold"}
+            >
+              {`+${files.length - 7}`}
+            </Center>
+          )}
         </SimpleGrid>
         <Container mt={"auto!important"}>
           <Heading size={"md"}>{title ? title : "Untitled"}</Heading>
           <Text color={"rgba(0, 0, 0, 0.4)"} fontWeight={"700"}>
-            Expires in {expires && new Date(expires).toLocaleDateString()}
+            Expires on {expires && new Date(expires).toLocaleDateString()}
           </Text>
         </Container>
         <Flex bg={"#F0F0F0"} w={"100%"} p={4} alignItems={"center"}>

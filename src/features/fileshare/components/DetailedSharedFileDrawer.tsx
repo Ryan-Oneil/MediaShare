@@ -69,7 +69,14 @@ const DetailedFileInfo = ({
           value={new Date().toLocaleDateString()}
         />
         <Heading size={"md"}>Files</Heading>
-        <VStack p={4} w={"100%"} gap={4} as={"ul"}>
+        <VStack
+          p={4}
+          w={"100%"}
+          gap={4}
+          as={"ul"}
+          overflow={"auto"}
+          maxH={"65vh"}
+        >
           {files.map((file) => (
             <FileDetail {...file} key={file.name}>
               <IconButton
