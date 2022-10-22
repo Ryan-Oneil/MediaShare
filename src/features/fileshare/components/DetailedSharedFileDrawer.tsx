@@ -12,6 +12,7 @@ import {
   DrawerContent,
   DrawerBody,
   Drawer,
+  IconButton,
 } from "@chakra-ui/react";
 import { displayBytesInReadableForm } from "@/utils/helpers";
 import FileDetail from "@/features/fileshare/components/FileDetail";
@@ -71,7 +72,14 @@ const DetailedFileInfo = ({
         <Heading size={"md"}>Files</Heading>
         <VStack p={4} w={"100%"} gap={4} as={"ul"}>
           {files.map((file) => (
-            <FileDetail {...file} key={file.name} />
+            <FileDetail {...file} key={file.name}>
+              <IconButton
+                aria-label={"Delete"}
+                icon={<FaTrash color={"red"} />}
+                variant={"ghost"}
+                disabled
+              />
+            </FileDetail>
           ))}
         </VStack>
       </VStack>

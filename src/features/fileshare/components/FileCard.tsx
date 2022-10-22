@@ -50,11 +50,7 @@ const FileCard = ({
       <VStack gap={2} h={"100%"}>
         <SimpleGrid columns={4} gap={4} p={4}>
           {files.map((file: UploadedItem) => (
-            <FileIcon
-              type={file.contentType}
-              name={file.name}
-              key={_id + file.name}
-            />
+            <FileIcon key={_id + file.name} {...file} />
           ))}
         </SimpleGrid>
         <Container mt={"auto!important"}>

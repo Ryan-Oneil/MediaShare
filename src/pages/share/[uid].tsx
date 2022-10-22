@@ -14,16 +14,13 @@ const Share = ({ sharedLink }: { sharedLink: ISharedLink }) => {
       backgroundColor={"#FAFAFA"}
       shouldRedirect={false}
     >
-      <Card m={"auto"} rounded={10} p={5} mt={10}>
+      <Card m={"auto"} rounded={10} p={5} mt={20} maxW={"xl"}>
         {sharedLink.title && (
           <Heading fontSize={"2xl"} pb={5}>
             {sharedLink.title}
           </Heading>
         )}
         <FileList {...sharedLink} />
-        <Center mt={5}>
-          <Button>Download All</Button>
-        </Center>
       </Card>
     </BaseAuthPage>
   );

@@ -1,13 +1,14 @@
 import React from "react";
-import { Center, Circle, Tooltip } from "@chakra-ui/react";
-import { AiOutlineFileExcel } from "react-icons/ai";
+import { Center, Tooltip } from "@chakra-ui/react";
+import Media from "@/features/gallery/components/Media";
+import { UploadedItem } from "@/features/gallery/types/UploadTypes";
+import { AiOutlineFileText } from "react-icons/ai";
 
-type FileIconProps = {
-  type: string;
-  name: string;
-};
+const FileIcon = ({ contentType, name, url }: UploadedItem) => {
+  if (contentType.includes("image") || contentType.includes("video")) {
+    return <Media src={url} contentType={contentType} w={12} h={12} />;
+  }
 
-const FileIcon = ({ type, name }: FileIconProps) => {
   return (
     <Tooltip label={name}>
       <Center
@@ -18,7 +19,7 @@ const FileIcon = ({ type, name }: FileIconProps) => {
         h={"fit-content"}
         w={"fit-content"}
       >
-        <AiOutlineFileExcel fontSize={32} />
+        <AiOutlineFileText fontSize={32} />
       </Center>
     </Tooltip>
   );
