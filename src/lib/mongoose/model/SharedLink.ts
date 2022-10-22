@@ -79,7 +79,6 @@ export const SharedLinkSchema = new mongoose.Schema<ISharedLink>({
   },
   expires: {
     type: Date,
-    required: true,
   },
   files: [fileSchema],
 });

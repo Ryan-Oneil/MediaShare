@@ -17,6 +17,7 @@ import useFileUpload from "@/features/gallery/hooks/useFileUpload";
 import { apiPostCall } from "@/utils/axios";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
+import { AxiosError } from "axios";
 
 type props = {
   handleUploadFinished: (sharedLink: ISharedLink) => void;
@@ -37,30 +38,36 @@ const FileUploader = ({
 
   const shareFiles = async () => {
     setIsUploading(true);
-    const { data } = await apiPostCall("/api/share", {
-      title: shareTitle,
-      files: uploadItemList.map(({ file }) => {
-        return { name: file.name, size: file.size };
-      }),
-    });
 
-    uploadWaitingFiles(data.uploadUrls)
-      .then((uploadedFiles) => {
-        const link: ISharedLink = {
-          title: shareTitle,
-          size: uploadedFiles.reduce((acc, item) => acc + item.size, 0),
-          expires: new Date(),
-          files: uploadedFiles,
-          _id: data.linkId,
-          uploaded: new Date(),
-        };
-        handleUploadFinished(link);
-        onClose();
-      })
-      .catch((error) => {
-        createToast("Error uploading files", error);
-        setIsUploading(false);
+    try {
+      const { data } = await apiPostCall("/api/share", {
+        title: shareTitle,
+        files: uploadItemList.map(({ file }) => {
+          return { name: file.name, size: file.size };
+        }),
       });
+
+      uploadWaitingFiles(data.uploadUrls)
+        .then((uploadedFiles) => {
+          const link: ISharedLink = {
+            title: shareTitle,
+            size: uploadedFiles.reduce((acc, item) => acc + item.size, 0),
+            expires: new Date(),
+            files: uploadedFiles,
+            _id: data.linkId,
+            uploaded: new Date(),
+          };
+          handleUploadFinished(link);
+          onClose();
+        })
+        .catch((error) => {
+          createToast("Error uploading files", error);
+          setIsUploading(false);
+        });
+    } catch (error: any) {
+      createToast("Error sharing files", error);
+      setIsUploading(false);
+    }
   };
 
   return (

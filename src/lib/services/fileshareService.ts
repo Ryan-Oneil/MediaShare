@@ -6,7 +6,7 @@ import { getProxyS3Client, getS3Client } from "@/lib/amazon/S3Client";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
-import { IPendingFile } from "@/lib/mongoose/model/SharedLink";
+import { IPendingFile, ISharedLink } from "@/lib/mongoose/model/SharedLink";
 
 const getUploadUrl = async (name: string, size: number, linkId: string) => {
   const uploadParams = {
@@ -88,6 +88,17 @@ export const createShareLink = async (
     })
   );
 
+  const { maxSharedLength } = await User.findOne(
+    { externalId: uploaderUid },
+    { maxSharedLength: 1 }
+  )
+    .orFail(() => new Error("User not found"))
+    .lean()
+    .exec();
+
+  const expiryDate = new Date();
+  expiryDate.setDate(expiryDate.getDate() + maxSharedLength);
+
   await User.findOneAndUpdate(
     { externalId: uploaderUid },
     {
@@ -97,6 +108,7 @@ export const createShareLink = async (
           size: totalSize,
           title,
           files: [],
+          expires: expiryDate,
         },
         pendingFileUploads: {
           $each: files,
@@ -174,7 +186,13 @@ export const addFilesToLink = async (
     uploadNames
   );
 
-  // TODO: delete files from cloud storage if not in pending uploads
+  //deletes uploaded files that were not found in pending uploads
+  const filesToDelete = files.filter(
+    (file) =>
+      !pendingFileUploads.find((pendingFile) => pendingFile.name === file.name)
+  );
+  deleteS3Files(filesToDelete);
+
   const uploadedFiles = pendingFileUploads.map((pendingUpload) => {
     const file = files.find(
       (uploadedFile) => uploadedFile.name === pendingUpload.name
@@ -261,7 +279,36 @@ export const deleteSharedLink = async (userUid: string, linkId: string) => {
   ).exec();
 };
 
-// get shared link by link id without user id
+const deleteSharedLinks = (
+  expiredLinks: Array<ISharedLink>,
+  userUid: string
+) => {
+  const expiredLinkIds = expiredLinks.map((link) => link._id);
+  const expiredLinkSize = expiredLinks.reduce(
+    (total: number, link) => total + link.size,
+    0
+  );
+
+  deleteS3Files(expiredLinks.flatMap((link) => link.files));
+
+  return User.findOneAndUpdate(
+    { externalId: userUid },
+    {
+      $inc: {
+        "storage.usedTotal": -expiredLinkSize,
+        "storage.documentUsed": -expiredLinkSize,
+      },
+      $pull: {
+        sharedLinks: {
+          _id: {
+            $in: expiredLinkIds,
+          },
+        },
+      },
+    }
+  ).exec();
+};
+
 export const getSharedLink = async (linkId: string) => {
   await dbConnect();
 
@@ -270,8 +317,51 @@ export const getSharedLink = async (linkId: string) => {
     { "sharedLinks.$": 1 }
   )
     .orFail(() => new Error("Link not found"))
+    .exec();
+
+  const sharedLink = sharedLinks[0];
+
+  if (isLinkExpired(sharedLink)) {
+    User.findOne({ "sharedLinks._id": linkId }, { externalId: 1 })
+      .lean()
+      .orFail(
+        () =>
+          new Error(
+            "Link or user not found when attempting to delete expired link"
+          )
+      )
+      .exec()
+      .then(({ externalId }) => {
+        deleteSharedLinks([sharedLink], externalId);
+      });
+
+    throw new Error("This link has expired");
+  }
+  return sharedLink;
+};
+
+export const isLinkExpired = (link: ISharedLink) => {
+  const expiryDate = link.expires;
+
+  return expiryDate && expiryDate < new Date();
+};
+
+export const deleteUsersExpiredSharedLinks = async (userUid: string) => {
+  await dbConnect();
+
+  const { sharedLinks } = await User.findOne(
+    { externalId: userUid },
+    { sharedLinks: 1 }
+  )
+    .orFail(() => new Error("User not found"))
     .lean()
     .exec();
 
-  return sharedLinks[0];
+  const expiredLinks = sharedLinks.filter((link) => {
+    return isLinkExpired(link);
+  });
+
+  if (expiredLinks.length > 0) {
+    deleteSharedLinks(expiredLinks, userUid);
+  }
 };

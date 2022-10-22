@@ -26,6 +26,10 @@ import FileUploader from "@/features/gallery/components/FileUploader";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 import { apiDeleteCall } from "@/utils/axios";
 import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
+import {
+  deleteUsersExpiredSharedLinks,
+  isLinkExpired,
+} from "@/lib/services/fileshareService";
 
 const Files = ({
   sharedLinks,
@@ -146,8 +150,9 @@ export const getServerSideProps = withAuthentication(
 
     const user = await getUserById(uid, "storage sharedLinks");
     const filteredLinks = user.sharedLinks.filter(
-      (link) => link.files.length > 0
+      (link) => link.files.length > 0 && !isLinkExpired(link)
     );
+    deleteUsersExpiredSharedLinks(uid);
 
     return {
       props: {
