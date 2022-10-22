@@ -53,14 +53,13 @@ export const getUploadUrl = async (mediaName: string, mediaSize: number) => {
 };
 
 export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
-  const { medias } = await User.findOne(
+  const user = await User.findOne(
     { externalId: uploaderUid },
     { medias: { $elemMatch: { _id: mediaId } } }
-  ).exec();
-
-  if (medias.length === 0) {
-    throw new Error("Media not found");
-  }
+  )
+    .orFail(() => new Error("Media not found"))
+    .lean()
+    .exec();
 
   const deleteParams = {
     Bucket: process.env.S3_MEDIA_BUCKET,
@@ -75,7 +74,7 @@ export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
         { externalId: uploaderUid },
         {
           $pull: { medias: { _id: mediaId } },
-          $inc: { "storage.usedTotal": -medias[0].size },
+          $inc: { "storage.usedTotal": -user.medias[0].size },
         }
       )
         .exec()

@@ -16,6 +16,7 @@ import { AiOutlineShareAlt } from "react-icons/ai";
 import { UploadItem, UploadStatus } from "@/features/gallery/types/UploadTypes";
 import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
 import Media from "@/features/gallery/components/Media";
+import FileIcon from "@/features/fileshare/components/FileIcon";
 
 const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
   const url = useMemo(() => URL.createObjectURL(file), [file]);
@@ -23,26 +24,40 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
 
   return (
     <ListItem display={"flex"} flex={1} gap={4} alignItems={"center"}>
-      <Media
-        src={url}
-        contentType={file.type}
-        h={"100px"}
-        w={"160px"}
-        rounded={4}
-        onLoad={() => URL.revokeObjectURL(url)}
-        alt={"Upload preview"}
-      />
+      {(file.type.includes("image") || file.type.includes("video")) && (
+        <Media
+          src={url}
+          contentType={file.type}
+          h={"100px"}
+          w={"160px"}
+          rounded={4}
+          onLoad={() => URL.revokeObjectURL(url)}
+          alt={"Upload preview"}
+        />
+      )}
+      {!file.type.includes("image") && !file.type.includes("video") && (
+        <FileIcon
+          _id={"W"}
+          contentType={file.type}
+          added={new Date()}
+          size={file.size}
+          name={file.name}
+          url={url}
+        />
+      )}
       <VStack flex={1} gap={1}>
         <Text alignSelf={"start"} wordBreak={"break-all"}>
           {file.name}
         </Text>
-        <Progress
-          size="xs"
-          value={status === UploadStatus.FAILED ? 100 : progress}
-          colorScheme={status === UploadStatus.FAILED ? "red" : "blue"}
-          w={"100%"}
-          rounded={"full"}
-        />
+        {status !== UploadStatus.PENDING && (
+          <Progress
+            size="xs"
+            value={status === UploadStatus.FAILED ? 100 : progress}
+            colorScheme={status === UploadStatus.FAILED ? "red" : "blue"}
+            w={"100%"}
+            rounded={"full"}
+          />
+        )}
       </VStack>
       {status === UploadStatus.UPLOADING && <Spinner />}
       {status === UploadStatus.UPLOADED && (

@@ -11,7 +11,7 @@ import {
   Text,
   ButtonGroup,
 } from "@chakra-ui/react";
-import { DASHBOARD_URL, RESET_PASSWORD_URL } from "../../../utils/urls";
+import { RESET_PASSWORD_URL } from "@/utils/urls";
 import {
   getAuth,
   signInWithPopup,
@@ -24,7 +24,6 @@ import { User } from "../types/User";
 import { FaEnvelope, FaGoogle, FaLock, FaMicrosoft } from "react-icons/fa";
 import { LabeledInput } from "@/features/base/components/forms/Inputs";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 const provider = new GoogleAuthProvider();
 const microsoftProvider = new OAuthProvider("microsoft.com");
@@ -34,11 +33,6 @@ microsoftProvider.setCustomParameters({
 
 const LoginForm = () => {
   const auth = getAuth();
-  const router = useRouter();
-
-  const redirectOnLogin = () => {
-    router.push(DASHBOARD_URL);
-  };
 
   const onSubmit = (
     formValues: User,
@@ -48,12 +42,10 @@ const LoginForm = () => {
       auth,
       formValues.email.trim(),
       formValues.password.trim()
-    )
-      .then(redirectOnLogin)
-      .catch((error) => {
-        const message = error.code || error.message;
-        setStatus(message.replace("auth/", "").replaceAll("-", " "));
-      });
+    ).catch((error) => {
+      const message = error.code || error.message;
+      setStatus(message.replace("auth/", "").replaceAll("-", " "));
+    });
   };
 
   const validate = (values: User) => {
@@ -152,18 +144,14 @@ const LoginForm = () => {
             <IconButton
               aria-label={"Google Logo"}
               icon={<FaGoogle fontSize={36} />}
-              onClick={() =>
-                signInWithPopup(auth, provider).then(redirectOnLogin)
-              }
+              onClick={() => signInWithPopup(auth, provider)}
             />
           </Tooltip>
           <Tooltip label={"Sign in with Microsoft"}>
             <IconButton
               icon={<FaMicrosoft fontSize={36} />}
               aria-label={"Microsoft Logo"}
-              onClick={() =>
-                signInWithPopup(auth, microsoftProvider).then(redirectOnLogin)
-              }
+              onClick={() => signInWithPopup(auth, microsoftProvider)}
             />
           </Tooltip>
         </ButtonGroup>

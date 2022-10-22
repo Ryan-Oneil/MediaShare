@@ -3,61 +3,14 @@ import { Button, Container, Text, useToast } from "@chakra-ui/react";
 import Dropzone, { DropzoneProps } from "react-dropzone";
 import Image from "next/image";
 import { UploadItem, UploadStatus } from "@/features/gallery/types/UploadTypes";
-import { apiPostCall, apiPutCall, getApiError } from "@/utils/axios";
 
 interface DropZoneProps extends DropzoneProps {
   handleFilesChosen: (files: UploadItem[]) => void;
-  handleUploadUpdate: (file: UploadItem) => void;
-  handleUploadFinished: (file: UploadItem) => void;
 }
 
-const getUploadUrls = async (acceptedFiles: UploadItem[]) => {
-  const fileDetails = acceptedFiles.map(({ file }) => {
-    return { name: file.name, size: file.size };
-  });
-  const urls = await apiPostCall("/api/media", fileDetails);
-
-  return urls.data;
-};
-
-const DropzoneUploader = (props: DropZoneProps) => {
-  const {
-    handleFilesChosen,
-    handleUploadUpdate,
-    handleUploadFinished,
-    ...rest
-  } = props;
+const DropzoneFileSelector = (props: DropZoneProps) => {
+  const { handleFilesChosen, ...rest } = props;
   const toast = useToast();
-
-  const uploadMedia = (uploadItem: UploadItem, url: string) => {
-    const uploadingFile = uploadItem.file;
-
-    apiPutCall(url, uploadingFile, {
-      headers: { "Content-Type": uploadingFile.type },
-      onUploadProgress: (progressEvent) => {
-        const total = parseFloat(progressEvent.total);
-        const current = progressEvent.loaded;
-
-        const progress = Math.floor((current / total) * 100);
-        handleUploadUpdate({
-          ...uploadItem,
-          progress,
-          status: UploadStatus.UPLOADING,
-        });
-      },
-    })
-      .then((response) => {
-        const uploadedUrl = response.data as string;
-
-        handleUploadFinished({
-          ...uploadItem,
-          src: uploadedUrl,
-        });
-      })
-      .catch(() => {
-        handleUploadUpdate({ ...uploadItem, status: UploadStatus.FAILED });
-      });
-  };
 
   const handleFileDrop = async (acceptedFiles: File[]) => {
     const mediaToUpload = acceptedFiles.map((file) => {
@@ -65,25 +18,10 @@ const DropzoneUploader = (props: DropZoneProps) => {
         src: "",
         progress: 0,
         file,
-        status: UploadStatus.PENDDING,
+        status: UploadStatus.PENDING,
       };
     });
     handleFilesChosen(mediaToUpload);
-
-    try {
-      const urls = await getUploadUrls(mediaToUpload);
-
-      urls.forEach((url: string, index: number) => {
-        uploadMedia(mediaToUpload[index], url);
-      });
-    } catch (error: any) {
-      toast({
-        title: "Error uploading media",
-        description: getApiError(error),
-        status: "error",
-        isClosable: true,
-      });
-    }
   };
 
   return (
@@ -130,7 +68,7 @@ const DropzoneUploader = (props: DropZoneProps) => {
             draggable={false}
             alt={"Upload Media"}
           />
-          <Text mt={5}>Drag and drop your media</Text>
+          <Text mt={5}>Drag and drop your Files</Text>
           <Text>Or</Text>
           <Button rounded={"4"} w={"45%"}>
             Browse
@@ -141,4 +79,4 @@ const DropzoneUploader = (props: DropZoneProps) => {
   );
 };
 
-export default DropzoneUploader;
+export default DropzoneFileSelector;

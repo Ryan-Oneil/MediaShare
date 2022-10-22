@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getUserIdFromJWT, withRequestAuth } from "@/lib/firebase/wrapperUtils";
 import { getUploadUrl, uploadMedia } from "@/lib/services/galleryService";
-import { checkUserStorage } from "@/lib/services/userService";
+import { hasSufficientStorage } from "@/lib/services/userService";
 
 const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
   const uid = await getUserIdFromJWT(req.cookies.jwt);
@@ -18,7 +18,7 @@ const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
     urls.push(url);
   }
 
-  if (await checkUserStorage(uid, totalSize)) {
+  if (await hasSufficientStorage(uid, totalSize)) {
     return res.status(200).json(urls);
   }
   return res.status(400).json("Not enough storage space");
@@ -26,10 +26,10 @@ const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const handlePutCall = async (req: NextApiRequest, res: NextApiResponse) => {
   const uid = await getUserIdFromJWT(req.headers.authorization);
-  const { url, mediaSize, mediaType, id } = req.body;
+  const { url, size, contentType, id } = req.body;
 
   try {
-    await uploadMedia(uid, url, mediaSize, mediaType, id);
+    await uploadMedia(uid, url, size, contentType, id);
 
     return res.status(200).end();
   } catch (err) {

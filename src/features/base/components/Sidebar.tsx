@@ -41,7 +41,7 @@ export const Sidebar = (props: BoxProps) => {
             align="center"
             px={4}
             py={4}
-            pr={10}
+            pr={12}
             cursor="pointer"
             bg={currentRoute === url ? "brand.200" : ""}
             _hover={{
@@ -85,7 +85,7 @@ export const Sidebar = (props: BoxProps) => {
   };
 
   return (
-    <Box boxShadow={"0px 0px 24px rgba(0, 0, 0, 0.08)"} {...props}>
+    <Box boxShadow={"0px 0px 24px rgba(0, 0, 0, 0.08)"} {...props} as={"aside"}>
       <NavMenu />
     </Box>
   );

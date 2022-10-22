@@ -3,10 +3,10 @@ import { Box, IconButton, Tooltip, useClipboard } from "@chakra-ui/react";
 import { FaLink, FaTrash } from "react-icons/fa";
 import { Card } from "@/features/base/components/Card";
 import MediaModal from "./MediaModal";
-import { TMedia } from "../types/TMedia";
+import { IMedia } from "../types/IMedia";
 
 type props = {
-  media: TMedia;
+  media: IMedia;
   showControls: boolean;
   deleteAction?: (mediaId: string) => void;
 };
