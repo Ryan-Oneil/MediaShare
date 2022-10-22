@@ -177,7 +177,7 @@ export const addFilesToLink = async (
   // TODO: delete files from cloud storage if not in pending uploads
   const uploadedFiles = pendingFileUploads.map((pendingUpload) => {
     const file = files.find(
-      (file) => file.name === pendingUpload.name
+      (uploadedFile) => uploadedFile.name === pendingUpload.name
     ) as UploadedItem;
 
     return {

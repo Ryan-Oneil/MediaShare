@@ -2,7 +2,7 @@ import React from "react";
 import BaseAuthPage from "@/features/Auth/components/BaseAuthPage";
 import { Card } from "@/features/base/components/Card";
 import FileList from "@/features/fileshare/components/FileList";
-import { Button, Center, Heading } from "@chakra-ui/react";
+import { Heading } from "@chakra-ui/react";
 import { GetServerSidePropsContext } from "next";
 import { getSharedLink } from "@/lib/services/fileshareService";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";

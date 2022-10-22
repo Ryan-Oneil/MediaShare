@@ -42,7 +42,6 @@ const DetailedFileInfo = ({
   _id,
   title,
   size,
-  expires,
   files,
   onClose,
   onDelete,

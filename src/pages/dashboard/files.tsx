@@ -26,7 +26,6 @@ import FileUploader from "@/features/gallery/components/FileUploader";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 import { apiDeleteCall } from "@/utils/axios";
 import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
-import { AxiosError } from "axios";
 
 const Files = ({
   sharedLinks,
@@ -44,13 +43,17 @@ const Files = ({
   const { createToast } = useDisplayApiError();
 
   const deleteLink = (id: string) => {
-    const link = sharedLinksList.find((link) => link._id === id) as ISharedLink;
+    const link = sharedLinksList.find(
+      (sharedLink) => sharedLink._id === id
+    ) as ISharedLink;
 
     if (activeLinkId === id) {
       infoPanel.onClose();
       setActiveLinkId("");
     }
-    setSharedLinksList((prev) => prev.filter((link) => link._id !== id));
+    setSharedLinksList((prev) =>
+      prev.filter((sharedLink) => sharedLink._id !== id)
+    );
 
     apiDeleteCall(`/api/share/${link._id}`).catch((err) => {
       createToast("Error deleting link", err);

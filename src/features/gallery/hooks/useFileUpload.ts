@@ -105,7 +105,7 @@ const useFileUpload = (
     );
 
     return Promise.all(
-      uploadUrls.map((upload, index) => {
+      uploadUrls.map((upload) => {
         const waitingFile = waitingFiles.find(
           (m) => m.file.name === upload.name
         ) as UploadItem;
