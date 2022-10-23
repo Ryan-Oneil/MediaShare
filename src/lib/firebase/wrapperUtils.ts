@@ -8,7 +8,7 @@ const getRedirectUrl = (currentPath: string) => {
 };
 
 export const withAuthentication =
-  <P, Q extends ParsedUrlQuery = ParsedUrlQuery>(
+  <P extends { [key: string]: any }, Q extends ParsedUrlQuery = ParsedUrlQuery>(
     getServerSidePropsFn: GetServerSideProps<P, Q>
   ): GetServerSideProps<P, Q> =>
   async (ctx) => {

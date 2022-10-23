@@ -76,15 +76,21 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
 };
 
 const UploadList = ({ uploadItems }: { uploadItems: UploadItem[] }) => {
+  //sort by uploading status first
+  const sortedUploadItems = useMemo(
+    () => uploadItems.sort((a, b) => a.status - b.status),
+    [uploadItems]
+  );
+
   return (
     <Container>
       <Heading size={"md"}>Uploaded files</Heading>
       <List w={"100%"} spacing={4} mt={4} mb={32}>
-        {uploadItems.map((uploadItem) => (
+        {sortedUploadItems.map((uploadItem) => (
           <UploadListItem {...uploadItem} key={uploadItem.file.name} />
         ))}
       </List>
-      {uploadItems.length === 0 && (
+      {sortedUploadItems.length === 0 && (
         <EmptyPlaceHolder description={"No files uploaded yet"} />
       )}
     </Container>

@@ -80,6 +80,7 @@ const useFileUpload = (
   };
 
   const uploadSelectedFiles = async (filesToBeUploaded: UploadItem[]) => {
+    setUploadItemList(filesToBeUploaded);
     try {
       const urls = await getUploadUrls(filesToBeUploaded);
 

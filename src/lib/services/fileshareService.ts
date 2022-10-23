@@ -238,6 +238,9 @@ export const addFilesToLink = async (
 };
 
 const deleteS3Files = (files: Array<UploadedItem>) => {
+  if (files.length === 0) {
+    return;
+  }
   const s3Client = getS3Client();
 
   const deleteParams = {
