@@ -400,3 +400,39 @@ export const deleteUsersExpiredSharedLinks = async (userUid: string) => {
     deleteSharedLinks(expiredLinks, userUid);
   }
 };
+
+export const deleteFileFromLink = async (userUid: string, fileId: string) => {
+  await dbConnect();
+  const { sharedLinks } = await User.findOne(
+    { externalId: userUid, "sharedLinks.files._id": fileId },
+    { "sharedLinks.$": 1 }
+  )
+    .orFail(() => new Error("Link not found"))
+    .lean()
+    .exec();
+
+  const link = sharedLinks[0];
+  const file = link.files.find((file) => file._id === fileId);
+
+  if (!file) {
+    throw new Error("File not found");
+  }
+
+  deleteS3Files([file]);
+
+  return User.findOneAndUpdate(
+    { externalId: userUid, "sharedLinks._id": link._id },
+    {
+      $inc: {
+        "sharedLinks.$.size": -file.size,
+        "storage.usedTotal": -file.size,
+        "storage.documentUsed": -file.size,
+      },
+      $pull: {
+        "sharedLinks.$.files": {
+          _id: fileId,
+        },
+      },
+    }
+  ).exec();
+};

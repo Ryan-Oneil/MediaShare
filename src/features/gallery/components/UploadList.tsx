@@ -18,6 +18,7 @@ import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
 import Media from "@/features/gallery/components/Media";
 import FileIcon from "@/features/fileshare/components/FileIcon";
 import { FaTrash } from "react-icons/fa";
+import LabelIconButton from "@/features/base/components/LabelIconButton";
 
 interface UploadListItemProps extends UploadItem {
   onRemove?: (fileName: string) => void;
@@ -71,14 +72,12 @@ const UploadListItem = ({
         )}
       </VStack>
       {status === UploadStatus.PENDING && onRemove && (
-        <Tooltip label={"Remove"}>
-          <IconButton
-            aria-label={"Remove"}
-            icon={<FaTrash color={"red"} />}
-            onClick={() => onRemove(file.name)}
-            rounded={"full"}
-          />
-        </Tooltip>
+        <LabelIconButton
+          aria-label={"Remove"}
+          icon={<FaTrash color={"red"} />}
+          onClick={() => onRemove(file.name)}
+          variant={"ghost"}
+        />
       )}
       {status === UploadStatus.UPLOADING && <Spinner />}
       {status === UploadStatus.UPLOADED && (

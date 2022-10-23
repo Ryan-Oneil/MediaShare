@@ -23,7 +23,8 @@ import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
 
 interface DetailedSharedFileDrawerProps extends ISharedLink {
   onClose: () => void;
-  onDelete: () => void;
+  onDeleteLink: () => void;
+  onDeleteFile: (fileId: string) => void;
   editLinkAction: () => void;
 }
 
@@ -45,9 +46,10 @@ const DetailedFileInfo = ({
   size,
   files,
   onClose,
-  onDelete,
+  onDeleteLink,
   expires,
   editLinkAction,
+  onDeleteFile,
 }: DetailedSharedFileDrawerProps) => {
   const { onCopy } = useCopyLink(_id);
 
@@ -86,7 +88,7 @@ const DetailedFileInfo = ({
                 aria-label={"Delete"}
                 icon={<FaTrash color={"red"} />}
                 variant={"ghost"}
-                disabled
+                onClick={() => onDeleteFile(file._id)}
               />
             </FileDetail>
           ))}
@@ -112,7 +114,7 @@ const DetailedFileInfo = ({
         <LabelIconButton
           aria-label={"Delete"}
           icon={<FaTrash color={"red"} fontSize={24} />}
-          onClick={onDelete}
+          onClick={onDeleteLink}
         />
       </ButtonGroup>
     </Flex>

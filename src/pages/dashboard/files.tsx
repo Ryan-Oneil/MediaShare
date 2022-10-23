@@ -19,12 +19,11 @@ import FileCard from "@/features/fileshare/components/FileCard";
 import DetailedSharedFileDrawer from "@/features/fileshare/components/DetailedSharedFileDrawer";
 import FileUploader from "@/features/gallery/components/FileUploader";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
-import { apiDeleteCall } from "@/utils/axios";
-import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
 import {
   deleteUsersExpiredSharedLinks,
   isLinkExpired,
 } from "@/lib/services/fileshareService";
+import useDeleteLinkActions from "@/features/fileshare/hooks/useDeleteLinkActions";
 
 const Files = ({
   sharedLinks,
@@ -40,31 +39,16 @@ const Files = ({
   const [isEditingLink, setIsEditingLink] = useState<boolean>(false);
   const infoPanel = useDisclosure();
   const uploadModal = useDisclosure();
-  const { createToast } = useDisplayApiError();
+  const { deleteLink, deleteFile } = useDeleteLinkActions(
+    sharedLinksList,
+    setSharedLinksList
+  );
+
   const activeLink = useMemo(() => {
     return sharedLinksList.find(
       (link) => link._id === activeLinkId
     ) as ISharedLink;
   }, [activeLinkId, sharedLinksList]);
-
-  const deleteLink = (id: string) => {
-    const link = sharedLinksList.find(
-      (sharedLink) => sharedLink._id === id
-    ) as ISharedLink;
-
-    if (activeLinkId === id) {
-      infoPanel.onClose();
-      setActiveLinkId("");
-    }
-    setSharedLinksList((prev) =>
-      prev.filter((sharedLink) => sharedLink._id !== id)
-    );
-
-    apiDeleteCall(`/api/share/${link._id}`).catch((err) => {
-      createToast("Error deleting link", err);
-      setSharedLinksList((prev) => [link, ...prev]);
-    });
-  };
 
   return (
     <BaseAppPage
@@ -105,18 +89,19 @@ const Files = ({
             ))}
           </SimpleGrid>
         </Box>
-        {infoPanel.isOpen && activeLinkId && (
+        {infoPanel.isOpen && activeLink && (
           <DetailedSharedFileDrawer
             {...activeLink}
             onClose={() => {
               infoPanel.onClose();
               setActiveLinkId("");
             }}
-            onDelete={() => deleteLink(activeLinkId)}
+            onDeleteLink={() => deleteLink(activeLinkId)}
             editLinkAction={() => {
               setIsEditingLink(true);
               uploadModal.onOpen();
             }}
+            onDeleteFile={(fileId: string) => deleteFile(activeLinkId, fileId)}
           />
         )}
       </Flex>
