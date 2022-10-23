@@ -68,6 +68,15 @@ const savePendingUpload = async (
   ).exec();
 };
 
+const generateUploadUrl = (files: Array<IPendingFile>, linkId: string) => {
+  return files.map(async (file) => {
+    return {
+      name: file.name,
+      url: await getUploadUrl(file.name, file.size, linkId),
+    };
+  });
+};
+
 export const createShareLink = async (
   uploaderUid: string,
   files: Array<IPendingFile>,
@@ -83,14 +92,7 @@ export const createShareLink = async (
     file.linkId = linkId;
   });
 
-  const uploadUrls = await Promise.all(
-    files.map(async (file) => {
-      return {
-        name: file.name,
-        url: await getUploadUrl(file.name, file.size, linkId),
-      };
-    })
-  );
+  const uploadUrls = await Promise.all(generateUploadUrl(files, linkId));
 
   const { maxSharedLength } = await User.findOne(
     { externalId: uploaderUid },
@@ -148,14 +150,7 @@ export const addPendingFilesToLink = async (
     throw new Error("Insufficient storage");
   }
 
-  const uploadUrls = await Promise.all(
-    files.map(async (file) => {
-      return {
-        name: file.name,
-        url: await getUploadUrl(file.name, file.size, linkId),
-      };
-    })
-  );
+  const uploadUrls = await Promise.all(generateUploadUrl(files, linkId));
 
   if (title) {
     User.findOneAndUpdate(
@@ -412,21 +407,21 @@ export const deleteFileFromLink = async (userUid: string, fileId: string) => {
     .exec();
 
   const link = sharedLinks[0];
-  const file = link.files.find((file) => file._id === fileId);
+  const fileToDelete = link.files.find((file) => file._id === fileId);
 
-  if (!file) {
+  if (!fileToDelete) {
     throw new Error("File not found");
   }
 
-  deleteS3Files([file]);
+  deleteS3Files([fileToDelete]);
 
   return User.findOneAndUpdate(
     { externalId: userUid, "sharedLinks._id": link._id },
     {
       $inc: {
-        "sharedLinks.$.size": -file.size,
-        "storage.usedTotal": -file.size,
-        "storage.documentUsed": -file.size,
+        "sharedLinks.$.size": -fileToDelete.size,
+        "storage.usedTotal": -fileToDelete.size,
+        "storage.documentUsed": -fileToDelete.size,
       },
       $pull: {
         "sharedLinks.$.files": {
