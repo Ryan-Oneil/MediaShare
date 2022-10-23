@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
-import { Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Flex, Heading, Stack } from "@chakra-ui/react";
 import StatCard from "@/features/dashboard/components/StatCard";
 import CurrentPlanCard from "@/features/dashboard/components/CurrentPlanCard";
 import { GetServerSidePropsContext } from "next";
@@ -14,6 +14,10 @@ import {
   getUserIdFromJWT,
   withAuthentication,
 } from "@/lib/firebase/wrapperUtils";
+import {
+  deleteUsersExpiredSharedLinks,
+  isLinkExpired,
+} from "@/lib/services/fileshareService";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
@@ -38,17 +42,14 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
             <StatCard
               title={"Image Storage"}
               value={displayBytesInReadableForm(storage.imageUsed)}
-              description={"40% vs last month"}
             />
             <StatCard
               title={"Video Storage"}
               value={displayBytesInReadableForm(storage.videoUsed)}
-              description={"40% vs last month"}
             />
             <StatCard
               title={"Document Storage"}
               value={displayBytesInReadableForm(storage.documentUsed)}
-              description={"40% vs last month"}
             />
           </Flex>
           <Heading size={"md"}>Recent Uploads</Heading>
@@ -57,7 +58,10 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
               <MediaCard media={media} showControls={false} key={media._id} />
             ))}
           </Stack>
-          <RecentFileUploads links={sharedLinks} />
+          <Heading size={"md"}>Recent File shares</Heading>
+          <Box overflow={"auto"} maxH={"50vh"}>
+            <RecentFileUploads links={sharedLinks} />
+          </Box>
         </Flex>
         <CurrentPlanCard />
       </Flex>
@@ -69,14 +73,21 @@ export default Dashboard;
 export const getServerSideProps = withAuthentication(
   async ({ req }: GetServerSidePropsContext) => {
     const uid = await getUserIdFromJWT(req.cookies.jwt);
-
     const user = await getUserById(uid, "storage medias sharedLinks");
+
+    deleteUsersExpiredSharedLinks(uid);
 
     return {
       props: {
         storage: user.storage,
         medias: JSON.parse(JSON.stringify(user.medias)),
-        sharedLinks: JSON.parse(JSON.stringify(user.sharedLinks)),
+        sharedLinks: JSON.parse(
+          JSON.stringify(
+            user.sharedLinks.filter(
+              (link) => link.files.length > 0 && !isLinkExpired(link)
+            )
+          )
+        ),
       },
     };
   }

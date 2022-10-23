@@ -1,17 +1,11 @@
 import React from "react";
-import {
-  Stat,
-  StatArrow,
-  StatHelpText,
-  StatLabel,
-  StatNumber,
-} from "@chakra-ui/stat";
+import { Stat, StatHelpText, StatLabel, StatNumber } from "@chakra-ui/stat";
 import { Card } from "@/features/base/components/Card";
 
 type props = {
   title: string;
   value: string;
-  description: string;
+  description?: string;
 };
 
 const StatCard = ({ title, value, description }: props) => {
@@ -20,10 +14,7 @@ const StatCard = ({ title, value, description }: props) => {
       <Stat>
         <StatLabel fontSize={"lg"}>{title}</StatLabel>
         <StatNumber py={2}>{value}</StatNumber>
-        <StatHelpText>
-          <StatArrow type="increase" />
-          {description}
-        </StatHelpText>
+        {description && <StatHelpText>{description}</StatHelpText>}
       </Stat>
     </Card>
   );

@@ -1,34 +1,40 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { getUserIdFromJWT, withRequestAuth } from "@/lib/firebase/wrapperUtils";
-import { getUploadUrl, uploadMedia } from "@/lib/services/galleryService";
-import { hasSufficientStorage } from "@/lib/services/userService";
+import { generateUploadUrls, uploadMedia } from "@/lib/services/galleryService";
+import { z } from "zod";
+
+const uploadMediaSchema = z.array(
+  z.object({
+    name: z.string().trim().min(1),
+    size: z.number().positive().min(1),
+  })
+);
+
+const uploadedMediaScheme = z.object({
+  id: z.string().trim().min(1),
+  url: z.string().trim().min(1),
+  contentType: z.string().trim().min(1),
+  size: z.number().positive().min(1),
+});
 
 const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
-  const uid = await getUserIdFromJWT(req.cookies.jwt);
-  let urls: string[] = [];
-  let totalSize = 0;
+  try {
+    const uid = await getUserIdFromJWT(req.cookies.jwt);
+    const medias = uploadMediaSchema.parse(req.body);
 
-  for (const { name, size } of req.body) {
-    if (!name || !size) {
-      return res.status(400).json({ error: "Missing name or size" });
-    }
-    totalSize += size;
+    const urls = await generateUploadUrls(uid, medias);
 
-    const url = await getUploadUrl(name, size);
-    urls.push(url);
-  }
-
-  if (await hasSufficientStorage(uid, totalSize)) {
     return res.status(200).json(urls);
+  } catch (error) {
+    return res.status(400).send(error);
   }
-  return res.status(400).json("Not enough storage space");
 };
 
 const handlePutCall = async (req: NextApiRequest, res: NextApiResponse) => {
   const uid = await getUserIdFromJWT(req.headers.authorization);
-  const { url, size, contentType, id } = req.body;
 
   try {
+    const { url, size, contentType, id } = uploadedMediaScheme.parse(req.body);
     await uploadMedia(uid, url, size, contentType, id);
 
     return res.status(200).end();

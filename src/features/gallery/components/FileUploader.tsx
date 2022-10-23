@@ -11,6 +11,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalFooter,
+  ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
 import useFileUpload from "@/features/gallery/hooks/useFileUpload";
@@ -22,54 +23,70 @@ type props = {
   handleUploadFinished: (sharedLink: ISharedLink) => void;
   quotaSpaceRemaining: number;
   onClose: () => void;
+  linkId?: string;
+  title?: string;
 };
 
 const FileUploader = ({
   handleUploadFinished,
   quotaSpaceRemaining,
   onClose,
+  linkId,
+  title = "",
 }: props) => {
-  const { uploadItemList, addFilesToBeUploaded, uploadWaitingFiles } =
-    useFileUpload("/api/share");
-  const [shareTitle, setShareTitle] = React.useState<string>("");
+  const {
+    uploadItemList,
+    addFilesToBeUploaded,
+    uploadWaitingFiles,
+    removeFile,
+  } = useFileUpload("/api/share");
+  const [shareTitle, setShareTitle] = React.useState<string>(title);
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const { createToast } = useDisplayApiError();
 
   const shareFiles = async () => {
     setIsUploading(true);
-    const { data } = await apiPostCall("/api/share", {
-      title: shareTitle,
-      files: uploadItemList.map(({ file }) => {
-        return { name: file.name, size: file.size };
-      }),
-    });
+    const url = linkId ? `/api/share/${linkId}` : "/api/share";
 
-    uploadWaitingFiles(data.uploadUrls)
-      .then((uploadedFiles) => {
-        const link: ISharedLink = {
-          title: shareTitle,
-          size: uploadedFiles.reduce((acc, item) => acc + item.size, 0),
-          expires: new Date(),
-          files: uploadedFiles,
-          _id: data.linkId,
-          uploaded: new Date(),
-        };
-        handleUploadFinished(link);
-        onClose();
-      })
-      .catch((error) => {
-        createToast("Error uploading files", error);
-        setIsUploading(false);
+    try {
+      const { data } = await apiPostCall(url, {
+        title: shareTitle,
+        files: uploadItemList.map(({ file }) => {
+          return { name: file.name, size: file.size };
+        }),
       });
+
+      uploadWaitingFiles(data.uploadUrls)
+        .then((uploadedFiles) => {
+          const link: ISharedLink = {
+            title: shareTitle,
+            size: uploadedFiles.reduce((acc, item) => acc + item.size, 0),
+            expires: new Date(),
+            files: uploadedFiles,
+            _id: data.linkId,
+            uploaded: new Date(),
+          };
+          handleUploadFinished(link);
+          onClose();
+        })
+        .catch((error) => {
+          createToast("Error uploading files", error);
+          setIsUploading(false);
+        });
+    } catch (error: any) {
+      createToast("Error sharing files", error);
+      setIsUploading(false);
+    }
   };
 
   return (
     <Modal isOpen={true} onClose={onClose} size={"6xl"}>
       <ModalOverlay />
       <ModalContent maxH={"80vh"} overflowX={"hidden"} overflowY={"auto"}>
+        {linkId && <ModalHeader>Editing shared link</ModalHeader>}
         <ModalCloseButton />
         <ModalBody p={0}>
-          <Flex gap={10} p={12} pb={0} maxW={"100%"}>
+          <Flex gap={10} p={12} pb={0} maxW={"100%"} maxH={"60vh"}>
             <DropzoneFileSelector
               maxSize={quotaSpaceRemaining}
               validator={(file) => {
@@ -87,7 +104,7 @@ const FileUploader = ({
               handleFilesChosen={addFilesToBeUploaded}
               disabled={isUploading}
             />
-            <Box w={"100%"}>
+            <Box w={"100%"} overflow={"auto"}>
               <Input
                 placeholder="Title"
                 mb={4}
@@ -96,7 +113,10 @@ const FileUploader = ({
                 maxLength={60}
                 disabled={isUploading}
               />
-              <UploadList uploadItems={uploadItemList} />
+              <UploadList
+                uploadItems={uploadItemList}
+                deleteItemFromList={removeFile}
+              />
             </Box>
           </Flex>
         </ModalBody>
@@ -105,7 +125,7 @@ const FileUploader = ({
             colorScheme="blue"
             mr={3}
             onClick={shareFiles}
-            disabled={isUploading}
+            disabled={isUploading || uploadItemList.length === 0}
           >
             Share
           </Button>

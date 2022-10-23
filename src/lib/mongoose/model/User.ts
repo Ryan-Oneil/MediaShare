@@ -22,6 +22,7 @@ interface IUser {
   medias: Array<UploadedItem>;
   sharedLinks: Array<ISharedLink>;
   pendingFileUploads: Array<IPendingFile>;
+  maxSharedLength: number;
 }
 
 const QuotaSchema = new mongoose.Schema<IQuota>(
@@ -99,6 +100,10 @@ const UserSchema = new mongoose.Schema<IUser>({
   pendingFileUploads: {
     type: [pendingFileUploadSchema],
     default: () => [],
+  },
+  maxSharedLength: {
+    type: Number,
+    default: 7,
   },
 });
 

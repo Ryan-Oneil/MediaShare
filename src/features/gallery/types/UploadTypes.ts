@@ -15,8 +15,8 @@ export type UploadedItem = {
 };
 
 export enum UploadStatus {
-  UPLOADING,
   UPLOADED,
   FAILED,
+  UPLOADING,
   PENDING,
 }

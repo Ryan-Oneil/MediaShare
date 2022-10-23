@@ -3,6 +3,7 @@ import User from "@/lib/mongoose/model/User";
 import { getProxyS3Client, getS3Client } from "@/lib/amazon/S3Client";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { hasSufficientStorage } from "@/lib/services/userService";
 
 export const uploadMedia = async (
   uploaderUid: string,
@@ -18,11 +19,16 @@ export const uploadMedia = async (
     {
       $push: {
         medias: {
-          _id: id,
-          url: mediaUrl,
-          size: mediaSize,
-          contentType: contentType,
-          date: new Date(),
+          $each: [
+            {
+              _id: id,
+              url: mediaUrl,
+              size: mediaSize,
+              contentType: contentType,
+              date: new Date(),
+            },
+          ],
+          $position: 0,
         },
       },
       $inc: { "storage.usedTotal": mediaSize },
@@ -50,6 +56,23 @@ export const getUploadUrl = async (mediaName: string, mediaSize: number) => {
     }
   );
   return signedURl + "&date=" + date.toISOString();
+};
+
+export const generateUploadUrls = async (
+  userId: string,
+  medias: Array<{ name: string; size: number }>
+) => {
+  const totalSize = medias.reduce((acc, curr) => acc + curr.size, 0);
+
+  if (!(await hasSufficientStorage(userId, totalSize))) {
+    throw new Error("Insufficient storage");
+  }
+
+  return Promise.all(
+    medias.map(async (media) => {
+      return getUploadUrl(media.name, media.size);
+    })
+  );
 };
 
 export const deleteMedia = async (uploaderUid: string, mediaId: string) => {

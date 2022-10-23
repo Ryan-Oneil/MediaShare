@@ -23,7 +23,9 @@ import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
 
 interface DetailedSharedFileDrawerProps extends ISharedLink {
   onClose: () => void;
-  onDelete: () => void;
+  onDeleteLink: () => void;
+  onDeleteFile: (fileId: string) => void;
+  editLinkAction: () => void;
 }
 
 const InfoSection = ({ title, value }: { title: string; value: string }) => {
@@ -44,7 +46,10 @@ const DetailedFileInfo = ({
   size,
   files,
   onClose,
-  onDelete,
+  onDeleteLink,
+  expires,
+  editLinkAction,
+  onDeleteFile,
 }: DetailedSharedFileDrawerProps) => {
   const { onCopy } = useCopyLink(_id);
 
@@ -66,17 +71,24 @@ const DetailedFileInfo = ({
         <InfoSection title={"Size"} value={displayBytesInReadableForm(size)} />
         <InfoSection
           title={"Expires"}
-          value={new Date().toLocaleDateString()}
+          value={expires ? new Date(expires).toLocaleDateString() : "Never"}
         />
         <Heading size={"md"}>Files</Heading>
-        <VStack p={4} w={"100%"} gap={4} as={"ul"}>
+        <VStack
+          p={4}
+          w={"100%"}
+          gap={4}
+          as={"ul"}
+          overflow={"auto"}
+          maxH={"65vh"}
+        >
           {files.map((file) => (
             <FileDetail {...file} key={file.name}>
               <IconButton
                 aria-label={"Delete"}
                 icon={<FaTrash color={"red"} />}
                 variant={"ghost"}
-                disabled
+                onClick={() => onDeleteFile(file._id)}
               />
             </FileDetail>
           ))}
@@ -95,13 +107,14 @@ const DetailedFileInfo = ({
           onClick={onCopy}
         />
         <LabelIconButton
-          aria-label={"Edit Title"}
+          aria-label={"Edit"}
           icon={<FaEdit fontSize={24} />}
+          onClick={editLinkAction}
         />
         <LabelIconButton
           aria-label={"Delete"}
           icon={<FaTrash color={"red"} fontSize={24} />}
-          onClick={onDelete}
+          onClick={onDeleteLink}
         />
       </ButtonGroup>
     </Flex>
