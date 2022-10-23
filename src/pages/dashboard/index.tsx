@@ -18,6 +18,7 @@ import {
   deleteUsersExpiredSharedLinks,
   isLinkExpired,
 } from "@/lib/services/fileshareService";
+import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
@@ -57,6 +58,9 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
             {medias.slice(0, 5).map((media) => (
               <MediaCard media={media} showControls={false} key={media._id} />
             ))}
+            {medias.length < 1 && (
+              <EmptyPlaceHolder description={"No recent Uploads"} />
+            )}
           </Stack>
           <Heading size={"md"}>Recent File shares</Heading>
           <Box overflow={"auto"} maxH={"50vh"}>

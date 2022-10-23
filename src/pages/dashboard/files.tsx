@@ -24,6 +24,7 @@ import {
   isLinkExpired,
 } from "@/lib/services/fileshareService";
 import useDeleteLinkActions from "@/features/fileshare/hooks/useDeleteLinkActions";
+import PlaceholderCTA from "@/features/dashboard/components/PlaceholderCTA";
 
 const Files = ({
   sharedLinks,
@@ -88,6 +89,13 @@ const Files = ({
               />
             ))}
           </SimpleGrid>
+          {sharedLinksList.length === 0 && (
+            <PlaceholderCTA
+              description={"No shared files"}
+              buttonText={"Start sharing now"}
+              onClick={uploadModal.onOpen}
+            />
+          )}
         </Box>
         {infoPanel.isOpen && activeLink && (
           <DetailedSharedFileDrawer

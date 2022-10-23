@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
 } from "@chakra-ui/react";
-import { REGISTER_URL } from "../utils/urls";
+import { REGISTER_URL } from "@/utils/urls";
 import Link from "next/link";
 import Image from "next/image";
 import dashboardPicture from "../../public/dashboardMock.png";

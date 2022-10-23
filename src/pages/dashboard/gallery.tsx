@@ -9,7 +9,6 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalOverlay,
-  Spacer,
   useDisclosure,
 } from "@chakra-ui/react";
 import MediaCard from "@/features/gallery/components/MediaCard";
@@ -26,6 +25,7 @@ import { Storage } from "@/features/dashboard/types/DashboardUser";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import MediaUploader from "@/features/gallery/components/MediaUploader";
 import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
+import PlaceholderCTA from "@/features/dashboard/components/PlaceholderCTA";
 
 const Gallery = ({
   medias,
@@ -67,10 +67,6 @@ const Gallery = ({
           Upload
         </Button>
         <Input placeholder={"Search name"} width="auto" rounded={"full"} />
-        <Spacer />
-        <Button width={100} rounded={"full"} variant="outline">
-          Sort by
-        </Button>
       </Flex>
       <Masonry columnsCount={5}>
         {mediaList.map((media: IMedia) => (
@@ -82,6 +78,13 @@ const Gallery = ({
           />
         ))}
       </Masonry>
+      {mediaList.length === 0 && (
+        <PlaceholderCTA
+          description={"No shared media yet"}
+          buttonText={"Start uploading now"}
+          onClick={onOpen}
+        />
+      )}
       <Modal isOpen={isOpen} onClose={onClose} size={"6xl"}>
         <ModalOverlay />
         <ModalContent maxH={"80vh"} overflowX={"hidden"} overflowY={"auto"}>

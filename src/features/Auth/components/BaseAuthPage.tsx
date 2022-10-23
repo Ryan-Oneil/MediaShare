@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Head from "next/head";
+import shareImage from "../../../../public/share.svg";
 
 type props = {
   title: string;
@@ -71,7 +72,7 @@ const BaseAuthPage = ({
             <Box w={"50vw"} as={"section"} color={"white"}>
               <Box w={"70%"} m={"auto"}>
                 <Image
-                  src={"/share.svg"}
+                  src={shareImage}
                   alt={"Upload logo"}
                   width={600}
                   height={500}
