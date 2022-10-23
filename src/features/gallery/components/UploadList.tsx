@@ -78,7 +78,7 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
 const UploadList = ({ uploadItems }: { uploadItems: UploadItem[] }) => {
   //sort by uploading status first
   const sortedUploadItems = useMemo(
-    () => uploadItems.sort((a, b) => a.status - b.status),
+    () => [...uploadItems].sort((a, b) => a.status - b.status),
     [uploadItems]
   );
 

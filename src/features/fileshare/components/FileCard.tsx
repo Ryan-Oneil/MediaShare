@@ -21,7 +21,6 @@ import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import { useRouter } from "next/router";
 import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
-import { AiOutlineFileText } from "react-icons/ai";
 
 interface FileCardProps extends ISharedLink {
   onClick?: () => void;

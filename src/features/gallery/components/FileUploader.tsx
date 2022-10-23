@@ -17,7 +17,6 @@ import useFileUpload from "@/features/gallery/hooks/useFileUpload";
 import { apiPostCall } from "@/utils/axios";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
-import { AxiosError } from "axios";
 
 type props = {
   handleUploadFinished: (sharedLink: ISharedLink) => void;
