@@ -116,11 +116,18 @@ const useFileUpload = (
     );
   };
 
+  const removeFile = (fileName: string) => {
+    setUploadItemList((prevState) =>
+      prevState.filter((m) => m.file.name !== fileName)
+    );
+  };
+
   return {
     uploadSelectedFiles,
     uploadItemList,
     addFilesToBeUploaded,
     uploadWaitingFiles,
+    removeFile,
   };
 };
 

@@ -34,8 +34,12 @@ const FileUploader = ({
   linkId,
   title = "",
 }: props) => {
-  const { uploadItemList, addFilesToBeUploaded, uploadWaitingFiles } =
-    useFileUpload("/api/share");
+  const {
+    uploadItemList,
+    addFilesToBeUploaded,
+    uploadWaitingFiles,
+    removeFile,
+  } = useFileUpload("/api/share");
   const [shareTitle, setShareTitle] = React.useState<string>(title);
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const { createToast } = useDisplayApiError();
@@ -109,7 +113,10 @@ const FileUploader = ({
                 maxLength={60}
                 disabled={isUploading}
               />
-              <UploadList uploadItems={uploadItemList} />
+              <UploadList
+                uploadItems={uploadItemList}
+                deleteItemFromList={removeFile}
+              />
             </Box>
           </Flex>
         </ModalBody>
@@ -118,7 +125,7 @@ const FileUploader = ({
             colorScheme="blue"
             mr={3}
             onClick={shareFiles}
-            disabled={isUploading}
+            disabled={isUploading || uploadItemList.length === 0}
           >
             Share
           </Button>

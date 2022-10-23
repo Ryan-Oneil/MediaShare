@@ -17,8 +17,19 @@ import { UploadItem, UploadStatus } from "@/features/gallery/types/UploadTypes";
 import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
 import Media from "@/features/gallery/components/Media";
 import FileIcon from "@/features/fileshare/components/FileIcon";
+import { FaTrash } from "react-icons/fa";
 
-const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
+interface UploadListItemProps extends UploadItem {
+  onRemove?: (fileName: string) => void;
+}
+
+const UploadListItem = ({
+  file,
+  progress,
+  status,
+  src,
+  onRemove,
+}: UploadListItemProps) => {
   const url = useMemo(() => URL.createObjectURL(file), [file]);
   const { onCopy } = useClipboard(src);
 
@@ -59,6 +70,16 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
           />
         )}
       </VStack>
+      {status === UploadStatus.PENDING && onRemove && (
+        <Tooltip label={"Remove"}>
+          <IconButton
+            aria-label={"Remove"}
+            icon={<FaTrash color={"red"} />}
+            onClick={() => onRemove(file.name)}
+            rounded={"full"}
+          />
+        </Tooltip>
+      )}
       {status === UploadStatus.UPLOADING && <Spinner />}
       {status === UploadStatus.UPLOADED && (
         <Tooltip label={"Copy link"}>
@@ -75,7 +96,12 @@ const UploadListItem = ({ file, progress, status, src }: UploadItem) => {
   );
 };
 
-const UploadList = ({ uploadItems }: { uploadItems: UploadItem[] }) => {
+type UploadListProps = {
+  uploadItems: UploadItem[];
+  deleteItemFromList?: (fileName: string) => void;
+};
+
+const UploadList = ({ uploadItems, deleteItemFromList }: UploadListProps) => {
   //sort by uploading status first
   const sortedUploadItems = useMemo(
     () => [...uploadItems].sort((a, b) => a.status - b.status),
@@ -87,7 +113,11 @@ const UploadList = ({ uploadItems }: { uploadItems: UploadItem[] }) => {
       <Heading size={"md"}>Uploaded files</Heading>
       <List w={"100%"} spacing={4} mt={4} mb={32}>
         {sortedUploadItems.map((uploadItem) => (
-          <UploadListItem {...uploadItem} key={uploadItem.file.name} />
+          <UploadListItem
+            {...uploadItem}
+            key={uploadItem.file.name}
+            onRemove={deleteItemFromList}
+          />
         ))}
       </List>
       {sortedUploadItems.length === 0 && (
