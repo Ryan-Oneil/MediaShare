@@ -19,11 +19,16 @@ export const uploadMedia = async (
     {
       $push: {
         medias: {
-          _id: id,
-          url: mediaUrl,
-          size: mediaSize,
-          contentType: contentType,
-          date: new Date(),
+          $each: [
+            {
+              _id: id,
+              url: mediaUrl,
+              size: mediaSize,
+              contentType: contentType,
+              date: new Date(),
+            },
+          ],
+          $position: 0,
         },
       },
       $inc: { "storage.usedTotal": mediaSize },
