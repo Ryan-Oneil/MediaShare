@@ -45,6 +45,7 @@ const DetailedFileInfo = ({
   files,
   onClose,
   onDelete,
+  expires,
 }: DetailedSharedFileDrawerProps) => {
   const { onCopy } = useCopyLink(_id);
 
@@ -66,7 +67,7 @@ const DetailedFileInfo = ({
         <InfoSection title={"Size"} value={displayBytesInReadableForm(size)} />
         <InfoSection
           title={"Expires"}
-          value={new Date().toLocaleDateString()}
+          value={expires ? new Date(expires).toLocaleDateString() : "Never"}
         />
         <Heading size={"md"}>Files</Heading>
         <VStack

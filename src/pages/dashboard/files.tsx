@@ -104,7 +104,6 @@ const Files = ({
             {...(sharedLinksList.find(
               (link) => link._id === activeLinkId
             ) as ISharedLink)}
-            expires={new Date()}
             onClose={() => {
               infoPanel.onClose();
               setActiveLinkId("");

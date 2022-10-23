@@ -7,8 +7,9 @@ import {
   InputGroup,
   InputLeftElement,
 } from "@chakra-ui/react";
+import { FieldAttributes } from "formik/dist/Field";
 
-export const LabeledInput = (props) => {
+export const LabeledInput = (props: FieldAttributes<any>) => {
   const { label, error, touched, icon } = props;
   return (
     <FormControl isInvalid={error && touched}>

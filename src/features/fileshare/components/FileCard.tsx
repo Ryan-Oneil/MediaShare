@@ -69,7 +69,9 @@ const FileCard = ({
         <Container mt={"auto!important"}>
           <Heading size={"md"}>{title ? title : "Untitled"}</Heading>
           <Text color={"rgba(0, 0, 0, 0.4)"} fontWeight={"700"}>
-            Expires on {expires && new Date(expires).toLocaleDateString()}
+            {expires
+              ? `Expires on ${new Date(expires).toLocaleDateString()}`
+              : " Never Expires"}
           </Text>
         </Container>
         <Flex bg={"#F0F0F0"} w={"100%"} p={4} alignItems={"center"}>
