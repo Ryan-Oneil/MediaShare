@@ -6,7 +6,7 @@ import {
 } from "@/lib/services/fileshareService";
 import { z } from "zod";
 
-const createShareLinkSchema = z.object({
+export const createShareLinkSchema = z.object({
   title: z.string().trim().max(60).default("Untitled"),
   files: z.array(
     z.object({

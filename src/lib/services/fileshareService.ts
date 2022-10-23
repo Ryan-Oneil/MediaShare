@@ -43,6 +43,10 @@ const getPendingUploadSize = async (userUid: string) => {
     .orFail(() => new Error("User not found"))
     .exec();
 
+  if (!pendingFileUploads) {
+    return 0;
+  }
+
   return pendingFileUploads.reduce((acc: number, curr) => acc + curr.size, 0);
 };
 
@@ -132,7 +136,8 @@ export const createShareLink = async (
 export const addPendingFilesToLink = async (
   uploaderUid: string,
   linkId: string,
-  files: Array<IPendingFile>
+  files: Array<IPendingFile>,
+  title: string
 ) => {
   const totalSize = files.reduce((total, file) => total + file.size, 0);
   const pendingUploadSize = await getPendingUploadSize(uploaderUid);
@@ -144,12 +149,34 @@ export const addPendingFilesToLink = async (
   }
 
   const uploadUrls = await Promise.all(
-    files.map((file) => getUploadUrl(file.name, file.size, linkId))
+    files.map(async (file) => {
+      return {
+        name: file.name,
+        url: await getUploadUrl(file.name, file.size, linkId),
+      };
+    })
   );
 
+  if (title) {
+    User.findOneAndUpdate(
+      { externalId: uploaderUid, "sharedLinks._id": linkId },
+      {
+        $set: {
+          "sharedLinks.$.title": title,
+        },
+      }
+    ).exec();
+  }
+  files.forEach((file) => {
+    file.linkId = linkId;
+  });
   await savePendingUpload(uploaderUid, files);
 
-  return uploadUrls;
+  return {
+    linkId,
+    size: totalSize,
+    uploadUrls,
+  };
 };
 
 const getPendingFilesByName = async (

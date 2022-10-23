@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import {
   Box,
@@ -37,9 +37,15 @@ const Files = ({
   const [activeLinkId, setActiveLinkId] = useState<string>("");
   const [sharedLinksList, setSharedLinksList] =
     useState<Array<ISharedLink>>(sharedLinks);
+  const [isEditingLink, setIsEditingLink] = useState<boolean>(false);
   const infoPanel = useDisclosure();
   const uploadModal = useDisclosure();
   const { createToast } = useDisplayApiError();
+  const activeLink = useMemo(() => {
+    return sharedLinksList.find(
+      (link) => link._id === activeLinkId
+    ) as ISharedLink;
+  }, [activeLinkId, sharedLinksList]);
 
   const deleteLink = (id: string) => {
     const link = sharedLinksList.find(
@@ -101,22 +107,37 @@ const Files = ({
         </Box>
         {infoPanel.isOpen && activeLinkId && (
           <DetailedSharedFileDrawer
-            {...(sharedLinksList.find(
-              (link) => link._id === activeLinkId
-            ) as ISharedLink)}
+            {...activeLink}
             onClose={() => {
               infoPanel.onClose();
               setActiveLinkId("");
             }}
             onDelete={() => deleteLink(activeLinkId)}
+            editLinkAction={() => {
+              setIsEditingLink(true);
+              uploadModal.onOpen();
+            }}
           />
         )}
       </Flex>
       {uploadModal.isOpen && (
         <FileUploader
           handleUploadFinished={(sharedLink: ISharedLink) => {
-            setSharedLinksList((prev) => [sharedLink, ...prev]);
-            setActiveLinkId(sharedLink._id);
+            if (isEditingLink) {
+              setSharedLinksList((prev) => {
+                const updatedLinks = [...prev];
+                const index = updatedLinks.findIndex(
+                  (link) => link._id === sharedLink._id
+                );
+                updatedLinks[index].files.push(...sharedLink.files);
+                updatedLinks[index].title = sharedLink.title;
+
+                return updatedLinks;
+              });
+            } else {
+              setSharedLinksList((prev) => [sharedLink, ...prev]);
+              setActiveLinkId(sharedLink._id);
+            }
             setStorageQuota((prev) => ({
               ...prev,
               usedTotal: prev.usedTotal + sharedLink.size,
@@ -124,7 +145,12 @@ const Files = ({
             infoPanel.onOpen();
           }}
           quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
-          onClose={uploadModal.onClose}
+          onClose={() => {
+            setIsEditingLink(false);
+            uploadModal.onClose();
+          }}
+          title={isEditingLink ? activeLink.title : ""}
+          linkId={isEditingLink ? activeLinkId : ""}
         />
       )}
     </BaseAppPage>

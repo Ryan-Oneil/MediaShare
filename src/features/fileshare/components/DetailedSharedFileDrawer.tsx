@@ -24,6 +24,7 @@ import useCopyLink from "@/features/fileshare/hooks/useCopyLink";
 interface DetailedSharedFileDrawerProps extends ISharedLink {
   onClose: () => void;
   onDelete: () => void;
+  editLinkAction: () => void;
 }
 
 const InfoSection = ({ title, value }: { title: string; value: string }) => {
@@ -46,6 +47,7 @@ const DetailedFileInfo = ({
   onClose,
   onDelete,
   expires,
+  editLinkAction,
 }: DetailedSharedFileDrawerProps) => {
   const { onCopy } = useCopyLink(_id);
 
@@ -103,8 +105,9 @@ const DetailedFileInfo = ({
           onClick={onCopy}
         />
         <LabelIconButton
-          aria-label={"Edit Title"}
+          aria-label={"Edit"}
           icon={<FaEdit fontSize={24} />}
+          onClick={editLinkAction}
         />
         <LabelIconButton
           aria-label={"Delete"}

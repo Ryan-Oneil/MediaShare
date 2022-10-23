@@ -11,6 +11,7 @@ import {
   ModalCloseButton,
   ModalContent,
   ModalFooter,
+  ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
 import useFileUpload from "@/features/gallery/hooks/useFileUpload";
@@ -22,24 +23,29 @@ type props = {
   handleUploadFinished: (sharedLink: ISharedLink) => void;
   quotaSpaceRemaining: number;
   onClose: () => void;
+  linkId?: string;
+  title?: string;
 };
 
 const FileUploader = ({
   handleUploadFinished,
   quotaSpaceRemaining,
   onClose,
+  linkId,
+  title = "",
 }: props) => {
   const { uploadItemList, addFilesToBeUploaded, uploadWaitingFiles } =
     useFileUpload("/api/share");
-  const [shareTitle, setShareTitle] = React.useState<string>("");
+  const [shareTitle, setShareTitle] = React.useState<string>(title);
   const [isUploading, setIsUploading] = React.useState<boolean>(false);
   const { createToast } = useDisplayApiError();
 
   const shareFiles = async () => {
     setIsUploading(true);
+    const url = linkId ? `/api/share/${linkId}` : "/api/share";
 
     try {
-      const { data } = await apiPostCall("/api/share", {
+      const { data } = await apiPostCall(url, {
         title: shareTitle,
         files: uploadItemList.map(({ file }) => {
           return { name: file.name, size: file.size };
@@ -73,6 +79,7 @@ const FileUploader = ({
     <Modal isOpen={true} onClose={onClose} size={"6xl"}>
       <ModalOverlay />
       <ModalContent maxH={"80vh"} overflowX={"hidden"} overflowY={"auto"}>
+        {linkId && <ModalHeader>Editing shared link</ModalHeader>}
         <ModalCloseButton />
         <ModalBody p={0}>
           <Flex gap={10} p={12} pb={0} maxW={"100%"} maxH={"60vh"}>
