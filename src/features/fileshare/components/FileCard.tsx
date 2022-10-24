@@ -13,11 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { FILE_SHARE_URL } from "@/utils/urls";
 import FileIcon from "@/features/fileshare/components/FileIcon";
-import {
-  displayBytesInReadableForm,
-  formatDateToUTC,
-  getDaysTillDate,
-} from "@/utils/helpers";
+import { displayBytesInReadableForm, getDaysTillDate } from "@/utils/helpers";
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaEye, FaLink, FaTrash } from "react-icons/fa";
