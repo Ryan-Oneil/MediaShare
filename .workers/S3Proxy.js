@@ -173,7 +173,7 @@ async function handlePutRequest(event) {
   const response = new Response(s3MediaUrl, s3Response);
   response.headers.set("Access-Control-Allow-Origin", ALLOWED_ORIGIN);
 
-  if (WEBHOOK_URL && response.status === 200) {
+  if (response.status === 200) {
     const contentLength = parseInt(request.headers.get("content-length") || 0);
     const metaParams = {};
     const url = new URL(request.url);
@@ -183,23 +183,29 @@ async function handlePutRequest(event) {
         getSearchParam(url, key);
     });
 
-    event.waitUntil(
-      fetch(WEBHOOK_URL, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: request.headers.get("X-Authorization-Firebase"),
-        },
-        body: JSON.stringify({
-          size: contentLength,
-          contentType: request.headers.get("content-type"),
-          id: bucketAndKey.Key,
-          url: s3MediaUrl,
-          originalFileName,
-          ...metaParams,
-        }),
-      })
-    );
+    let hookURL = MEDIA_WEBHOOK_URL;
+
+    if (metaParams["linkid"]) {
+      hookURL = FILE_SHARE_WEBHOOK_URL;
+    }
+
+    const webhookResponse = await fetch(hookURL, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        authorization: request.headers.get("X-Authorization-Firebase"),
+      },
+      body: JSON.stringify({
+        size: contentLength,
+        contentType: request.headers.get("content-type"),
+        id: bucketAndKey.Key,
+        url: s3MediaUrl,
+        originalFileName,
+        ...metaParams,
+      }),
+    });
+
+    console.log(webhookResponse);
   }
   return response;
 }

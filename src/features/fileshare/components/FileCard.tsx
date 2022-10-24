@@ -13,7 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { FILE_SHARE_URL } from "@/utils/urls";
 import FileIcon from "@/features/fileshare/components/FileIcon";
-import { displayBytesInReadableForm } from "@/utils/helpers";
+import {
+  displayBytesInReadableForm,
+  formatDateToUTC,
+  getDaysTillDate,
+} from "@/utils/helpers";
 import { Menu, MenuButton, MenuItem, MenuList } from "@chakra-ui/menu";
 import { HiOutlineDotsVertical } from "react-icons/hi";
 import { FaEye, FaLink, FaTrash } from "react-icons/fa";
@@ -69,7 +73,7 @@ const FileCard = ({
           <Heading size={"md"}>{title ? title : "Untitled"}</Heading>
           <Text color={"rgba(0, 0, 0, 0.4)"} fontWeight={"700"}>
             {expires
-              ? `Expires on ${new Date(expires).toLocaleDateString()}`
+              ? `Expires in ${getDaysTillDate(new Date(expires))}`
               : " Never Expires"}
           </Text>
         </Container>

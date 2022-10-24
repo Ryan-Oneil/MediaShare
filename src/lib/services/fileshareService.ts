@@ -113,7 +113,7 @@ export const createShareLink = async (
           $each: [
             {
               _id: linkId,
-              size: totalSize,
+              size: 0,
               title,
               files: [],
               expires: expiryDate,

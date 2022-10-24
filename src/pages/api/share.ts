@@ -46,7 +46,7 @@ const handlePutCall = async (req: NextApiRequest, res: NextApiResponse) => {
     const { originalFileName, url, id, contentType, size, linkid } =
       s3UploadSchema.parse(req.body);
 
-    addFilesToLink(uid, linkid, [
+    await addFilesToLink(uid, linkid, [
       {
         name: originalFileName,
         url,
