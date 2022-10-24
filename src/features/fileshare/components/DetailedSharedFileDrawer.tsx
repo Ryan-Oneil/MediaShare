@@ -14,7 +14,7 @@ import {
   Drawer,
   IconButton,
 } from "@chakra-ui/react";
-import { displayBytesInReadableForm } from "@/utils/helpers";
+import { displayBytesInReadableForm, formatDateToUTC } from "@/utils/helpers";
 import FileDetail from "@/features/fileshare/components/FileDetail";
 import { FaEdit, FaLink, FaTrash } from "react-icons/fa";
 import LabelIconButton from "@/features/base/components/LabelIconButton";
@@ -71,7 +71,7 @@ const DetailedFileInfo = ({
         <InfoSection title={"Size"} value={displayBytesInReadableForm(size)} />
         <InfoSection
           title={"Expires"}
-          value={expires ? new Date(expires).toLocaleDateString() : "Never"}
+          value={expires ? formatDateToUTC(new Date(expires)) : "Never"}
         />
         <Heading size={"md"}>Files</Heading>
         <VStack

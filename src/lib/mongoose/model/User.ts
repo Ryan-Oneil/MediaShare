@@ -29,24 +29,29 @@ const QuotaSchema = new mongoose.Schema<IQuota>(
   {
     max: {
       type: Number,
+      min: 0,
       // 2GB in bytes
       default: 2147483648,
     },
     usedTotal: {
       type: Number,
       default: 0,
+      min: 0,
     },
     videoUsed: {
       type: Number,
       default: 0,
+      min: 0,
     },
     imageUsed: {
       type: Number,
       default: 0,
+      min: 0,
     },
     documentUsed: {
       type: Number,
       default: 0,
+      min: 0,
     },
   },
   { _id: false }
