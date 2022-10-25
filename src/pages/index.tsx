@@ -37,17 +37,7 @@ const Home: NextPage = () => {
         </Stack>
 
         <Link href={REGISTER_URL}>
-          <Button
-            size="md"
-            fontWeight={600}
-            color={"white"}
-            bg={"brand.100"}
-            _hover={{
-              bg: "brand.200",
-            }}
-            w={"40%"}
-            m={"auto"}
-          >
+          <Button size="md" variant={"brand"} w={"40%"} m={"auto"}>
             Try now
           </Button>
         </Link>

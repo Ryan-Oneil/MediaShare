@@ -140,31 +140,13 @@ const DesktopNav = () => {
             </Button>
           </NextLink>
           <NextLink href={REGISTER_URL}>
-            <Button
-              fontWeight={600}
-              color={"white"}
-              bg={"brand.100"}
-              _hover={{
-                bg: "brand.200",
-              }}
-            >
-              Sign Up
-            </Button>
+            <Button variant={"brand"}>Sign Up</Button>
           </NextLink>
         </HStack>
       )}
       {auth.user && (
         <NextLink href={DASHBOARD_URL}>
-          <Button
-            fontWeight={600}
-            color={"white"}
-            bg={"brand.100"}
-            _hover={{
-              bg: "brand.200",
-            }}
-          >
-            Dashboard
-          </Button>
+          <Button variant={"brand"}>Dashboard</Button>
         </NextLink>
       )}
     </Flex>

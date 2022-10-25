@@ -42,6 +42,9 @@ const StorageStatus = ({ used, max }: storageProps) => {
         _hover={{
           bg: "brand.200",
         }}
+        _active={{
+          bg: "brand.100",
+        }}
         fontSize={size}
         size={size}
       >

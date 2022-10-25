@@ -1,11 +1,11 @@
 import React from "react";
-import { Heading } from "@chakra-ui/react";
+import { Button, Heading } from "@chakra-ui/react";
 import { PricingTier } from "@/features/base/components/PriceCard";
 import { Card } from "@/features/base/components/Card";
 
 const CurrentPlanCard = () => {
   return (
-    <Card p={6} rounded={10} maxW={"fit-content"}>
+    <Card p={6} rounded={10} maxW={"fit-content"} alignSelf={"flex-start"}>
       <Heading size={"md"} textAlign={"start"} mb={10}>
         Current Plan
       </Heading>
@@ -21,6 +21,9 @@ const CurrentPlanCard = () => {
           ],
         }}
       />
+      <Button w={"100%"} variant={"brand"}>
+        Change
+      </Button>
     </Card>
   );
 };
