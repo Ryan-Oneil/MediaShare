@@ -15,7 +15,7 @@ import {
   GALLERY_URL,
   HOMEPAGE_URL,
   USER_FILES_URL,
-} from "../../../utils/urls";
+} from "@/utils/urls";
 import { NavItem } from "../types/NavItem";
 import { useRouter } from "next/router";
 
@@ -41,7 +41,7 @@ export const Sidebar = (props: BoxProps) => {
             align="center"
             px={4}
             py={4}
-            pr={12}
+            pr={16}
             cursor="pointer"
             bg={currentRoute === url ? "brand.200" : ""}
             _hover={{
@@ -66,6 +66,7 @@ export const Sidebar = (props: BoxProps) => {
               align={"center"}
               fontSize={{ base: "md", "2xl": "lg" }}
               fontWeight={"extrabold"}
+              mt={2}
             >
               Media Share
             </Text>

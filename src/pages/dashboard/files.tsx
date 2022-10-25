@@ -54,8 +54,8 @@ const Files = ({
   return (
     <BaseAppPage
       title={"Shared Files"}
-      used={storage.usedTotal}
-      max={storage.max}
+      used={storageQuota.usedTotal}
+      max={storageQuota.max}
     >
       <Flex h={"100%"}>
         <Box flex={1}>

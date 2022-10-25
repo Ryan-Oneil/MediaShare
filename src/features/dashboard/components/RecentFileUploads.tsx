@@ -8,6 +8,7 @@ import {
   Thead,
   Tr,
   Box,
+  Heading,
 } from "@chakra-ui/react";
 import { displayBytesInReadableForm, formatDateToUTC } from "@/utils/helpers";
 import { FaEye } from "react-icons/fa";
@@ -16,6 +17,7 @@ import { useRouter } from "next/router";
 import { FILE_SHARE_URL } from "@/utils/urls";
 import PlaceholderCTA from "@/features/dashboard/components/PlaceholderCTA";
 import LabelIconButton from "@/features/base/components/LabelIconButton";
+import { Card } from "@/features/base/components/Card";
 
 type props = {
   links: [ISharedLink];
@@ -36,23 +38,28 @@ const RecentFileUploads = ({ links }: props) => {
   }
 
   return (
-    <TableContainer>
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>File</Th>
-            <Th>Uploaded</Th>
-            <Th>Size</Th>
-            <Th>Action</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          {links.map((sharedLink) => (
-            <TableRow {...sharedLink} key={sharedLink._id} />
-          ))}
-        </Tbody>
-      </Table>
-    </TableContainer>
+    <Card maxW={"100%"} p={6} rounded={16}>
+      <Heading size={"md"} color={"#1B2559"} fontWeight={700}>
+        Recent File shares
+      </Heading>
+      <TableContainer mt={2}>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>File</Th>
+              <Th>Uploaded</Th>
+              <Th>Size</Th>
+              <Th>Action</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {links.map((sharedLink) => (
+              <TableRow {...sharedLink} key={sharedLink._id} />
+            ))}
+          </Tbody>
+        </Table>
+      </TableContainer>
+    </Card>
   );
 };
 
