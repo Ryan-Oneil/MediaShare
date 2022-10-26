@@ -64,8 +64,14 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
               .filter((media) => media.contentType.includes("image"))
               .slice(0, 10)
               .map((media) => (
-                <Box width={"auto"} maxW={200} rounded={10} overflow={"hidden"}>
-                  <MediaModal {...media} key={media._id} />
+                <Box
+                  width={"auto"}
+                  maxW={200}
+                  rounded={10}
+                  overflow={"hidden"}
+                  key={media._id}
+                >
+                  <MediaModal {...media} />
                 </Box>
               ))}
             {medias.length < 1 && (
