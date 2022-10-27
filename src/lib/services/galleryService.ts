@@ -5,6 +5,20 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { hasSufficientStorage } from "@/lib/services/userService";
 
+const getMediaSize = (contentType: string, size: number) => {
+  const storage = {
+    videoUsed: 0,
+    imageUsed: 0,
+  };
+
+  if (contentType.startsWith("video")) {
+    storage.videoUsed = size;
+  } else if (contentType.startsWith("image")) {
+    storage.imageUsed = size;
+  }
+  return storage;
+};
+
 export const uploadMedia = async (
   uploaderUid: string,
   mediaUrl: string,
@@ -13,6 +27,8 @@ export const uploadMedia = async (
   id: string
 ) => {
   await dbConnect();
+
+  const storage = getMediaSize(contentType, mediaSize);
 
   return User.findOneAndUpdate(
     { externalId: uploaderUid },
@@ -31,7 +47,11 @@ export const uploadMedia = async (
           $position: 0,
         },
       },
-      $inc: { "storage.usedTotal": mediaSize },
+      $inc: {
+        "storage.usedTotal": mediaSize,
+        "storage.videoUsed": storage.videoUsed,
+        "storage.imageUsed": storage.imageUsed,
+      },
     }
   ).exec();
 };
@@ -88,7 +108,10 @@ export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
     Bucket: process.env.S3_MEDIA_BUCKET,
     Key: mediaId,
   };
+  const { size, contentType } = user.medias[0];
+
   const s3Client = getS3Client();
+  const storage = getMediaSize(contentType, size);
 
   return s3Client
     .send(new DeleteObjectCommand(deleteParams))
@@ -97,7 +120,11 @@ export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
         { externalId: uploaderUid },
         {
           $pull: { medias: { _id: mediaId } },
-          $inc: { "storage.usedTotal": -user.medias[0].size },
+          $inc: {
+            "storage.usedTotal": -size,
+            "storage.videoUsed": -storage.videoUsed,
+            "storage.imageUsed": -storage.imageUsed,
+          },
         }
       )
         .exec()

@@ -7,7 +7,6 @@ import CurrentPlanCard from "@/features/dashboard/components/CurrentPlanCard";
 import { GetServerSidePropsContext } from "next";
 import { DashboardUser } from "@/features/dashboard/types/DashboardUser";
 import { displayBytesInReadableForm } from "@/utils/helpers";
-import MediaCard from "@/features/gallery/components/MediaCard";
 import { getUserById } from "@/lib/services/userService";
 import RecentFileUploads from "@/features/dashboard/components/RecentFileUploads";
 import {
@@ -19,6 +18,7 @@ import {
   isLinkExpired,
 } from "@/lib/services/fileshareService";
 import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
+import MediaModal from "@/features/gallery/components/MediaModal";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
@@ -49,20 +49,36 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
               value={displayBytesInReadableForm(storage.videoUsed)}
             />
             <StatCard
-              title={"Document Storage"}
+              title={"Shared Files Storage"}
               value={displayBytesInReadableForm(storage.documentUsed)}
             />
           </Flex>
-          <Heading size={"md"}>Recent Uploads</Heading>
-          <Stack gap={6} direction={["column", "row"]} maxH={200}>
-            {medias.slice(0, 5).map((media) => (
-              <MediaCard media={media} showControls={false} key={media._id} />
-            ))}
+          <Heading size={"md"}>Recent Media Uploads</Heading>
+          <Stack
+            gap={4}
+            direction={["column", "row"]}
+            maxH={200}
+            overflow={"hidden"}
+          >
+            {medias
+              .filter((media) => media.contentType.includes("image"))
+              .slice(0, 10)
+              .map((media) => (
+                <Box
+                  width={"auto"}
+                  maxW={200}
+                  rounded={10}
+                  overflow={"hidden"}
+                  key={media._id}
+                >
+                  <MediaModal {...media} />
+                </Box>
+              ))}
             {medias.length < 1 && (
               <EmptyPlaceHolder description={"No recent Uploads"} />
             )}
           </Stack>
-          <Heading size={"md"}>Recent File shares</Heading>
+
           <Box overflow={"auto"} maxH={"50vh"}>
             <RecentFileUploads links={sharedLinks} />
           </Box>

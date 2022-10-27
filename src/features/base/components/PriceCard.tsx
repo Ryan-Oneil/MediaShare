@@ -35,11 +35,7 @@ export const PricingCard = (props: PricingCardProps) => {
       <PricingTier data={data} icon={icon} buttonProps={buttonProps} />
       <Button
         fontWeight={600}
-        color={"white"}
-        bg={"brand.100"}
-        _hover={{
-          bg: "brand.200",
-        }}
+        variant={"brand"}
         size={{ base: "md", "2xl": "lg" }}
         w="full"
         {...buttonProps}

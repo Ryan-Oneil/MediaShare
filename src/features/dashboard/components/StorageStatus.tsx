@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Flex, Icon, Progress, Text, VStack } from "@chakra-ui/react";
 import { AiOutlineCloudServer } from "react-icons/ai";
-import { displayBytesInReadableForm } from "../../../utils/helpers";
+import { displayBytesInReadableForm } from "@/utils/helpers";
 
 type storageProps = {
   used: number;
@@ -19,6 +19,7 @@ const StorageStatus = ({ used, max }: storageProps) => {
       mt={"auto!important"}
       mb={"20px!important"}
       fontSize={size}
+      gap={1}
     >
       <Flex align="center" fontSize={"lg"}>
         <Icon as={AiOutlineCloudServer} mr={2} />
@@ -40,6 +41,9 @@ const StorageStatus = ({ used, max }: storageProps) => {
         aria-label={"Upgrade Plan"}
         _hover={{
           bg: "brand.200",
+        }}
+        _active={{
+          bg: "brand.100",
         }}
         fontSize={size}
         size={size}

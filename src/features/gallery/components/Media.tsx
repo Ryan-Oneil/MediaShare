@@ -33,6 +33,7 @@ const Media = ({
         onError={() => setUrl("/missing.png")}
         onLoad={onLoad}
         {...rest}
+        h={"100%"}
       />
     );
   } else {
@@ -41,7 +42,12 @@ const Media = ({
         <video
           src={url}
           controls={showControls}
-          style={{ maxWidth: "100%", maxHeight: "100%", width: "100%" }}
+          style={{
+            maxWidth: "100%",
+            maxHeight: "100%",
+            width: "100%",
+            cursor,
+          }}
           muted
           onLoad={onLoad}
           onClick={onClick}
