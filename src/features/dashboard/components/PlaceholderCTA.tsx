@@ -1,6 +1,6 @@
 import React from "react";
 import { Button, Flex, Text } from "@chakra-ui/react";
-import Image from "next/future/image";
+import Image from "next/image";
 import emptyPlaceholder from "../../../../public/share.svg";
 
 type Props = {

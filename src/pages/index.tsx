@@ -37,7 +37,7 @@ const Home: NextPage = () => {
         </Stack>
 
         <Link href={REGISTER_URL}>
-          <Button size="md" variant={"brand"} w={"40%"} m={"auto"}>
+          <Button variant={"brand"} m={"auto"} px={20}>
             Try now
           </Button>
         </Link>

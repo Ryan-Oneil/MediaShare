@@ -1,12 +1,4 @@
-import {
-  Box,
-  VStack,
-  Text,
-  Link,
-  Flex,
-  Icon,
-  BoxProps,
-} from "@chakra-ui/react";
+import { Box, VStack, Text, Flex, Icon, BoxProps } from "@chakra-ui/react";
 import React from "react";
 import { FaFolder, FaImages, FaServer } from "react-icons/fa";
 import NextLink from "next/link";
@@ -30,8 +22,8 @@ export const Sidebar = (props: BoxProps) => {
 
   const NavLink = ({ url, icon, label }: NavItem) => {
     return (
-      <NextLink href={url} passHref>
-        <Link
+      <NextLink href={url} passHref style={{ width: "100%" }}>
+        <Text
           variant="ghost"
           aria-label={label}
           fontSize={{ base: "md", "2xl": "lg" }}
@@ -51,7 +43,7 @@ export const Sidebar = (props: BoxProps) => {
             <Icon as={icon} mr="4" />
             {label}
           </Flex>
-        </Link>
+        </Text>
       </NextLink>
     );
   };
@@ -60,17 +52,15 @@ export const Sidebar = (props: BoxProps) => {
     return (
       <VStack minHeight={"100vh"} bg={"brand.100"} color={"white"}>
         <NextLink href={HOMEPAGE_URL} passHref>
-          <Link _hover={{ textDecoration: "none" }}>
-            <Text
-              p={5}
-              align={"center"}
-              fontSize={{ base: "md", "2xl": "lg" }}
-              fontWeight={"extrabold"}
-              mt={2}
-            >
-              Media Share
-            </Text>
-          </Link>
+          <Text
+            p={5}
+            align={"center"}
+            fontSize={{ base: "md", "2xl": "lg" }}
+            fontWeight={"extrabold"}
+            mt={2}
+          >
+            Media Share
+          </Text>
         </NextLink>
         {urls.map((navItem) => (
           <NavLink

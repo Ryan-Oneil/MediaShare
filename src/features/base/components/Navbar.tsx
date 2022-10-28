@@ -87,17 +87,15 @@ export default function Navbar() {
 
 const NavLink = ({ label, url }: NavItem) => {
   return (
-    <NextLink href={url} passHref>
-      <Link
-        p={2}
-        fontWeight={500}
-        _hover={{
-          textDecoration: "none",
-          color: "gray.500",
-        }}
-      >
-        {label}
-      </Link>
+    <NextLink
+      href={url}
+      passHref
+      style={{
+        padding: "0.5rem",
+        fontWeight: 500,
+      }}
+    >
+      {label}
     </NextLink>
   );
 };
@@ -105,13 +103,13 @@ const NavLink = ({ label, url }: NavItem) => {
 const Logo = () => {
   return (
     <NextLink href={HOMEPAGE_URL} passHref>
-      <Link
+      <Text
         color={"#101828"}
         _hover={{ textDecoration: "none" }}
         fontSize={"xl"}
       >
         Media Share
-      </Link>
+      </Text>
     </NextLink>
   );
 };

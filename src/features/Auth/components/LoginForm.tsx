@@ -114,10 +114,11 @@ const LoginForm = () => {
                 </Alert>
               )}
               <Stack spacing={{ base: 4, "2xl": 10 }} mt={2}>
-                <Link href={RESET_PASSWORD_URL}>
-                  <a style={{ textAlign: "end", color: "#4D4D4D" }}>
-                    Forgot Password?
-                  </a>
+                <Link
+                  href={RESET_PASSWORD_URL}
+                  style={{ textAlign: "end", color: "#4D4D4D" }}
+                >
+                  Forgot Password?
                 </Link>
                 <Button
                   type="submit"
