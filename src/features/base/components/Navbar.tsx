@@ -39,7 +39,7 @@ const NAV_ITEMS: Array<NavItem> = [
   },
 ];
 
-export default function Navbar() {
+const Navbar = () => {
   const { isOpen, onToggle } = useDisclosure();
   const isDesktop = useBreakpointValue({ base: false, md: true });
 
@@ -83,7 +83,7 @@ export default function Navbar() {
       )}
     </>
   );
-}
+};
 
 const NavLink = ({ label, url }: NavItem) => {
   return (
@@ -168,3 +168,4 @@ const MobileNav = () => {
     </VStack>
   );
 };
+export default Navbar;

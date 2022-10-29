@@ -7,6 +7,9 @@ let nextConfig = {
   images: {
     domains: ["via.placeholder.com"],
   },
+  experimental: {
+    appDir: true,
+  },
 };
 
 if (shouldAnalyzeBundles) {

@@ -1,4 +1,3 @@
-import type { NextPage } from "next";
 import {
   Button,
   Heading,
@@ -13,7 +12,7 @@ import Image from "next/image";
 import dashboardPicture from "../../public/dashboardMock.png";
 import BaseHomePage from "@/features/base/components/BaseHomePage";
 
-const Home: NextPage = () => {
+const Home = () => {
   return (
     <BaseHomePage title={"Home"}>
       <VStack
