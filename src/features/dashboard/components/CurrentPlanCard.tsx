@@ -5,7 +5,7 @@ import { Card } from "@/features/base/components/Card";
 
 const CurrentPlanCard = () => {
   return (
-    <Card p={6} rounded={10} maxW={"fit-content"} alignSelf={"flex-start"}>
+    <Card p={6} rounded={10} maxW={"100%"} alignSelf={"flex-start"}>
       <Heading size={"md"} textAlign={"start"} mb={10}>
         Current Plan
       </Heading>
