@@ -15,6 +15,7 @@ export interface IPendingFile {
   linkId: string;
   added: Date;
   size: number;
+  expireAt: Date;
 }
 
 export const fileSchema = new mongoose.Schema<UploadedItem>({
@@ -56,6 +57,10 @@ export const pendingFileUploadSchema = new mongoose.Schema<IPendingFile>({
   size: {
     type: Number,
     required: true,
+  },
+  expireAt: {
+    type: Date,
+    default: Date.now() + 360 * 60 * 1000,
   },
 });
 
