@@ -66,7 +66,7 @@ const FileCard = ({
           )}
         </SimpleGrid>
         <Container mt={"auto!important"}>
-          <Heading size={"md"}>{title ? title : "Untitled"}</Heading>
+          <Heading size={"md"}>{title}</Heading>
           <Text color={"rgba(0, 0, 0, 0.4)"} fontWeight={"700"}>
             {expires
               ? `Expires in ${getDaysTillDate(new Date(expires))}`

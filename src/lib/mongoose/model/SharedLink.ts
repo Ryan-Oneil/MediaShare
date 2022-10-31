@@ -15,6 +15,9 @@ export interface IPendingFile {
   linkId: string;
   added: Date;
   size: number;
+}
+
+interface PendingFileScheme extends IPendingFile {
   expireAt: Date;
 }
 
@@ -41,7 +44,7 @@ export const fileSchema = new mongoose.Schema<UploadedItem>({
   },
 });
 
-export const pendingFileUploadSchema = new mongoose.Schema<IPendingFile>({
+export const pendingFileUploadSchema = new mongoose.Schema<PendingFileScheme>({
   name: {
     type: String,
     required: true,

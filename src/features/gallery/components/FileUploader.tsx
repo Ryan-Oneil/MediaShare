@@ -50,7 +50,7 @@ const FileUploader = ({
 
     try {
       const { data } = await apiPostCall(url, {
-        title: shareTitle,
+        title: shareTitle ? shareTitle : "Untitled",
         files: uploadItemList.map(({ file }) => {
           return { name: file.name, size: file.size };
         }),
