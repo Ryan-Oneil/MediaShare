@@ -1,8 +1,6 @@
 import dbConnect from "@/lib/mongoose";
 import User from "@/lib/mongoose/model/User";
-import { getProxyS3Client, getS3Client } from "@/lib/amazon/S3Client";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { deleteS3Files, getS3SignedUrl } from "@/lib/amazon/S3Client";
 import { hasSufficientStorage } from "@/lib/services/userService";
 
 const getMediaSize = (contentType: string, size: number) => {
@@ -56,28 +54,6 @@ export const uploadMedia = async (
   ).exec();
 };
 
-export const getUploadUrl = async (mediaName: string, mediaSize: number) => {
-  const uploadParams = {
-    Bucket: process.env.S3_MEDIA_BUCKET,
-    Key: mediaName,
-    ContentLength: mediaSize,
-  };
-
-  const s3Client = getProxyS3Client();
-  const date = new Date();
-
-  const signedURl = await getSignedUrl(
-    s3Client,
-    new PutObjectCommand(uploadParams),
-    {
-      expiresIn: 3600,
-      signingDate: date,
-      signableHeaders: new Set<string>(["host", "content-length"]),
-    }
-  );
-  return signedURl + "&date=" + date.toISOString();
-};
-
 export const generateUploadUrls = async (
   userId: string,
   medias: Array<{ name: string; size: number }>
@@ -90,7 +66,12 @@ export const generateUploadUrls = async (
 
   return Promise.all(
     medias.map(async (media) => {
-      return getUploadUrl(media.name, media.size);
+      return getS3SignedUrl(
+        media.name,
+        process.env.S3_MEDIA_BUCKET as string,
+
+        media.size
+      );
     })
   );
 };
@@ -104,17 +85,14 @@ export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
     .lean()
     .exec();
 
-  const deleteParams = {
-    Bucket: process.env.S3_MEDIA_BUCKET,
-    Key: mediaId,
-  };
   const { size, contentType } = medias[0];
 
-  const s3Client = getS3Client();
   const mediaSize = getMediaSize(contentType, size);
 
-  return s3Client
-    .send(new DeleteObjectCommand(deleteParams))
+  return deleteS3Files(
+    [{ Key: mediaId }],
+    process.env.S3_MEDIA_BUCKET as string
+  )
     .then(() => {
       return User.findOneAndUpdate(
         { externalId: uploaderUid },
