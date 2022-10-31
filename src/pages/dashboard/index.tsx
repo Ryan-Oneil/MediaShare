@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
-import { Box, Flex, Heading, Stack, VStack } from "@chakra-ui/react";
+import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import StatCard from "@/features/dashboard/components/StatCard";
 import CurrentPlanCard from "@/features/dashboard/components/CurrentPlanCard";
 import { GetServerSidePropsContext } from "next";
@@ -17,8 +17,6 @@ import {
   deleteUsersExpiredSharedLinks,
   isLinkExpired,
 } from "@/lib/services/fileshareService";
-import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
-import MediaModal from "@/features/gallery/components/MediaModal";
 import StorageDetail from "@/features/dashboard/components/StorageDetail";
 import RecentMediaUploads from "@/features/dashboard/components/RecentMediaUploads";
 
