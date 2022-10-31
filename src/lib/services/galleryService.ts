@@ -113,8 +113,6 @@ export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
   const s3Client = getS3Client();
   const mediaSize = getMediaSize(contentType, size);
 
-  console.log(storage, mediaSize);
-
   return s3Client
     .send(new DeleteObjectCommand(deleteParams))
     .then(() => {

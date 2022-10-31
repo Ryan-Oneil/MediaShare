@@ -11,6 +11,7 @@ const handleDeleteCall = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).end();
   } catch (err: any) {
+    console.log(err);
     return res.status(500).json(err.message);
   }
 };

@@ -92,6 +92,7 @@ const Gallery = ({
               <MediaUploader
                 quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
                 handleUploadFinished={(media: UploadedItem) => {
+                  media._id = media.url.slice(media.url.lastIndexOf("/") + 1);
                   setMediaList((prev) => [media, ...prev]);
                   setStorageQuota((prev) => ({
                     ...prev,
