@@ -282,9 +282,9 @@ const deleteS3Files = (files: Array<UploadedItem>) => {
 
 export const deleteSharedLink = async (userUid: string, linkId: string) => {
   await dbConnect();
-  const { sharedLinks } = await User.findOne(
+  const { sharedLinks, storage } = await User.findOne(
     { externalId: userUid, "sharedLinks._id": linkId },
-    { "sharedLinks.$": 1 }
+    { "sharedLinks.$": 1, storage: 1 }
   )
     .orFail(() => new Error("Link not found"))
     .lean()
@@ -296,9 +296,9 @@ export const deleteSharedLink = async (userUid: string, linkId: string) => {
   return User.findOneAndUpdate(
     { externalId: userUid, "sharedLinks._id": linkId },
     {
-      $inc: {
-        "storage.usedTotal": -linkSize,
-        "storage.documentUsed": -linkSize,
+      $set: {
+        "storage.usedTotal": Math.max(storage.usedTotal - linkSize, 0),
+        "storage.documentUsed": Math.max(storage.documentUsed - linkSize, 0),
       },
       $pull: {
         sharedLinks: {
