@@ -110,6 +110,7 @@ export const createShareLink = async (
     linkId,
     size: totalSize,
     uploadUrls,
+    expires: expiryDate,
   };
 };
 
