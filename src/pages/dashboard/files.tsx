@@ -1,13 +1,6 @@
 import React, { useMemo, useState } from "react";
 import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
-import {
-  Box,
-  Button,
-  Flex,
-  Input,
-  SimpleGrid,
-  useDisclosure,
-} from "@chakra-ui/react";
+import { Box, Button, Flex, SimpleGrid, useDisclosure } from "@chakra-ui/react";
 import { GetServerSidePropsContext } from "next";
 import { Storage } from "@/features/dashboard/types/DashboardUser";
 import { getUserById } from "@/lib/services/userService";
@@ -71,12 +64,16 @@ const Files = ({
               variant="outline"
               rounded={"full"}
               onClick={uploadModal.onOpen}
+              size={"lg"}
             >
               Share Files
             </Button>
-            <Input placeholder={"Search name"} width="auto" rounded={"full"} />
           </Flex>
-          <SimpleGrid minChildWidth={"240px"} p={5} gap={5}>
+          <SimpleGrid
+            p={5}
+            gap={8}
+            gridTemplateColumns={"repeat(auto-fill, minmax(250px, 1fr))"}
+          >
             {sharedLinksList.map((sharedLink) => (
               <FileCard
                 key={sharedLink._id}

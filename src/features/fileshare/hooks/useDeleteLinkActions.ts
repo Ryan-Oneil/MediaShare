@@ -20,7 +20,7 @@ const useDeleteLinkActions = (
 
     return apiDeleteCall(`/api/share/${link._id}`).catch((err) => {
       createToast("Error deleting link", err);
-      updateSharedLinksList([link, ...sharedLinksList]);
+      updateSharedLinksList([link, ...newSharedLinksList]);
     });
   };
 

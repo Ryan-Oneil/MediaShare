@@ -96,9 +96,9 @@ export const generateUploadUrls = async (
 };
 
 export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
-  const user = await User.findOne(
+  const { medias, storage } = await User.findOne(
     { externalId: uploaderUid },
-    { medias: { $elemMatch: { _id: mediaId } } }
+    { medias: { $elemMatch: { _id: mediaId } }, storage: 1 }
   )
     .orFail(() => new Error("Media not found"))
     .lean()
@@ -108,10 +108,10 @@ export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
     Bucket: process.env.S3_MEDIA_BUCKET,
     Key: mediaId,
   };
-  const { size, contentType } = user.medias[0];
+  const { size, contentType } = medias[0];
 
   const s3Client = getS3Client();
-  const storage = getMediaSize(contentType, size);
+  const mediaSize = getMediaSize(contentType, size);
 
   return s3Client
     .send(new DeleteObjectCommand(deleteParams))
@@ -120,10 +120,16 @@ export const deleteMedia = async (uploaderUid: string, mediaId: string) => {
         { externalId: uploaderUid },
         {
           $pull: { medias: { _id: mediaId } },
-          $inc: {
-            "storage.usedTotal": -size,
-            "storage.videoUsed": -storage.videoUsed,
-            "storage.imageUsed": -storage.imageUsed,
+          $set: {
+            "storage.usedTotal": Math.max(storage.usedTotal - size, 0),
+            "storage.videoUsed": Math.max(
+              storage.videoUsed - mediaSize.videoUsed,
+              0
+            ),
+            "storage.imageUsed": Math.max(
+              storage.imageUsed - mediaSize.imageUsed,
+              0
+            ),
           },
         }
       )

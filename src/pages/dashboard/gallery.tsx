@@ -3,7 +3,6 @@ import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import {
   Button,
   Flex,
-  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -63,10 +62,9 @@ const Gallery = ({
       max={storageQuota.max}
     >
       <Flex p={5} bg={"white"} gap={5} boxShadow={"inset 0px -1px 0px #F1F1F1"}>
-        <Button variant="outline" rounded={"full"} onClick={onOpen}>
+        <Button variant="outline" rounded={"full"} onClick={onOpen} size={"lg"}>
           Upload
         </Button>
-        <Input placeholder={"Search name"} width="auto" rounded={"full"} />
       </Flex>
       <Masonry columnsCount={5}>
         {mediaList.map((media: IMedia) => (
@@ -94,6 +92,7 @@ const Gallery = ({
               <MediaUploader
                 quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
                 handleUploadFinished={(media: UploadedItem) => {
+                  media._id = media.url.slice(media.url.lastIndexOf("/") + 1);
                   setMediaList((prev) => [media, ...prev]);
                   setStorageQuota((prev) => ({
                     ...prev,

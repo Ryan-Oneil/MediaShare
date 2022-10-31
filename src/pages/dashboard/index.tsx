@@ -1,7 +1,7 @@
 import React from "react";
 
 import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
-import { Box, Flex, Heading, Stack } from "@chakra-ui/react";
+import { Box, Flex, Heading, VStack } from "@chakra-ui/react";
 import StatCard from "@/features/dashboard/components/StatCard";
 import CurrentPlanCard from "@/features/dashboard/components/CurrentPlanCard";
 import { GetServerSidePropsContext } from "next";
@@ -17,8 +17,8 @@ import {
   deleteUsersExpiredSharedLinks,
   isLinkExpired,
 } from "@/lib/services/fileshareService";
-import EmptyPlaceHolder from "@/features/base/components/EmptyPlaceHolder";
-import MediaModal from "@/features/gallery/components/MediaModal";
+import StorageDetail from "@/features/dashboard/components/StorageDetail";
+import RecentMediaUploads from "@/features/dashboard/components/RecentMediaUploads";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
@@ -54,36 +54,16 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
             />
           </Flex>
           <Heading size={"md"}>Recent Media Uploads</Heading>
-          <Stack
-            gap={4}
-            direction={["column", "row"]}
-            maxH={200}
-            overflow={"hidden"}
-          >
-            {medias
-              .filter((media) => media.contentType.includes("image"))
-              .slice(0, 10)
-              .map((media) => (
-                <Box
-                  width={"auto"}
-                  maxW={200}
-                  rounded={10}
-                  overflow={"hidden"}
-                  key={media._id}
-                >
-                  <MediaModal {...media} />
-                </Box>
-              ))}
-            {medias.length < 1 && (
-              <EmptyPlaceHolder description={"No recent Uploads"} />
-            )}
-          </Stack>
+          <RecentMediaUploads medias={medias} />
 
           <Box overflow={"auto"} maxH={"50vh"}>
             <RecentFileUploads links={sharedLinks} />
           </Box>
         </Flex>
-        <CurrentPlanCard />
+        <VStack>
+          <StorageDetail {...storage} />
+          <CurrentPlanCard />
+        </VStack>
       </Flex>
     </BaseAppPage>
   );

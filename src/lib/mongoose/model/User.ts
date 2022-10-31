@@ -7,7 +7,7 @@ import {
 } from "./SharedLink";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 
-interface IQuota {
+export interface IQuota {
   max: number;
   usedTotal: number;
   videoUsed: number;
