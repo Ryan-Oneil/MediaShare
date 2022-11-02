@@ -31,9 +31,8 @@ const Price: NextPage = () => {
               price: "€0",
               name: "Free Tier",
               features: [
-                "5GB Storage Limit",
-                "7 day file share expiration",
-                "ShareX API Access",
+                "2GB Storage Limit",
+                "3 day file share expiration",
                 "Unlimited Media expiry",
               ],
             }}
@@ -47,8 +46,7 @@ const Price: NextPage = () => {
               name: "Pro Tier",
               features: [
                 "100GB Storage Limit",
-                "Unlimited file share expiration",
-                "ShareX API Access",
+                "30 day file share expiration",
                 "Unlimited Media expiry",
               ],
             }}
@@ -61,8 +59,7 @@ const Price: NextPage = () => {
               name: "Starter Tier",
               features: [
                 "50GB Storage Limit",
-                "30 day file share expiration",
-                "ShareX API Access",
+                "14 day file share expiration",
                 "Unlimited Media expiry",
               ],
             }}

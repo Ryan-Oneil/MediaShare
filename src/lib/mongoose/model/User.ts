@@ -108,7 +108,7 @@ const UserSchema = new mongoose.Schema<IUser>({
   },
   maxSharedLength: {
     type: Number,
-    default: 7,
+    default: 3,
   },
 });
 
