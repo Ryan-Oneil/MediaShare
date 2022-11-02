@@ -3,11 +3,7 @@ import BaseAppPage from "@/features/dashboard/components/BaseAppPage";
 import {
   Button,
   Flex,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalOverlay,
+  useBreakpointValue,
   useDisclosure,
 } from "@chakra-ui/react";
 import MediaCard from "@/features/gallery/components/MediaCard";
@@ -37,6 +33,7 @@ const Gallery = ({
   const [mediaList, setMediaList] = useState<IMedia[]>(medias);
   const [storageQuota, setStorageQuota] = useState<Storage>(storage);
   const { createToast } = useDisplayApiError();
+  const columns = useBreakpointValue({ base: 1, md: 2, lg: 5, "2xl": 6 });
 
   const deleteMedia = (mediaId: string) => {
     const media = mediaList.find((m) => m._id === mediaId);
@@ -66,7 +63,7 @@ const Gallery = ({
           Upload
         </Button>
       </Flex>
-      <Masonry columnsCount={5}>
+      <Masonry columnsCount={columns || 1}>
         {mediaList.map((media: IMedia) => (
           <MediaCard
             media={media}
@@ -83,27 +80,20 @@ const Gallery = ({
           onClick={onOpen}
         />
       )}
-      <Modal isOpen={isOpen} onClose={onClose} size={"6xl"}>
-        <ModalOverlay />
-        <ModalContent maxH={"80vh"} overflowX={"hidden"} overflowY={"auto"}>
-          <ModalCloseButton />
-          <ModalBody p={0}>
-            <Flex gap={10} p={12} maxW={"100%"}>
-              <MediaUploader
-                quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
-                handleUploadFinished={(media: UploadedItem) => {
-                  media._id = media.url.slice(media.url.lastIndexOf("/") + 1);
-                  setMediaList((prev) => [media, ...prev]);
-                  setStorageQuota((prev) => ({
-                    ...prev,
-                    usedTotal: prev.usedTotal + media.size,
-                  }));
-                }}
-              />
-            </Flex>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
+      {isOpen && (
+        <MediaUploader
+          quotaSpaceRemaining={storageQuota.max - storageQuota.usedTotal}
+          handleUploadFinished={(media: UploadedItem) => {
+            media._id = media.url.slice(media.url.lastIndexOf("/") + 1);
+            setMediaList((prev) => [media, ...prev]);
+            setStorageQuota((prev) => ({
+              ...prev,
+              usedTotal: prev.usedTotal + media.size,
+            }));
+          }}
+          onClose={onClose}
+        />
+      )}
     </BaseAppPage>
   );
 };
