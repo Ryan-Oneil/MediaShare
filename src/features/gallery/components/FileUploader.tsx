@@ -50,7 +50,7 @@ const FileUploader = ({
 
     try {
       const { data } = await apiPostCall(url, {
-        title: shareTitle,
+        title: shareTitle ? shareTitle : "Untitled",
         files: uploadItemList.map(({ file }) => {
           return { name: file.name, size: file.size };
         }),
@@ -61,7 +61,7 @@ const FileUploader = ({
           const link: ISharedLink = {
             title: shareTitle,
             size: uploadedFiles.reduce((acc, item) => acc + item.size, 0),
-            expires: new Date(),
+            expires: data.expires,
             files: uploadedFiles,
             _id: data.linkId,
             uploaded: new Date(),

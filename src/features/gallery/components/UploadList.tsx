@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import {
   Container,
+  ContainerProps,
   Heading,
   IconButton,
   List,
@@ -95,12 +96,16 @@ const UploadListItem = ({
   );
 };
 
-type UploadListProps = {
+interface UploadListProps extends ContainerProps {
   uploadItems: UploadItem[];
   deleteItemFromList?: (fileName: string) => void;
-};
+}
 
-const UploadList = ({ uploadItems, deleteItemFromList }: UploadListProps) => {
+const UploadList = ({
+  uploadItems,
+  deleteItemFromList,
+  ...rest
+}: UploadListProps) => {
   //sort by uploading status first
   const sortedUploadItems = useMemo(
     () => [...uploadItems].sort((a, b) => a.status - b.status),
@@ -108,7 +113,7 @@ const UploadList = ({ uploadItems, deleteItemFromList }: UploadListProps) => {
   );
 
   return (
-    <Container>
+    <Container {...rest}>
       <Heading size={"md"}>Uploaded files</Heading>
       <List w={"100%"} spacing={4} mt={4} mb={32}>
         {sortedUploadItems.map((uploadItem) => (

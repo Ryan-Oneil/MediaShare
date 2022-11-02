@@ -2,36 +2,9 @@ import User from "@/lib/mongoose/model/User";
 import { UUID } from "bson";
 import dbConnect from "../mongoose";
 import { hasSufficientStorage } from "@/lib/services/userService";
-import { getProxyS3Client, getS3Client } from "@/lib/amazon/S3Client";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import { DeleteObjectsCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { deleteS3Files, getS3SignedUrl } from "@/lib/amazon/S3Client";
 import { UploadedItem } from "@/features/gallery/types/UploadTypes";
 import { IPendingFile, ISharedLink } from "@/lib/mongoose/model/SharedLink";
-
-const getUploadUrl = async (name: string, size: number, linkId: string) => {
-  const uploadParams = {
-    Bucket: process.env.S3_FILE_BUCKET,
-    Key: name,
-    ContentLength: size,
-    Metadata: {
-      "link-id": linkId,
-    },
-  };
-
-  const s3Client = getProxyS3Client();
-  const date = new Date();
-
-  const signedURl = await getSignedUrl(
-    s3Client,
-    new PutObjectCommand(uploadParams),
-    {
-      expiresIn: 3600,
-      signingDate: date,
-      signableHeaders: new Set<string>(["host", "content-length"]),
-    }
-  );
-  return signedURl + "&date=" + date.toISOString();
-};
 
 const getPendingUploadSize = async (userUid: string) => {
   await dbConnect();
@@ -72,7 +45,12 @@ const generateUploadUrl = (files: Array<IPendingFile>, linkId: string) => {
   return files.map(async (file) => {
     return {
       name: file.name,
-      url: await getUploadUrl(file.name, file.size, linkId),
+      url: await getS3SignedUrl(
+        file.name,
+        process.env.S3_FILE_BUCKET as string,
+        file.size,
+        { "link-id": linkId }
+      ),
     };
   });
 };
@@ -132,6 +110,7 @@ export const createShareLink = async (
     linkId,
     size: totalSize,
     uploadUrls,
+    expires: expiryDate,
   };
 };
 
@@ -214,11 +193,15 @@ export const addFilesToLink = async (
   );
 
   //deletes uploaded files that were not found in pending uploads
-  const filesToDelete = files.filter(
-    (file) =>
-      !pendingFileUploads.find((pendingFile) => pendingFile.name === file.name)
-  );
-  deleteS3Files(filesToDelete);
+  const filesToDelete = files
+    .filter(
+      (file) =>
+        !pendingFileUploads.find(
+          (pendingFile) => pendingFile.name === file.name
+        )
+    )
+    .map((file) => ({ Key: file._id }));
+  await deleteS3Files(filesToDelete, process.env.S3_FILE_BUCKET as string);
 
   const uploadedFiles = pendingFileUploads.map((pendingUpload) => {
     const file = files.find(
@@ -264,22 +247,6 @@ export const addFilesToLink = async (
   ).exec();
 };
 
-const deleteS3Files = (files: Array<UploadedItem>) => {
-  if (files.length === 0) {
-    return;
-  }
-  const s3Client = getS3Client();
-
-  const deleteParams = {
-    Bucket: process.env.S3_FILE_BUCKET,
-    Delete: {
-      Objects: files.map((file) => ({ Key: file._id })),
-    },
-  };
-
-  return s3Client.send(new DeleteObjectsCommand(deleteParams));
-};
-
 export const deleteSharedLink = async (userUid: string, linkId: string) => {
   await dbConnect();
   const { sharedLinks, storage } = await User.findOne(
@@ -291,7 +258,8 @@ export const deleteSharedLink = async (userUid: string, linkId: string) => {
     .exec();
 
   const linkSize = sharedLinks[0].size;
-  deleteS3Files(sharedLinks[0].files);
+  const fileKeys = sharedLinks[0].files.map((file) => ({ Key: file._id }));
+  await deleteS3Files(fileKeys, process.env.S3_FILE_BUCKET as string);
 
   return User.findOneAndUpdate(
     { externalId: userUid, "sharedLinks._id": linkId },
@@ -309,7 +277,7 @@ export const deleteSharedLink = async (userUid: string, linkId: string) => {
   ).exec();
 };
 
-const deleteSharedLinks = (
+const deleteSharedLinks = async (
   expiredLinks: Array<ISharedLink>,
   userUid: string
 ) => {
@@ -319,7 +287,12 @@ const deleteSharedLinks = (
     0
   );
 
-  deleteS3Files(expiredLinks.flatMap((link) => link.files));
+  const fileKeys = expiredLinks
+    .map((link) => link.files)
+    .flat()
+    .map((file) => ({ Key: file._id }));
+
+  await deleteS3Files(fileKeys, process.env.S3_FILE_BUCKET as string);
 
   return User.findOneAndUpdate(
     { externalId: userUid },
@@ -392,7 +365,7 @@ export const deleteUsersExpiredSharedLinks = async (userUid: string) => {
   });
 
   if (expiredLinks.length > 0) {
-    deleteSharedLinks(expiredLinks, userUid);
+    await deleteSharedLinks(expiredLinks, userUid);
   }
 };
 
@@ -413,7 +386,10 @@ export const deleteFileFromLink = async (userUid: string, fileId: string) => {
     throw new Error("File not found");
   }
 
-  deleteS3Files([fileToDelete]);
+  await deleteS3Files(
+    [{ Key: fileToDelete._id }],
+    process.env.S3_FILE_BUCKET as string
+  );
 
   return User.findOneAndUpdate(
     { externalId: userUid, "sharedLinks._id": link._id },

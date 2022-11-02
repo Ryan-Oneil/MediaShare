@@ -17,6 +17,10 @@ export interface IPendingFile {
   size: number;
 }
 
+interface PendingFileScheme extends IPendingFile {
+  expireAt: Date;
+}
+
 export const fileSchema = new mongoose.Schema<UploadedItem>({
   _id: {
     type: String,
@@ -40,7 +44,7 @@ export const fileSchema = new mongoose.Schema<UploadedItem>({
   },
 });
 
-export const pendingFileUploadSchema = new mongoose.Schema<IPendingFile>({
+export const pendingFileUploadSchema = new mongoose.Schema<PendingFileScheme>({
   name: {
     type: String,
     required: true,
@@ -56,6 +60,10 @@ export const pendingFileUploadSchema = new mongoose.Schema<IPendingFile>({
   size: {
     type: Number,
     required: true,
+  },
+  expireAt: {
+    type: Date,
+    default: Date.now() + 360 * 60 * 1000,
   },
 });
 

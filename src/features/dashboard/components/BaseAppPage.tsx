@@ -15,7 +15,6 @@ import {
 import { Sidebar } from "@/features/base/components/Sidebar";
 import { FaBars } from "react-icons/fa";
 import SettingDropDown from "./SettingDropDown";
-import NotificationButton from "./NotificationButton";
 import StorageStatus from "./StorageStatus";
 import Head from "next/head";
 
@@ -68,7 +67,6 @@ const BaseAppPage = ({
               {title}
             </Heading>
             <Spacer />
-            <NotificationButton />
             <SettingDropDown />
           </Flex>
           <Box as={"article"} {...rest} overflow={"auto"} h={"100%"}>

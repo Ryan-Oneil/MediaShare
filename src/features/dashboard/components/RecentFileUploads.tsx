@@ -67,7 +67,7 @@ const TableRow = ({ _id, title, uploaded, size }: ISharedLink) => {
   const router = useRouter();
   return (
     <Tr bg={"white"}>
-      <Td>{title ? title : "Untitled Upload"}</Td>
+      <Td>{title}</Td>
       <Td>{formatDateToUTC(new Date(uploaded))}</Td>
       <Td>{displayBytesInReadableForm(size)}</Td>
       <Td>

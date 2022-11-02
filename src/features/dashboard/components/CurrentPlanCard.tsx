@@ -16,7 +16,6 @@ const CurrentPlanCard = () => {
           features: [
             "5GB Storage Limit",
             "7 day file share expiration",
-            "ShareX API Access",
             "Unlimited Media expiry",
           ],
         }}

@@ -30,7 +30,7 @@ const Masonry = ({ children, columnsCount }: props) => {
   const columns = divideArray(childrenElements, columnsCount);
 
   return (
-    <Flex justifyContent={"center"} gap={gap} p={gap} as={"aside"}>
+    <Flex gap={gap} p={gap} as={"aside"}>
       {columns.map((items, index) => {
         return (
           <Flex flexDirection={"column"} key={index} as={"section"} gap={gap}>
