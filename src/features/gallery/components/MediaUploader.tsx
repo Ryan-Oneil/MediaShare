@@ -4,7 +4,6 @@ import UploadList from "@/features/gallery/components/UploadList";
 import { IMedia } from "@/features/gallery/types/IMedia";
 import useFileUpload from "@/features/gallery/hooks/useFileUpload";
 import {
-  Box,
   Flex,
   Modal,
   ModalBody,
