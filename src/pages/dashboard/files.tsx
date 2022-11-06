@@ -153,15 +153,18 @@ export const getServerSideProps = withAuthentication(
   async ({ req }: GetServerSidePropsContext) => {
     const uid = await getUserIdFromJWT(req.cookies.jwt);
 
-    const user = await getUserById(uid, "storage sharedLinks");
+    const user = JSON.parse(
+      JSON.stringify(await getUserById(uid, "storage sharedLinks"))
+    );
+
     const filteredLinks = user.sharedLinks.filter(
-      (link) => link.files.length > 0 && !isLinkExpired(link)
+      (link: ISharedLink) => link.files.length > 0 && !isLinkExpired(link)
     );
     deleteUsersExpiredSharedLinks(uid);
 
     return {
       props: {
-        sharedLinks: JSON.parse(JSON.stringify(filteredLinks)),
+        sharedLinks: filteredLinks,
         storage: user.storage,
       },
     };

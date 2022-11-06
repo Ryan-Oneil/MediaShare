@@ -19,6 +19,7 @@ import {
 } from "@/lib/services/fileshareService";
 import StorageDetail from "@/features/dashboard/components/StorageDetail";
 import RecentMediaUploads from "@/features/dashboard/components/RecentMediaUploads";
+import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 
 const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
   return (
@@ -73,20 +74,18 @@ export default Dashboard;
 export const getServerSideProps = withAuthentication(
   async ({ req }: GetServerSidePropsContext) => {
     const uid = await getUserIdFromJWT(req.cookies.jwt);
-    const user = await getUserById(uid, "storage medias sharedLinks");
+    const user = JSON.parse(
+      JSON.stringify(await getUserById(uid, "storage medias sharedLinks"))
+    );
 
     deleteUsersExpiredSharedLinks(uid);
 
     return {
       props: {
         storage: user.storage,
-        medias: JSON.parse(JSON.stringify(user.medias)),
-        sharedLinks: JSON.parse(
-          JSON.stringify(
-            user.sharedLinks.filter(
-              (link) => link.files.length > 0 && !isLinkExpired(link)
-            )
-          )
+        medias: user.medias,
+        sharedLinks: user.sharedLinks.filter(
+          (link: ISharedLink) => link.files.length > 0 && !isLinkExpired(link)
         ),
       },
     };

@@ -20,7 +20,6 @@ export const createUser = async (userUid: string) => {
   const user = {
     externalId: userUid,
     storage: {
-      max: 5,
       usedTotal: 0,
       videoUsed: 0,
       imageUsed: 0,
