@@ -103,11 +103,13 @@ export default Gallery;
 export const getServerSideProps = withAuthentication(
   async ({ req }: GetServerSidePropsContext) => {
     const uid = await getUserIdFromJWT(req.cookies.jwt);
-    const user = await getUserById(uid, "storage medias");
+    const user = JSON.parse(
+      JSON.stringify(await getUserById(uid, "storage medias"))
+    );
 
     return {
       props: {
-        medias: JSON.parse(JSON.stringify(user.medias)),
+        medias: user.medias,
         storage: user.storage,
       },
     };
