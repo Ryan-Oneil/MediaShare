@@ -1,7 +1,6 @@
 import {
   BoxProps,
   Button,
-  ButtonProps,
   Flex,
   Heading,
   Icon,
@@ -14,40 +13,67 @@ import {
 import React from "react";
 import { HiCheckCircle } from "react-icons/hi";
 import { Card } from "./Card";
+import { IPricePlan } from "@/lib/mongoose/model/PricePlan";
+import { useAuth } from "@/features/Auth/hooks/useAuth";
+import { useRouter } from "next/router";
+import { apiPostCall } from "@/utils/axios";
+import { getStripe } from "@/lib/stripe/client";
 
-export interface PricingCardData {
-  features: string[];
-  name: string;
-  price: string;
-}
-
-interface PricingCardProps extends BoxProps {
-  data: PricingCardData;
+interface PricingCardProps {
+  plan: IPricePlan;
   icon?: React.ElementType;
-  buttonProps?: ButtonProps;
 }
 
 export const PricingCard = (props: PricingCardProps) => {
-  const { data, icon, buttonProps, ...rest } = props;
+  const user = useAuth();
+  const router = useRouter();
+  const [loading, setLoading] = React.useState(false);
+  const { plan, icon } = props;
+  const extraProperties = {} as BoxProps;
+
+  if (plan.highlight) {
+    extraProperties["transform"] = { lg: "scale(1.05)" };
+    extraProperties["zIndex"] = 1;
+  }
+
+  const handleSubscribe = async () => {
+    setLoading(true);
+    if (!user) {
+      return router.push("/login?redirect=/price");
+    }
+    try {
+      const { data } = await apiPostCall("/api/create-checkout-session", {
+        planId: plan._id,
+      });
+
+      const stripe = await getStripe();
+      stripe?.redirectToCheckout({ sessionId: data });
+    } catch (error) {
+      return alert((error as Error)?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <Card px="6" pb="6" pt="12" rounded={{ sm: "xl" }} {...rest}>
-      <PricingTier data={data} icon={icon} buttonProps={buttonProps} />
+    <Card px="6" pb="6" pt="12" rounded={{ sm: "xl" }} {...extraProperties}>
+      <PricingTier plan={plan} icon={icon} />
       <Button
         fontWeight={600}
         variant={"brand"}
         size={{ base: "md", "2xl": "lg" }}
         w="full"
-        {...buttonProps}
+        disabled={plan.disabled || loading}
+        onClick={handleSubscribe}
       >
-        Purchase
+        Subscribe
       </Button>
     </Card>
   );
 };
 
-export const PricingTier = ({ icon, data }: PricingCardProps) => {
-  const { features, price, name } = data;
+export const PricingTier = ({ icon, plan }: PricingCardProps) => {
+  const { features, price, name } = plan;
 
   return (
     <>

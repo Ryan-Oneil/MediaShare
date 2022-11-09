@@ -3,9 +3,16 @@ import BaseHomePage from "@/features/base/components/BaseHomePage";
 import { PricingCard } from "@/features/base/components/PriceCard";
 import { Box, Heading, SimpleGrid, VStack, Text } from "@chakra-ui/react";
 import { FaSuitcase, FaTag, FaTags } from "react-icons/fa";
-import { NextPage } from "next";
+import PricePlan, { IPricePlan } from "@/lib/mongoose/model/PricePlan";
+import dbConnect from "@/lib/mongoose";
 
-const Price: NextPage = () => {
+type PriceProps = {
+  plans: IPricePlan[];
+};
+
+const icons = [FaTag, FaTags, FaSuitcase];
+
+const Price = ({ plans }: PriceProps) => {
   return (
     <BaseHomePage title={"Pricing"}>
       <Box as="section" bg={"gray.50"} px={{ base: "4", md: "8" }}>
@@ -26,48 +33,21 @@ const Price: NextPage = () => {
           justifyItems="center"
           alignItems="center"
         >
-          <PricingCard
-            data={{
-              price: "€0",
-              name: "Free Tier",
-              features: [
-                "2GB Storage Limit",
-                "3 day file share expiration",
-                "Unlimited Media expiry",
-              ],
-            }}
-            icon={FaTag}
-          />
-          <PricingCard
-            zIndex={1}
-            transform={{ lg: "scale(1.05)" }}
-            data={{
-              price: "€20",
-              name: "Pro Tier",
-              features: [
-                "100GB Storage Limit",
-                "30 day file share expiration",
-                "Unlimited Media expiry",
-              ],
-            }}
-            buttonProps={{ variant: "outline", borderWidth: "2px" }}
-            icon={FaSuitcase}
-          />
-          <PricingCard
-            data={{
-              price: "€10",
-              name: "Starter Tier",
-              features: [
-                "50GB Storage Limit",
-                "14 day file share expiration",
-                "Unlimited Media expiry",
-              ],
-            }}
-            icon={FaTags}
-          />
+          {plans.map((plan, index) => {
+            return <PricingCard plan={plan} icon={icons[index]} key={index} />;
+          })}
         </SimpleGrid>
       </Box>
     </BaseHomePage>
   );
 };
 export default Price;
+
+export async function getStaticProps() {
+  await dbConnect();
+  const plans = await PricePlan.find({}).lean().exec();
+
+  return {
+    props: { plans },
+  };
+}

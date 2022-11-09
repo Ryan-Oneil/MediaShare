@@ -41,3 +41,13 @@ export const getHoursTillDate = (date: Date) => {
 
   return Math.ceil(diff / (1000 * 3600));
 };
+
+export const getHostedURL = () => {
+  if (!process.env.VERCEL_URL) {
+    return "http://localhost:3000";
+  }
+
+  const url = process.env.VERCEL_URL;
+
+  return url.includes("http") ? url : `https://${url}`;
+};
