@@ -37,7 +37,7 @@ const Price = ({ plans }: PriceProps) => {
   return (
     <BaseHomePage title={"Pricing"}>
       <Box as="section" bg={"gray.50"} px={{ base: "4", md: "8" }}>
-        <VStack spacing={2} textAlign="center" mb={10}>
+        <VStack spacing={2} textAlign="center" my={14}>
           <Heading as="h1" fontSize={{ base: "xl", "2xl": "4xl" }}>
             Plans that fit your need
           </Heading>
