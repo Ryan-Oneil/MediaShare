@@ -2,6 +2,7 @@ import React from "react";
 import { Button, Flex, Icon, Progress, Text, VStack } from "@chakra-ui/react";
 import { AiOutlineCloudServer } from "react-icons/ai";
 import { displayBytesInReadableForm } from "@/utils/helpers";
+import { useRouter } from "next/router";
 
 type storageProps = {
   used: number;
@@ -11,6 +12,7 @@ type storageProps = {
 const StorageStatus = ({ used, max }: storageProps) => {
   const percentageUsed = (used / max) * 100;
   const size = { base: "xs", "2xl": "md" };
+  const router = useRouter();
 
   return (
     <VStack
@@ -47,6 +49,7 @@ const StorageStatus = ({ used, max }: storageProps) => {
         }}
         fontSize={size}
         size={size}
+        onClick={() => router.push("/price")}
       >
         Upgrade
       </Button>
