@@ -1,15 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BaseHomePage from "@/features/base/components/BaseHomePage";
 import { PricingCard } from "@/features/base/components/PriceCard";
 import { Box, Heading, SimpleGrid, VStack, Text } from "@chakra-ui/react";
 import { FaSuitcase, FaTag, FaTags } from "react-icons/fa";
-import { NextPage } from "next";
+import PricePlan, { IPricePlan } from "@/lib/mongoose/model/PricePlan";
+import dbConnect from "@/lib/mongoose";
+import { useAuth } from "@/features/Auth/hooks/useAuth";
+import { apiGetCall } from "@/utils/axios";
 
-const Price: NextPage = () => {
+type PriceProps = {
+  plans: IPricePlan[];
+};
+
+const icons = [FaTag, FaTags, FaSuitcase];
+
+const Price = ({ plans }: PriceProps) => {
+  const [plansState, setPlansState] = React.useState(plans);
+  const [activePlanId, setActivePlanId] = React.useState(plans[0]._id);
+  const user = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      apiGetCall("/api/stripe/subscription").then(({ data }) => {
+        if (data !== "none") {
+          setPlansState((prevState) =>
+            prevState.map((plan) => {
+              return { ...plan, disabled: true };
+            })
+          );
+        }
+        setActivePlanId(data);
+      });
+    }
+  }, [user]);
+
   return (
     <BaseHomePage title={"Pricing"}>
       <Box as="section" bg={"gray.50"} px={{ base: "4", md: "8" }}>
-        <VStack spacing={2} textAlign="center" mb={10}>
+        <VStack spacing={2} textAlign="center" my={14}>
           <Heading as="h1" fontSize={{ base: "xl", "2xl": "4xl" }}>
             Plans that fit your need
           </Heading>
@@ -26,48 +54,28 @@ const Price: NextPage = () => {
           justifyItems="center"
           alignItems="center"
         >
-          <PricingCard
-            data={{
-              price: "€0",
-              name: "Free Tier",
-              features: [
-                "2GB Storage Limit",
-                "3 day file share expiration",
-                "Unlimited Media expiry",
-              ],
-            }}
-            icon={FaTag}
-          />
-          <PricingCard
-            zIndex={1}
-            transform={{ lg: "scale(1.05)" }}
-            data={{
-              price: "€20",
-              name: "Pro Tier",
-              features: [
-                "100GB Storage Limit",
-                "30 day file share expiration",
-                "Unlimited Media expiry",
-              ],
-            }}
-            buttonProps={{ variant: "outline", borderWidth: "2px" }}
-            icon={FaSuitcase}
-          />
-          <PricingCard
-            data={{
-              price: "€10",
-              name: "Starter Tier",
-              features: [
-                "50GB Storage Limit",
-                "14 day file share expiration",
-                "Unlimited Media expiry",
-              ],
-            }}
-            icon={FaTags}
-          />
+          {plansState.map((plan, index) => {
+            return (
+              <PricingCard
+                plan={plan}
+                icon={icons[index]}
+                key={index}
+                active={activePlanId === plan._id}
+              />
+            );
+          })}
         </SimpleGrid>
       </Box>
     </BaseHomePage>
   );
 };
 export default Price;
+
+export async function getStaticProps() {
+  await dbConnect();
+  const plans = await PricePlan.find({}).lean().exec();
+
+  return {
+    props: { plans },
+  };
+}

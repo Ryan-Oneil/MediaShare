@@ -7,7 +7,7 @@ import CurrentPlanCard from "@/features/dashboard/components/CurrentPlanCard";
 import { GetServerSidePropsContext } from "next";
 import { DashboardUser } from "@/features/dashboard/types/DashboardUser";
 import { displayBytesInReadableForm } from "@/utils/helpers";
-import { getUserById } from "@/lib/services/userService";
+import { getSubscriptionPlan, getUserById } from "@/lib/services/userService";
 import RecentFileUploads from "@/features/dashboard/components/RecentFileUploads";
 import {
   getUserIdFromJWT,
@@ -21,7 +21,7 @@ import StorageDetail from "@/features/dashboard/components/StorageDetail";
 import RecentMediaUploads from "@/features/dashboard/components/RecentMediaUploads";
 import { ISharedLink } from "@/lib/mongoose/model/SharedLink";
 
-const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
+const Dashboard = ({ storage, medias, sharedLinks, plan }: DashboardUser) => {
   return (
     <BaseAppPage
       title={"Dashboard"}
@@ -63,7 +63,7 @@ const Dashboard = ({ storage, medias, sharedLinks }: DashboardUser) => {
         </Flex>
         <VStack>
           <StorageDetail {...storage} />
-          <CurrentPlanCard />
+          <CurrentPlanCard {...plan} />
         </VStack>
       </Flex>
     </BaseAppPage>
@@ -74,11 +74,15 @@ export default Dashboard;
 export const getServerSideProps = withAuthentication(
   async ({ req }: GetServerSidePropsContext) => {
     const uid = await getUserIdFromJWT(req.cookies.jwt);
-    const user = JSON.parse(
-      JSON.stringify(await getUserById(uid, "storage medias sharedLinks"))
-    );
-
     deleteUsersExpiredSharedLinks(uid);
+    const user = JSON.parse(
+      JSON.stringify(
+        await getUserById(uid, "storage medias sharedLinks subscription")
+      )
+    );
+    const currentPlan = await getSubscriptionPlan(
+      user.subscription?.planId || "none"
+    );
 
     return {
       props: {
@@ -87,6 +91,7 @@ export const getServerSideProps = withAuthentication(
         sharedLinks: user.sharedLinks.filter(
           (link: ISharedLink) => link.files.length > 0 && !isLinkExpired(link)
         ),
+        plan: currentPlan,
       },
     };
   }

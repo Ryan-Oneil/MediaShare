@@ -16,6 +16,9 @@ export const theme = extendTheme({
           bg: "brand.100",
           _hover: {
             bg: "brand.200",
+            _disabled: {
+              bg: "brand.200",
+            },
           },
           _active: {
             bg: "brand.100",

@@ -52,3 +52,10 @@ export const getUserIdFromJWT = async (jwt: string | undefined) => {
     return "";
   }
 };
+
+export const getParsedJWT = async (jwt: string | undefined) => {
+  if (!jwt) {
+    throw new Error("No JWT provided");
+  }
+  return getFirebaseAdmin().auth().verifyIdToken(jwt);
+};
