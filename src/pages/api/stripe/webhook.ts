@@ -1,7 +1,5 @@
-// Stripe requires the raw body to construct the event.
 import { Readable } from "stream";
 import { NextApiRequest, NextApiResponse } from "next";
-import { withRequestAuth } from "@/lib/firebase/wrapperUtils";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe/server";
 import { handleSubscriptionChange } from "@/lib/services/userService";

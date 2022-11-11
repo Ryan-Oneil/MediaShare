@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Heading } from "@chakra-ui/react";
 import { PricingTier } from "@/features/base/components/PriceCard";
 import { Card } from "@/features/base/components/Card";
-import { apiGetCall, apiPostCall } from "@/utils/axios";
+import { apiGetCall } from "@/utils/axios";
 import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
 import { IPricePlan } from "@/lib/mongoose/model/PricePlan";
 

@@ -1,9 +1,4 @@
 import mongoose from "mongoose";
-import {
-  pendingFileUploadSchema,
-  SharedLinkSchema,
-} from "@/lib/mongoose/model/SharedLink";
-import { Stripe } from "stripe";
 
 export interface IPricePlan {
   _id: string;

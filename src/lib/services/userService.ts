@@ -79,7 +79,7 @@ export const getOrCreateStripeCustomerId = async (
     .exec();
 
   if (!stripeCustomerId) {
-    return await createStripeCustomer(userUid, email);
+    return createStripeCustomer(userUid, email);
   }
   return stripeCustomerId;
 };
@@ -130,9 +130,9 @@ export const handleSubscriptionChange = async (
   } else if (subscription.status === "canceled") {
     await updateUserQuotaFromStripe(stripCustomerId, "none");
 
-    return await updateSubscription(stripCustomerId, null);
+    return updateSubscription(stripCustomerId, null);
   }
-  return await updateSubscription(stripCustomerId, {
+  return updateSubscription(stripCustomerId, {
     id: subscription.id,
     status: subscription.status,
     created: subscription.created,
@@ -148,7 +148,7 @@ export const handleSubscriptionChange = async (
 export const getSubscriptionPlan = async (planId: string = "none") => {
   await dbConnect();
 
-  return await PricePlan.findOne({
+  return PricePlan.findOne({
     _id: planId,
   })
     .orFail(() => new Error("Plan not found"))

@@ -23,8 +23,8 @@ const Price = ({ plans }: PriceProps) => {
     if (user) {
       apiGetCall("/api/stripe/subscription").then(({ data }) => {
         if (data !== "none") {
-          setPlansState((plans) =>
-            plans.map((plan) => {
+          setPlansState((prevState) =>
+            prevState.map((plan) => {
               return { ...plan, disabled: true };
             })
           );
