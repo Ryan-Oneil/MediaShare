@@ -18,6 +18,7 @@ import { useAuth } from "@/features/Auth/hooks/useAuth";
 import { useRouter } from "next/router";
 import { apiPostCall } from "@/utils/axios";
 import { getStripe } from "@/lib/stripe/client";
+import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
 
 interface PricingCardProps {
   plan: IPricePlan;
@@ -27,6 +28,7 @@ interface PricingCardProps {
 export const PricingCard = (props: PricingCardProps) => {
   const user = useAuth();
   const router = useRouter();
+  const { createToast } = useDisplayApiError();
   const [loading, setLoading] = React.useState(false);
   const { plan, icon } = props;
   const extraProperties = {} as BoxProps;
@@ -42,14 +44,17 @@ export const PricingCard = (props: PricingCardProps) => {
       return router.push("/login?redirect=/price");
     }
     try {
-      const { data } = await apiPostCall("/api/create-checkout-session", {
-        planId: plan._id,
-      });
+      const { data } = await apiPostCall(
+        "/api/stripe/create-checkout-session",
+        {
+          planId: plan._id,
+        }
+      );
 
       const stripe = await getStripe();
       stripe?.redirectToCheckout({ sessionId: data });
-    } catch (error) {
-      return alert((error as Error)?.message);
+    } catch (error: any) {
+      createToast("Error redirecting to stripe checkout", error);
     } finally {
       setLoading(false);
     }

@@ -12,6 +12,8 @@ export interface IPricePlan {
   price: string;
   disabled: boolean;
   highlight: boolean;
+  allowedQuota: number;
+  allowedSharedLength: number;
 }
 
 const PlanSchema = new mongoose.Schema<IPricePlan>({
@@ -39,6 +41,14 @@ const PlanSchema = new mongoose.Schema<IPricePlan>({
   highlight: {
     type: Boolean,
     default: false,
+  },
+  allowedQuota: {
+    type: Number,
+    required: true,
+  },
+  allowedSharedLength: {
+    type: Number,
+    required: true,
   },
 });
 
