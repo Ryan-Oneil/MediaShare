@@ -31,8 +31,11 @@ const handlePostCall = async (req: NextApiRequest, res: NextApiResponse) => {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
   let event: Stripe.Event;
 
+  if (!sig || !webhookSecret) {
+    return res.status(400).end();
+  }
+
   try {
-    if (!sig || !webhookSecret) return;
     event = stripe.webhooks.constructEvent(buf, sig, webhookSecret);
   } catch (err: any) {
     console.log(`❌ Error message: ${err.message}`);
