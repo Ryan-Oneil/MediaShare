@@ -16,6 +16,7 @@ Live site deployed on Vercel [https://mediashare.ryanoneil.me/](https://mediasha
 - Image/Video gallery hosting
 - User Dashboard
 - File Sharing service
+- Stripe payments to subscribe to different account plan tiers
 
 ## Technologies used 
 - NextJS
@@ -27,3 +28,4 @@ Live site deployed on Vercel [https://mediashare.ryanoneil.me/](https://mediasha
 - Chakra UI
 - Firebase Auth
 - Typescript
+- Stripe API
