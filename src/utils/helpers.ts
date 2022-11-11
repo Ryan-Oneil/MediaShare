@@ -47,6 +47,10 @@ export const getHostedURL = () => {
     return "http://localhost:3000";
   }
 
+  if (process.env.APP_URL) {
+    return process.env.APP_URL;
+  }
+
   const url = process.env.VERCEL_URL;
 
   return url.includes("http") ? url : `https://${url}`;
