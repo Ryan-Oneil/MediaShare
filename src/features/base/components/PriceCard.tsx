@@ -23,6 +23,7 @@ import useDisplayApiError from "@/features/base/hooks/useDisplayApiError";
 interface PricingCardProps {
   plan: IPricePlan;
   icon?: React.ElementType;
+  active?: boolean;
 }
 
 export const PricingCard = (props: PricingCardProps) => {
@@ -30,7 +31,7 @@ export const PricingCard = (props: PricingCardProps) => {
   const router = useRouter();
   const { createToast } = useDisplayApiError();
   const [loading, setLoading] = React.useState(false);
-  const { plan, icon } = props;
+  const { plan, icon, active } = props;
   const extraProperties = {} as BoxProps;
 
   if (plan.highlight) {
@@ -43,6 +44,11 @@ export const PricingCard = (props: PricingCardProps) => {
     if (!user) {
       return router.push("/login?redirect=/price");
     }
+
+    if (active) {
+      return router.push("/dashboard");
+    }
+
     try {
       const { data } = await apiPostCall(
         "/api/stripe/create-checkout-session",
@@ -68,10 +74,10 @@ export const PricingCard = (props: PricingCardProps) => {
         variant={"brand"}
         size={{ base: "md", "2xl": "lg" }}
         w="full"
-        disabled={plan.disabled || loading}
+        disabled={(plan.disabled && !active) || loading}
         onClick={handleSubscribe}
       >
-        Subscribe
+        {active ? "Manage" : "Subscribe"}
       </Button>
     </Card>
   );

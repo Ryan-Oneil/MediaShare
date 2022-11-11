@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import BaseHomePage from "@/features/base/components/BaseHomePage";
 import { PricingCard } from "@/features/base/components/PriceCard";
 import { Box, Heading, SimpleGrid, VStack, Text } from "@chakra-ui/react";
 import { FaSuitcase, FaTag, FaTags } from "react-icons/fa";
 import PricePlan, { IPricePlan } from "@/lib/mongoose/model/PricePlan";
 import dbConnect from "@/lib/mongoose";
+import { useAuth } from "@/features/Auth/hooks/useAuth";
+import { apiGetCall } from "@/utils/axios";
 
 type PriceProps = {
   plans: IPricePlan[];
@@ -13,6 +15,25 @@ type PriceProps = {
 const icons = [FaTag, FaTags, FaSuitcase];
 
 const Price = ({ plans }: PriceProps) => {
+  const [plansState, setPlansState] = React.useState(plans);
+  const [activePlanId, setActivePlanId] = React.useState(plans[0]._id);
+  const user = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      apiGetCall("/api/stripe/subscription").then(({ data }) => {
+        if (data !== "none") {
+          setPlansState((plans) =>
+            plans.map((plan) => {
+              return { ...plan, disabled: true };
+            })
+          );
+        }
+        setActivePlanId(data);
+      });
+    }
+  }, [user]);
+
   return (
     <BaseHomePage title={"Pricing"}>
       <Box as="section" bg={"gray.50"} px={{ base: "4", md: "8" }}>
@@ -33,8 +54,15 @@ const Price = ({ plans }: PriceProps) => {
           justifyItems="center"
           alignItems="center"
         >
-          {plans.map((plan, index) => {
-            return <PricingCard plan={plan} icon={icons[index]} key={index} />;
+          {plansState.map((plan, index) => {
+            return (
+              <PricingCard
+                plan={plan}
+                icon={icons[index]}
+                key={index}
+                active={activePlanId === plan._id}
+              />
+            );
           })}
         </SimpleGrid>
       </Box>
