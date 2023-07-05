@@ -74,12 +74,14 @@ export default Dashboard;
 export const getServerSideProps = withAuthentication(
   async ({ req }: GetServerSidePropsContext) => {
     const uid = await getUserIdFromJWT(req.cookies.jwt);
-    deleteUsersExpiredSharedLinks(uid);
+
     const user = JSON.parse(
       JSON.stringify(
         await getUserById(uid, "storage medias sharedLinks subscription")
       )
     );
+    deleteUsersExpiredSharedLinks(uid);
+
     const currentPlan = await getSubscriptionPlan(
       user.subscription?.planId || "none"
     );
