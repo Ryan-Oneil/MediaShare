@@ -20,7 +20,7 @@
     "firebase-admin": "^11.4.1",
     "formik": "^2.2.9",
     "framer-motion": "^6.3.4",
-    "mongoose": "^6.5.1",
+    "mongoose": "^6.12.0",
     "next": "12.3.0",
     "react": "18.1.0",
     "react-dom": "18.1.0",
